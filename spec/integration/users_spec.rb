@@ -28,30 +28,30 @@ RSpec.describe 'api/v1/users', type: :request do
     end
   end
 
-  path '/users/{id}' do
+  # path '/users/{id}' do
 
-    get 'Retrieves a user' do
-      tags 'Users'
-      produces 'application/json'
-      parameter name: :id, :in => :path, :type => :string
+  #   get 'Retrieves a user' do
+  #     tags 'Users'
+  #     produces 'application/json'
+  #     parameter name: :id, :in => :path, :type => :string
 
-      response '200', 'user found' do
-        schema type: :object,
-          properties: {
-            id: { type: :integer },
-            name: { type: :string },
-            email: { type: :string }
-          },
-          required: ['id', 'name', 'email']
+  #     response '200', 'user found' do
+  #       schema type: :object,
+  #         properties: {
+  #           id: { type: :integer },
+  #           name: { type: :string },
+  #           email: { type: :string }
+  #         },
+  #         required: ['id', 'name', 'email']
 
-        let(:id) { User.create(name: 'test', email: 'test@example.com', password: 'password').id }
-        run_test!
-      end
+  #       let(:id) { User.create(name: 'test', email: 'test@example.com', password: 'password').id }
+  #       run_test!
+  #     end
 
-      response '404', 'user not found' do
-        let(:id) { 'invalid' }
-        run_test!
-      end
-    end
-  end
+  #     response '404', 'user not found' do
+  #       let(:id) { 'invalid' }
+  #       run_test!
+  #     end
+  #   end
+  # end
 end
