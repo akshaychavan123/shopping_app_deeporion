@@ -2,7 +2,6 @@ class Api::V1::OrdersController < ApplicationController
   # before_action :authorize_request
 
   def create
-    byebug
     # @order = current_user.orders.new(order_params)
     @order = Order.new(order_params)
 
@@ -21,7 +20,7 @@ class Api::V1::OrdersController < ApplicationController
       :user_id, :first_name, :last_name, :phone_number, :email, :country,
       :pincode, :area, :city, :state, :address, :total_price,
       :address_type, :payment_status, :placed_at,
-      order_items_attributes: [:product_item_id, :quantity, :sub_total]
+      order_items_attributes: [:product_item_id, :quantity]
     )
   end
 
