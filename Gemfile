@@ -73,5 +73,5 @@ end
 gem 'jwt'
 gem 'bcrypt', '~> 3.1.7'
 gem 'rswag'
-gem 'rotp'
+# gem 'rotp'
 gem 'dotenv-rails', groups: [:development, :test]
