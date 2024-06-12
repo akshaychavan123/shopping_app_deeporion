@@ -1,5 +1,5 @@
 class Api::V1::OrdersController < ApplicationController
-  # before_action :authorize_request
+  before_action :authorize_request
 
   def create
     # @order = current_user.orders.new(order_params)

@@ -11,17 +11,16 @@ RSpec.describe 'api/v1/auth', type: :request do
           email: { type: :string },
           password: { type: :string }
         },
-        required: ['email', 'password']
+        required: %w[email password]
       }
 
-      response '200', 'user logged in' do
-        let(:user) { User.create(name: 'John', email: 'john@example.com', password: 'password') }
-        let(:credentials) { { email: user.email, password: 'password' } }
+      response '200', 'User logged in' do
+        let(:credentials) { { email: 'user@example.com', password: 'password' } }
         run_test!
       end
 
-      response '401', 'invalid credentials' do
-        let(:credentials) { { email: 'foo', password: 'bar' } }
+      response '401', 'Invalid credentials' do
+        let(:credentials) { { email: 'user@example.com', password: 'wrong_password' } }
         run_test!
       end
     end
