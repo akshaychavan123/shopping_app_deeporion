@@ -8,6 +8,12 @@ Rails.application.routes.draw do
       post 'auth/login', to: 'authentication#login'
       resources :orders, only: [:create]
     end
+    namespace :v2 do
+      resources :categories, only: [:index, :show, :create, :update, :destroy]
+      resources :categories do
+        resources :subcategories, only: [:index, :show, :create, :update, :destroy]
+      end
+      end
   end
 
 end

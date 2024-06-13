@@ -34,6 +34,98 @@ paths:
               required:
               - email
               - password
+  "/api/v2/categories":
+    get:
+      summary: list categories
+      tags:
+      - Categories
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: successful
+    post:
+      summary: create category
+      tags:
+      - Categories
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '201':
+          description: created
+        '422':
+          description: unprocessable entity
+        '401':
+          description: unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+              required:
+              - name
+  "/api/v2/categories/{id}":
+    parameters:
+    - name: id
+      in: path
+      description: ID
+      required: true
+      schema:
+        type: string
+    get:
+      summary: show category
+      tags:
+      - Categories
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: successful
+        '404':
+          description: not found
+        '401':
+          description: unauthorized
+    patch:
+      summary: update category
+      tags:
+      - Categories
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '200':
+          description: successful
+        '422':
+          description: unprocessable entity
+        '401':
+          description: unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+              required:
+              - name
+    delete:
+      summary: delete category
+      tags:
+      - Categories
+      security:
+      - bearerAuth: []
+      responses:
+        '204':
+          description: no content
+        '404':
+          description: not found
+        '401':
+          description: unauthorized
   "/api/v1/orders":
     post:
       summary: Creates an order
@@ -113,6 +205,111 @@ paths:
               - payment_status
               - placed_at
               - order_items_attributes
+  "/api/v2/categories/{category_id}/subcategories":
+    parameters:
+    - name: category_id
+      in: path
+      description: Category ID
+      required: true
+      schema:
+        type: integer
+    get:
+      summary: list subcategories
+      tags:
+      - Subcategories
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: successful
+    post:
+      summary: create subcategory
+      tags:
+      - Subcategories
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '201':
+          description: created
+        '422':
+          description: unprocessable entity
+        '401':
+          description: unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+              required:
+              - name
+  "/api/v2/categories/{category_id}/subcategories/{id}":
+    parameters:
+    - name: category_id
+      in: path
+      description: Category ID
+      required: true
+      schema:
+        type: integer
+    - name: id
+      in: path
+      description: ID
+      required: true
+      schema:
+        type: integer
+    get:
+      summary: show subcategory
+      tags:
+      - Subcategories
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: successful
+        '404':
+          description: not found
+        '401':
+          description: unauthorized
+    patch:
+      summary: update subcategory
+      tags:
+      - Subcategories
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '200':
+          description: successful
+        '422':
+          description: unprocessable entity
+        '401':
+          description: unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+              required:
+              - name
+    delete:
+      summary: delete subcategory
+      tags:
+      - Subcategories
+      security:
+      - bearerAuth: []
+      responses:
+        '204':
+          description: no content
+        '404':
+          description: not found
+        '401':
+          description: unauthorized
   "/api/v1/users":
     post:
       summary: Creates a user
