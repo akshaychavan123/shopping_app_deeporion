@@ -13,7 +13,6 @@ Rails.application.routes.draw do
       resources :categories do
         resources :subcategories, only: [:index, :show, :create, :update, :destroy]
       end
-      end
+    end
   end
-
 end

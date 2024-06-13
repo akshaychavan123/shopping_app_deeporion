@@ -47,5 +47,4 @@ class Api::V2::SubcategoriesController < ApplicationController
 	def subcategory_params
 		params.require(:subcategory).permit(:name)
 	end
-
 end
