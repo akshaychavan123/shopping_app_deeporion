@@ -205,6 +205,98 @@ paths:
               - payment_status
               - placed_at
               - order_items_attributes
+  "/api/v2/products":
+    get:
+      summary: list products
+      tags:
+      - Products
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: successful
+    post:
+      summary: create product
+      tags:
+      - Products
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '201':
+          description: created
+        '422':
+          description: unprocessable entity
+        '401':
+          description: unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+              required:
+              - name
+  "/api/v2/products/{id}":
+    parameters:
+    - name: id
+      in: path
+      description: ID
+      required: true
+      schema:
+        type: integer
+    get:
+      summary: show product
+      tags:
+      - Products
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: successful
+        '404':
+          description: not found
+        '401':
+          description: unauthorized
+    patch:
+      summary: update product
+      tags:
+      - Products
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '200':
+          description: successful
+        '422':
+          description: unprocessable entity
+        '401':
+          description: unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+              required:
+              - name
+    delete:
+      summary: delete product
+      tags:
+      - Products
+      security:
+      - bearerAuth: []
+      responses:
+        '204':
+          description: no content
+        '404':
+          description: not found
+        '401':
+          description: unauthorized
   "/api/v2/categories/{category_id}/subcategories":
     parameters:
     - name: category_id
@@ -337,6 +429,80 @@ paths:
               - name
               - email
               - password
+  "/api/v1/wishlists/{wishlist_id}/wishlist_items":
+    parameters:
+    - name: wishlist_id
+      in: path
+      description: Wishlist ID
+      required: true
+      schema:
+        type: integer
+    post:
+      summary: create wishlist_item
+      tags:
+      - WishlistItems
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '201':
+          description: created
+        '422':
+          description: unprocessable entity
+        '401':
+          description: unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                product_item_id:
+                  type: integer
+              required:
+              - product_item_id
+  "/api/v1/wishlist_items/{id}":
+    parameters:
+    - name: id
+      in: path
+      description: Wishlist Item ID
+      required: true
+      schema:
+        type: integer
+    delete:
+      summary: delete wishlist_item
+      tags:
+      - WishlistItems
+      security:
+      - bearerAuth: []
+      responses:
+        '204':
+          description: no content
+        '404':
+          description: not found
+        '401':
+          description: unauthorized
+  "/api/v1/wishlists/{user_id}":
+    parameters:
+    - name: user_id
+      in: path
+      description: User ID
+      required: true
+      schema:
+        type: integer
+    get:
+      summary: show wishlist
+      tags:
+      - Wishlists
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: successful
+        '404':
+          description: not found
+        '401':
+          description: unauthorized
 servers:
 - url: http://{defaultHost}
   variables:

@@ -2,6 +2,7 @@ class ProductItem < ApplicationRecord
   belongs_to :product
 	has_many :order_items
   has_many :orders, through: :order_items
+  has_many :wishlist_items
 
 	validates :name, presence: true
   validates :brand, presence: true

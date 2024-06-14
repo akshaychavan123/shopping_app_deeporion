@@ -7,9 +7,14 @@ Rails.application.routes.draw do
       resources :users, only: [:create]
       post 'auth/login', to: 'authentication#login'
       resources :orders, only: [:create]
+      resources :wishlists, only: [] do
+        get ':user_id', to: 'wishlists#show', on: :collection
+        resources :wishlist_items, only: [:create, :destroy]
+      end
     end
     namespace :v2 do
       resources :categories, only: [:index, :show, :create, :update, :destroy]
+      resources :products, only: [:index, :show, :create, :update, :destroy]
       resources :categories do
         resources :subcategories, only: [:index, :show, :create, :update, :destroy]
       end
