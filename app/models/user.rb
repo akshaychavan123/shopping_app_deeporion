@@ -7,13 +7,20 @@ class User < ApplicationRecord
 						if: -> { new_record? || !password.nil? }
 
 	has_one :wishlist, dependent: :destroy
+  has_one :cart, dependent: :destroy
 	after_create :create_wishlist
+  after_create :create_cart
+
 
 	private
 
 	def create_wishlist
 		Wishlist.create(user: self)
 	end
+  
+  def create_cart
+    Cart.create(user: self)
+  end
 
 end
 

@@ -3,6 +3,9 @@ class ProductItem < ApplicationRecord
 	has_many :order_items
   has_many :orders, through: :order_items
   has_many :wishlist_items
+  has_many :wishlists, through: :wishlist_items
+  has_many :cart_items
+  has_many :carts, through: :cart_items
 
 	validates :name, presence: true
   validates :brand, presence: true
