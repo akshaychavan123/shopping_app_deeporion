@@ -34,6 +34,292 @@ paths:
               required:
               - email
               - password
+  "/api/v1/cart/cart_items":
+    get:
+      summary: Retrieves cart items
+      tags:
+      - Cart Items
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: cart items found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    quantity:
+                      type: integer
+                    product_item:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        brand:
+                          type: string
+                        price:
+                          type: number
+                        description:
+                          type: string
+                      required:
+                      - id
+                      - name
+                      - brand
+                      - price
+                      - description
+                  required:
+                  - id
+                  - quantity
+                  - product_item
+        '401':
+          description: unauthorized
+  "/api/v1/cart/cart_items/{id}":
+    patch:
+      summary: Updates a cart item
+      tags:
+      - Cart Items
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: cart item updated
+        '401':
+          description: unauthorized
+        '422':
+          description: invalid params
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quantity:
+                  type: integer
+              required:
+              - quantity
+  "/api/v1/cart/cart_items/add_item":
+    post:
+      summary: Adds an item to the cart
+      tags:
+      - Cart Items
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '200':
+          description: item added to cart
+        '401':
+          description: unauthorized
+        '404':
+          description: product item not found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                product_item_id:
+                  type: integer
+                quantity:
+                  type: integer
+              required:
+              - product_item_id
+              - quantity
+  "/api/v1/cart/cart_items/remove_or_move_to_wishlist":
+    delete:
+      summary: Removes or moves an item to wishlist
+      tags:
+      - Cart Items
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '200':
+          description: item removed or moved to wishlist
+        '401':
+          description: unauthorized
+        '404':
+          description: item not found in cart
+        '400':
+          description: invalid action type
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                product_item_id:
+                  type: integer
+                action_type:
+                  type: string
+                  enum:
+                  - remove
+                  - wishlist
+              required:
+              - product_item_id
+              - action_type
+  "/api/v1/cart":
+    get:
+      summary: Retrieves the user's cart
+      tags:
+      - Carts
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: cart found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  user_id:
+                    type: integer
+                  cart_items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        quantity:
+                          type: integer
+                        product_item:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                            name:
+                              type: string
+                            brand:
+                              type: string
+                            price:
+                              type: number
+                            description:
+                              type: string
+                          required:
+                          - id
+                          - name
+                          - brand
+                          - price
+                          - description
+                      required:
+                      - id
+                      - quantity
+                      - product_item
+                required:
+                - id
+                - user_id
+                - cart_items
+        '401':
+          description: unauthorized
+  "/api/v2/categories":
+    get:
+      summary: list categories
+      tags:
+      - Categories
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: successful
+    post:
+      summary: create category
+      tags:
+      - Categories
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '201':
+          description: created
+        '422':
+          description: unprocessable entity
+        '401':
+          description: unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+              required:
+              - name
+  "/api/v2/categories/{id}":
+    parameters:
+    - name: id
+      in: path
+      description: ID
+      required: true
+      schema:
+        type: string
+    get:
+      summary: show category
+      tags:
+      - Categories
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: successful
+        '404':
+          description: not found
+        '401':
+          description: unauthorized
+    patch:
+      summary: update category
+      tags:
+      - Categories
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '200':
+          description: successful
+        '422':
+          description: unprocessable entity
+        '401':
+          description: unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+              required:
+              - name
+    delete:
+      summary: delete category
+      tags:
+      - Categories
+      security:
+      - bearerAuth: []
+      responses:
+        '204':
+          description: no content
+        '404':
+          description: not found
+        '401':
+          description: unauthorized
   "/api/v1/orders":
     post:
       summary: Creates an order
@@ -113,6 +399,203 @@ paths:
               - payment_status
               - placed_at
               - order_items_attributes
+  "/api/v2/products":
+    get:
+      summary: list products
+      tags:
+      - Products
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: successful
+    post:
+      summary: create product
+      tags:
+      - Products
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '201':
+          description: created
+        '422':
+          description: unprocessable entity
+        '401':
+          description: unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+              required:
+              - name
+  "/api/v2/products/{id}":
+    parameters:
+    - name: id
+      in: path
+      description: ID
+      required: true
+      schema:
+        type: integer
+    get:
+      summary: show product
+      tags:
+      - Products
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: successful
+        '404':
+          description: not found
+        '401':
+          description: unauthorized
+    patch:
+      summary: update product
+      tags:
+      - Products
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '200':
+          description: successful
+        '422':
+          description: unprocessable entity
+        '401':
+          description: unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+              required:
+              - name
+    delete:
+      summary: delete product
+      tags:
+      - Products
+      security:
+      - bearerAuth: []
+      responses:
+        '204':
+          description: no content
+        '404':
+          description: not found
+        '401':
+          description: unauthorized
+  "/api/v2/categories/{category_id}/subcategories":
+    parameters:
+    - name: category_id
+      in: path
+      description: Category ID
+      required: true
+      schema:
+        type: integer
+    get:
+      summary: list subcategories
+      tags:
+      - Subcategories
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: successful
+    post:
+      summary: create subcategory
+      tags:
+      - Subcategories
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '201':
+          description: created
+        '422':
+          description: unprocessable entity
+        '401':
+          description: unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+              required:
+              - name
+  "/api/v2/categories/{category_id}/subcategories/{id}":
+    parameters:
+    - name: category_id
+      in: path
+      description: Category ID
+      required: true
+      schema:
+        type: integer
+    - name: id
+      in: path
+      description: ID
+      required: true
+      schema:
+        type: integer
+    get:
+      summary: show subcategory
+      tags:
+      - Subcategories
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: successful
+        '404':
+          description: not found
+        '401':
+          description: unauthorized
+    patch:
+      summary: update subcategory
+      tags:
+      - Subcategories
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '200':
+          description: successful
+        '422':
+          description: unprocessable entity
+        '401':
+          description: unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+              required:
+              - name
+    delete:
+      summary: delete subcategory
+      tags:
+      - Subcategories
+      security:
+      - bearerAuth: []
+      responses:
+        '204':
+          description: no content
+        '404':
+          description: not found
+        '401':
+          description: unauthorized
   "/api/v1/users":
     post:
       summary: Creates a user
@@ -140,6 +623,110 @@ paths:
               - name
               - email
               - password
+  "/api/v1/wishlists/:wishlist_id/wishlist_items":
+    post:
+      summary: Creates a wishlist item
+      tags:
+      - Wishlist Items
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: wishlist_id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '201':
+          description: wishlist item created
+        '401':
+          description: unauthorized
+        '422':
+          description: invalid params
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                product_item_id:
+                  type: integer
+              required:
+              - product_item_id
+  "/api/v1/wishlists/:wishlist_id/wishlist_items/{id}":
+    delete:
+      summary: Deletes a wishlist item
+      tags:
+      - Wishlist Items
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: wishlist_id
+        in: path
+        required: true
+        schema:
+          type: integer
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: wishlist item deleted
+        '401':
+          description: unauthorized
+  "/api/v1/wishlists/:wishlist_id/wishlist_items/add_to_cart":
+    post:
+      summary: Moves an item from wishlist to cart
+      tags:
+      - Wishlist Items
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: wishlist_id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: item added to cart
+        '401':
+          description: unauthorized
+        '404':
+          description: item not found in wishlist
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                product_item_id:
+                  type: integer
+              required:
+              - product_item_id
+  "/api/v1/wishlists/{user_id}":
+    parameters:
+    - name: user_id
+      in: path
+      description: User ID
+      required: true
+      schema:
+        type: integer
+    get:
+      summary: show wishlist
+      tags:
+      - Wishlists
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: successful
+        '404':
+          description: not found
+        '401':
+          description: unauthorized
 servers:
 - url: http://{defaultHost}
   variables:

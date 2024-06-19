@@ -76,3 +76,4 @@ gem 'rswag'
 gem 'swagger-blocks'
 # gem 'rotp'
 gem 'dotenv-rails', groups: [:development, :test]
+
