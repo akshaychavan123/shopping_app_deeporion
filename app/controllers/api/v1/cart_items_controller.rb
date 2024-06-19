@@ -1,22 +1,22 @@
 class Api::V1::CartItemsController < ApplicationController
-	before_action :authorize_request
+  before_action :authorize_request
   before_action :set_cart, only: [:index, :update, :add_item, :remove_or_move_to_wishlist]
 
-	def index
+  def index
     @cart_items = @cart.cart_items.includes(:product_item)
     render json: @cart_items
   end
 
-	def update
-		@cart_item = @cart.cart_items.find(params[:id])
-		if @cart_item.update(cart_item_params)
-			render json: @cart_item
-		else
-			render json: @cart_item.errors, status: :unprocessable_entity
-		end
-	end
+  def update
+    @cart_item = @cart.cart_items.find(params[:id])
+    if @cart_item.update(cart_item_params)
+      render json: @cart_item
+    else
+      render json: @cart_item.errors, status: :unprocessable_entity
+    end
+  end
 
-	def add_item
+  def add_item
     product_item = ProductItem.find(params[:product_item_id])
     cart_item = @cart.cart_items.find_or_initialize_by(product_item: product_item)
     cart_item.quantity = params[:quantity].to_i
@@ -42,14 +42,14 @@ class Api::V1::CartItemsController < ApplicationController
       render json: { error: 'Item not found in cart' }, status: :not_found
     end
   end
-	
-	private
 
-	def set_cart
+  private
+
+  def set_cart
     @cart = Cart.find_or_create_by(user_id: @current_user)
   end
 
-	def cart_item_params
-		params.require(:cart_item).permit(:quantity)
-	end
+  def cart_item_params
+    params.require(:cart_item).permit(:quantity)
+  end
 end

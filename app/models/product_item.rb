@@ -1,13 +1,13 @@
 class ProductItem < ApplicationRecord
   belongs_to :product
-	has_many :order_items
+  has_many :order_items
   has_many :orders, through: :order_items
   has_many :wishlist_items
   has_many :wishlists, through: :wishlist_items
   has_many :cart_items
   has_many :carts, through: :cart_items
 
-	validates :name, presence: true
+  validates :name, presence: true
   validates :brand, presence: true
   validates :price, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :discounted_price, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
