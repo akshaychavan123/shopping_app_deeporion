@@ -4,6 +4,10 @@ Rails.application.routes.draw do
   
   namespace :api do
     namespace :v1 do
+
+      post 'auth/create', to: 'authentication#create'
+      post 'auth/verify', to: 'authentication#verify'
+
       resources :users, only: [:create]
       post 'auth/login', to: 'authentication#login'
 

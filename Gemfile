@@ -69,11 +69,12 @@ group :test do
   gem "selenium-webdriver"
 end
 
-# Use Json Web Token (JWT) for token based authentication
+# Use Json Web Token (JWT) for to ken based authentication
 gem 'jwt'
 gem 'bcrypt', '~> 3.1.7'
 gem 'rswag'
 gem 'swagger-blocks'
 # gem 'rotp'
 gem 'dotenv-rails', groups: [:development, :test]
+gem 'twilio-ruby'
 

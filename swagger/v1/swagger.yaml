@@ -34,6 +34,51 @@ paths:
               required:
               - email
               - password
+  "/api/v1/auth/create":
+    post:
+      summary: Creates a user with phone number
+      tags:
+      - Authentication
+      parameters: []
+      responses:
+        '201':
+          description: User created and verification code sent
+        '422':
+          description: Phone number already exists
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                phone_number:
+                  type: string
+              required:
+              - phone_number
+  "/api/v1/auth/verify":
+    post:
+      summary: Verifies phone number
+      tags:
+      - Authentication
+      parameters: []
+      responses:
+        '201':
+          description: Phone number verified
+        '401':
+          description: Invalid verification code
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+                verification_code:
+                  type: string
+              required:
+              - user_id
+              - verification_code
   "/api/v1/cart/cart_items":
     get:
       summary: Retrieves cart items
