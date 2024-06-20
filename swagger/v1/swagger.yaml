@@ -51,10 +51,10 @@ paths:
             schema:
               type: object
               properties:
-                phone_number:
+                full_phone_number:
                   type: string
               required:
-              - phone_number
+              - full_phone_number
   "/api/v1/auth/verify":
     post:
       summary: Verifies phone number
@@ -65,7 +65,7 @@ paths:
         '201':
           description: Phone number verified
         '401':
-          description: Invalid verification code
+          description: Expired verification code
       requestBody:
         content:
           application/json:

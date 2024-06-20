@@ -77,4 +77,5 @@ gem 'swagger-blocks'
 # gem 'rotp'
 gem 'dotenv-rails', groups: [:development, :test]
 gem 'twilio-ruby'
+gem 'phonelib', '~> 0.5.4'
 
