@@ -8,6 +8,8 @@ Rails.application.routes.draw do
       post 'auth/create', to: 'authentication#create'
       post 'auth/verify', to: 'authentication#verify'
 
+      post '/auth/google_oauth2', to: 'sessions#google_auth'
+
       resources :users, only: [:create]
       post 'auth/login', to: 'authentication#login'
 
