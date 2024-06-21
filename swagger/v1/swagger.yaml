@@ -365,6 +365,177 @@ paths:
           description: not found
         '401':
           description: unauthorized
+  "/api/v2/gift_card_categories":
+    get:
+      summary: list gift_card_categories
+      tags:
+      - GiftCardCategories
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: successful
+    post:
+      summary: create gift_card_category
+      tags:
+      - GiftCardCategories
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '201':
+          description: created
+        '422':
+          description: unprocessable entity
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                gift_card_category:
+                  type: object
+                  properties:
+                    title:
+                      type: string
+                  required:
+                  - title
+              required:
+              - gift_card_category
+  "/api/v2/gift_card_categories/{id}":
+    parameters:
+    - name: id
+      in: path
+      description: id
+      required: true
+      schema:
+        type: string
+    get:
+      summary: show gift_card_category
+      tags:
+      - GiftCardCategories
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: successful
+        '404':
+          description: not found
+    delete:
+      summary: delete gift_card_category
+      tags:
+      - GiftCardCategories
+      security:
+      - bearerAuth: []
+      responses:
+        '204':
+          description: no content
+        '404':
+          description: not found
+  "/api/v2/gift_cards":
+    get:
+      summary: list gift_cards
+      tags:
+      - GiftCards
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: successful
+    post:
+      summary: create gift_card
+      tags:
+      - GiftCards
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '201':
+          description: created
+        '422':
+          description: unprocessable entity
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                gift_card:
+                  type: object
+                  properties:
+                    image:
+                      type: string
+                    price:
+                      type: number
+                      format: decimal
+                    gift_card_category_id:
+                      type: integer
+                  required:
+                  - image
+                  - price
+                  - gift_card_category_id
+              required:
+              - gift_card
+  "/api/v2/gift_cards/{id}":
+    parameters:
+    - name: id
+      in: path
+      description: id
+      required: true
+      schema:
+        type: string
+    get:
+      summary: show gift_card
+      tags:
+      - GiftCards
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: successful
+        '404':
+          description: not found
+    patch:
+      summary: update gift_card
+      tags:
+      - GiftCards
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '200':
+          description: successful
+        '422':
+          description: unprocessable entity
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                gift_card:
+                  type: object
+                  properties:
+                    image:
+                      type: string
+                    price:
+                      type: number
+                      format: decimal
+                    gift_card_category_id:
+                      type: integer
+              required:
+              - gift_card
+    delete:
+      summary: delete gift_card
+      tags:
+      - GiftCards
+      security:
+      - bearerAuth: []
+      responses:
+        '204':
+          description: no content
+        '404':
+          description: not found
   "/api/v1/orders":
     post:
       summary: Creates an order

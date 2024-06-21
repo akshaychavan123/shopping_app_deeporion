@@ -38,6 +38,8 @@ Rails.application.routes.draw do
       resources :categories do
         resources :subcategories, only: [:index, :show, :create, :update, :destroy]
       end
+      resources :gift_card_categories, only: [:index, :show, :create, :destroy]
+      resources :gift_cards
     end
   end
 end
