@@ -5,7 +5,7 @@ class User < ApplicationRecord
   validates :password, presence: true, length: { minimum: 6 }, unless: -> { phone_number.present? }
   validates :phone_number, presence: true, uniqueness: true, if: -> { phone_number.present? }
   validates :full_phone_number, uniqueness: true, if: -> { full_phone_number.present? }
-  validates :uid, uniqueness: { scope: :provider }
+  validates :uid, uniqueness: { scope: :provider }, if: -> { provider.present? }
 
 
   has_one :wishlist, dependent: :destroy
