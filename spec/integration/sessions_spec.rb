@@ -1,11 +1,11 @@
 require 'swagger_helper'
 
 RSpec.describe 'Api::V1::Sessions', type: :request do
-
   path '/api/v1/auth/google_oauth2' do
     post('Google OAuth2 Authentication') do
       tags 'Sessions'
       consumes 'application/json'
+      produces 'application/json'
       parameter name: :auth_token, in: :header, type: :string, description: 'OAuth token'
 
       response '200', 'successful' do
@@ -18,12 +18,11 @@ RSpec.describe 'Api::V1::Sessions', type: :request do
                 id: { type: :integer },
                 name: { type: :string },
                 email: { type: :string }
-                # Add other user properties as needed
               },
-              required: [ 'id', 'name', 'email' ]
+              required: ['id', 'name', 'email']
             }
           },
-          required: [ 'jwt', 'user' ]
+          required: ['jwt', 'user']
 
         let(:auth_token) { 'example_oauth_token' }
         run_test!
@@ -34,7 +33,7 @@ RSpec.describe 'Api::V1::Sessions', type: :request do
           properties: {
             error: { type: :string }
           },
-          required: [ 'error' ]
+          required: ['error']
 
         let(:auth_token) { nil }
         run_test!
