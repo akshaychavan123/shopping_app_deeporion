@@ -12,7 +12,13 @@ Rails.application.routes.draw do
 
       post '/auth/google_oauth2', to: 'sessions#google_auth'
 
-      resources :users, only: [:create]
+      resources :users, only: [:create] do
+        member do
+          patch :update_image
+          delete :delete_image
+        end
+      end
+
       post 'auth/login', to: 'authentication#login'
 
       resources :orders, only: [:create]
