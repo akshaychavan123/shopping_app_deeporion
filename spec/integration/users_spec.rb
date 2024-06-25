@@ -12,12 +12,13 @@ RSpec.describe 'api/v1/users', type: :request do
           name: { type: :string },
           email: { type: :string },
           password: { type: :string },
+          terms_and_condition: { type: :boolean },
         },
-        required: ['name', 'email', 'password']
+        required: ['name', 'email', 'password', 'terms_and_condition']
       }
 
       response '201', 'user created' do
-        let(:user) { { name: 'John', email: 'john@example.com', password: 'password' } }
+        let(:user) { { name: 'John', email: 'john@example.com', password: 'password', terms_and_condition: 'true' } }
         run_test!
       end
 

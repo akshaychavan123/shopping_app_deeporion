@@ -1,14 +1,14 @@
 class User < ApplicationRecord
   has_secure_password
 
-  validates :password, format: { with: /\A(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}\z/,
-  message: "must contain at least one uppercase letter, one lowercase letter, and one digit" }, if: :password_digest_changed?
+  # validates :password, format: { with: /\A(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}\z/,
+  # message: "must contain at least one uppercase letter, one lowercase letter, and one digit" }, if: :password_digest_changed?
   validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }, unless: -> { phone_number.present? }
   validates :password, presence: true, length: { minimum: 6 }, unless: -> { phone_number.present? }
   validates :phone_number, presence: true, uniqueness: true, if: -> { phone_number.present? }
   validates :full_phone_number, uniqueness: true, if: -> { full_phone_number.present? }
   validates :uid, uniqueness: { scope: :provider }, if: -> { provider.present? }
-
+  validates :terms_and_condition, acceptance: { accept: true }, unless: -> { phone_number.present? }
 
   has_one :wishlist, dependent: :destroy
   has_one :cart, dependent: :destroy

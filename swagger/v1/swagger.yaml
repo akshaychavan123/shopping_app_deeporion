@@ -933,10 +933,13 @@ paths:
                   type: string
                 password:
                   type: string
+                terms_and_condition:
+                  type: boolean
               required:
               - name
               - email
               - password
+              - terms_and_condition
   "/api/v1/users/{id}/update_image":
     patch:
       summary: Update user image
