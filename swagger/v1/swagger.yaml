@@ -10,6 +10,56 @@ components:
       scheme: bearer
       bearerFormat: JWT
 paths:
+  "/api/v1/passwords/forgot":
+    post:
+      summary: Forgot password
+      tags:
+      - Passwords
+      parameters: []
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Not Found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+              required:
+              - email
+  "/api/v1/passwords/reset":
+    post:
+      summary: Reset password
+      tags:
+      - Passwords
+      parameters: []
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Not Found
+        '422':
+          description: Unprocessable Entity
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                password:
+                  type: string
+                password_confirmation:
+                  type: string
+              required:
+              - token
+              - password
+              - password_confirmation
   "/api/v1/auth/login":
     post:
       summary: Logs in a user
@@ -365,6 +415,177 @@ paths:
           description: not found
         '401':
           description: unauthorized
+  "/api/v2/gift_card_categories":
+    get:
+      summary: list gift_card_categories
+      tags:
+      - GiftCardCategories
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: successful
+    post:
+      summary: create gift_card_category
+      tags:
+      - GiftCardCategories
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '201':
+          description: created
+        '422':
+          description: unprocessable entity
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                gift_card_category:
+                  type: object
+                  properties:
+                    title:
+                      type: string
+                  required:
+                  - title
+              required:
+              - gift_card_category
+  "/api/v2/gift_card_categories/{id}":
+    parameters:
+    - name: id
+      in: path
+      description: id
+      required: true
+      schema:
+        type: string
+    get:
+      summary: show gift_card_category
+      tags:
+      - GiftCardCategories
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: successful
+        '404':
+          description: not found
+    delete:
+      summary: delete gift_card_category
+      tags:
+      - GiftCardCategories
+      security:
+      - bearerAuth: []
+      responses:
+        '204':
+          description: no content
+        '404':
+          description: not found
+  "/api/v2/gift_cards":
+    get:
+      summary: list gift_cards
+      tags:
+      - GiftCards
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: successful
+    post:
+      summary: create gift_card
+      tags:
+      - GiftCards
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '201':
+          description: created
+        '422':
+          description: unprocessable entity
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                gift_card:
+                  type: object
+                  properties:
+                    image:
+                      type: string
+                    price:
+                      type: number
+                      format: decimal
+                    gift_card_category_id:
+                      type: integer
+                  required:
+                  - image
+                  - price
+                  - gift_card_category_id
+              required:
+              - gift_card
+  "/api/v2/gift_cards/{id}":
+    parameters:
+    - name: id
+      in: path
+      description: id
+      required: true
+      schema:
+        type: string
+    get:
+      summary: show gift_card
+      tags:
+      - GiftCards
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: successful
+        '404':
+          description: not found
+    patch:
+      summary: update gift_card
+      tags:
+      - GiftCards
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '200':
+          description: successful
+        '422':
+          description: unprocessable entity
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                gift_card:
+                  type: object
+                  properties:
+                    image:
+                      type: string
+                    price:
+                      type: number
+                      format: decimal
+                    gift_card_category_id:
+                      type: integer
+              required:
+              - gift_card
+    delete:
+      summary: delete gift_card
+      tags:
+      - GiftCards
+      security:
+      - bearerAuth: []
+      responses:
+        '204':
+          description: no content
+        '404':
+          description: not found
   "/api/v1/orders":
     post:
       summary: Creates an order
@@ -712,10 +933,52 @@ paths:
                   type: string
                 password:
                   type: string
+                terms_and_condition:
+                  type: boolean
               required:
               - name
               - email
               - password
+              - terms_and_condition
+  "/api/v1/users/{id}/update_image":
+    patch:
+      summary: Update user image
+      tags:
+      - Users
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '200':
+          description: Image updated
+        '401':
+          description: unauthorized
+        '422':
+          description: invalid params
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+              required:
+              - image
+  "/api/v1/users/{id}/delete_image":
+    delete:
+      summary: Delete user image
+      tags:
+      - Users
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Image deleted
+        '401':
+          description: unauthorized
+        '422':
+          description: unprocessable entity
   "/api/v1/wishlists/:wishlist_id/wishlist_items":
     post:
       summary: Creates a wishlist item

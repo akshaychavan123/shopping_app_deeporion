@@ -12,18 +12,29 @@ class Api::V1::UsersController < ApplicationController
     end
   end
 
+  def update_image
+    if @user.update_column(:image, params[:image])
+      render json: { status: 'ok', user: @user }, status: :ok
+    else
+      render json: { error: @user.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
+  def delete_image
+    if @user.update_column(:image, nil)
+      render json: { status: 'ok', user: @user }, status: :ok
+    else
+      render json: { error: @user.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
   
   private
 
   def find_user
-    @user = User.find_by_email!(params[:email])
-    rescue ActiveRecord::RecordNotFound
-      render json: { errors: 'User not found' }, status: :not_found
+    @user = @current_user
   end
 
   def user_params
-    params.permit(
-      :name, :email, :password
-    )
+    params.permit(:name, :email, :password, :terms_and_condition)
   end
 end

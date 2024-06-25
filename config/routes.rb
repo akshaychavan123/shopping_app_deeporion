@@ -4,13 +4,21 @@ Rails.application.routes.draw do
   
   namespace :api do
     namespace :v1 do
+      post 'passwords/forgot', to: 'passwords#forgot'
+      post 'passwords/reset', to: 'passwords#reset'
 
       post 'auth/create', to: 'authentication#create'
       post 'auth/verify', to: 'authentication#verify'
 
       post '/auth/google_oauth2', to: 'sessions#google_auth'
 
-      resources :users, only: [:create]
+      resources :users, only: [:create] do
+        member do
+          patch :update_image
+          delete :delete_image
+        end
+      end
+
       post 'auth/login', to: 'authentication#login'
 
       resources :orders, only: [:create]
@@ -38,6 +46,8 @@ Rails.application.routes.draw do
       resources :categories do
         resources :subcategories, only: [:index, :show, :create, :update, :destroy]
       end
+      resources :gift_card_categories, only: [:index, :show, :create, :destroy]
+      resources :gift_cards
     end
   end
 end
