@@ -6,7 +6,7 @@ info:
 components:
   securitySchemes:
     bearerAuth:
-      type: https
+      type: http
       scheme: bearer
       bearerFormat: JWT
 paths:
@@ -947,24 +947,59 @@ paths:
       - Users
       security:
       - bearerAuth: []
-      parameters: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
       responses:
         '200':
           description: Image updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      email:
+                        type: string
+                      terms_and_condition:
+                        type: boolean
+                  image_url:
+                    type: string
+                required:
+                - status
+                - user
+                - image_url
         '401':
-          description: unauthorized
+          description: Unauthorized
         '422':
-          description: invalid params
+          description: Invalid params
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                required:
+                - error
       requestBody:
         content:
-          application/json:
+          multipart/form-data:
             schema:
-              type: object
-              properties:
-                image:
-                  type: string
-              required:
-              - image
+              type: file
+        required: true
+        description: Image file to upload
   "/api/v1/users/{id}/delete_image":
     delete:
       summary: Delete user image
@@ -972,13 +1007,49 @@ paths:
       - Users
       security:
       - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
       responses:
         '200':
           description: Image deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      email:
+                        type: string
+                      terms_and_condition:
+                        type: boolean
+                required:
+                - status
+                - user
         '401':
-          description: unauthorized
+          description: Unauthorized
         '422':
-          description: unprocessable entity
+          description: Unprocessable entity
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                required:
+                - error
   "/api/v1/wishlists/:wishlist_id/wishlist_items":
     post:
       summary: Creates a wishlist item
@@ -1084,7 +1155,7 @@ paths:
         '401':
           description: unauthorized
 servers:
-- url: https://{defaultHost}
+- url: http://{defaultHost}
   variables:
     defaultHost:
       default: www.example.com

@@ -37,33 +37,28 @@ RSpec.describe 'api/v1/users', type: :request do
     patch 'Update user image' do
       tags 'Users'
       security [bearerAuth: []]
-      consumes 'application/json'
-      parameter name: :user, in: :body, schema: {
-        type: :object,
-        properties: {
-          image: { type: :string }
-        },
-        required: ['image']
-      }
+      consumes 'multipart/form-data'
+      parameter name: :id, in: :path, type: :integer
+      parameter name: :image, in: :formData, type: :file, required: true, description: 'Image file to upload'
 
       response '200', 'Image updated' do
         let(:id) { user.id }
-        let(:user) { { image: 'new_image_url' } }
+        let(:image) { fixture_file_upload('spec/fixtures/files/test_image.jpg', 'image/jpg') }
 
         run_test!
       end
 
-      response '401', 'unauthorized' do
+      response '401', 'Unauthorized' do
         let(:Authorization) { nil }
         let(:id) { user.id }
-        let(:user) { { image: 'new_image_url' } }
+        let(:image) { fixture_file_upload('spec/fixtures/files/test_image.jpg', 'image/jpg') }
 
         run_test!
       end
 
-      response '422', 'invalid params' do
+      response '422', 'Invalid params' do
         let(:id) { user.id }
-        let(:user) { { image: nil } }
+        let(:image) { nil }
 
         run_test!
       end
@@ -75,22 +70,22 @@ RSpec.describe 'api/v1/users', type: :request do
       tags 'Users'
       security [bearerAuth: []]
 
+      parameter name: :id, in: :path, type: :integer
+
       response '200', 'Image deleted' do
         let(:id) { user.id }
-
         run_test!
       end
 
-      response '401', 'unauthorized' do
+      response '401', 'Unauthorized' do
         let(:Authorization) { nil }
         let(:id) { user.id }
 
         run_test!
       end
 
-      response '422', 'unprocessable entity' do
+      response '422', 'Unprocessable entity' do
         let(:id) { 'invalid_id' }
-
         run_test!
       end
     end
