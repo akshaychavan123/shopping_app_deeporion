@@ -6,7 +6,7 @@ info:
 components:
   securitySchemes:
     bearerAuth:
-      type: http
+      type: https
       scheme: bearer
       bearerFormat: JWT
 paths:
@@ -1084,7 +1084,7 @@ paths:
         '401':
           description: unauthorized
 servers:
-- url: http://{defaultHost}
+- url: https://{defaultHost}
   variables:
     defaultHost:
       default: www.example.com

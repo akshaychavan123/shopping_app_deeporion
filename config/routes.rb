@@ -4,6 +4,10 @@ Rails.application.routes.draw do
   
   namespace :api do
     namespace :v1 do
+
+      root to: 'home#index'
+      resources :home, only: [:index]
+
       post 'passwords/forgot', to: 'passwords#forgot'
       post 'passwords/reset', to: 'passwords#reset'
 
