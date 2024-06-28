@@ -1,5 +1,7 @@
 require_relative "boot"
 require 'dotenv/load'
+require "active_storage/engine"
+require "active_storage/attached"
 
 
 require "rails/all"

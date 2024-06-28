@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
   mount Rswag::Ui::Engine => '/api-docs'
   mount Rswag::Api::Engine => '/api-docs'
+  match '*path', to: 'application#not_found', via: :all
+
   
   namespace :api do
     namespace :v1 do

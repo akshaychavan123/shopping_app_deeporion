@@ -1,5 +1,9 @@
+require "active_storage/engine"
+
 class ApplicationController < ActionController::Base
   include JsonWebToken
+  include ActiveStorage::Blob::Analyzable
+
   protect_from_forgery with: :null_session, if: -> { request.format.json? }
 
   def not_found
