@@ -1,10 +1,13 @@
 require_relative "boot"
-require 'dotenv/load'
+# require 'dotenv/load'
 require "active_storage/engine"
 require "active_storage/attached"
 
 
 require "rails/all"
+if %w[development test].include?(Rails.env)
+  require 'dotenv/load'
+end
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
