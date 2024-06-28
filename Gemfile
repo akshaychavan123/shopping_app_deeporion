@@ -81,3 +81,5 @@ gem 'omniauth-google-oauth2'
 gem 'omniauth-rails_csrf_protection'
 gem 'image_processing', '~> 1.2'
 gem 'mini_magick'
+gem 'sass-rails', '>= 5'
+
