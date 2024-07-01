@@ -6,7 +6,7 @@ info:
 components:
   securitySchemes:
     bearerAuth:
-      type: http
+      type: https
       scheme: bearer
       bearerFormat: JWT
 paths:
@@ -964,9 +964,12 @@ paths:
         content:
           multipart/form-data:
             schema:
-              type: file
-        required: true
-        description: Image file to upload
+              type: object
+              properties:
+                image:
+                  type: file
+              required:
+              - image
   "/api/v1/users/{id}/delete_image":
     delete:
       summary: Delete user image
@@ -1092,7 +1095,7 @@ paths:
         '401':
           description: unauthorized
 servers:
-- url: http://{defaultHost}
+- url: https://{defaultHost}
   variables:
     defaultHost:
       default: www.example.com
