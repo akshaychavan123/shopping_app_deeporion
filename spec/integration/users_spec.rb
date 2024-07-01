@@ -39,7 +39,12 @@ RSpec.describe 'api/v1/users', type: :request do
       security [bearerAuth: []]
       consumes 'multipart/form-data'
       parameter name: :id, in: :path, type: :integer
-      parameter name: :image, in: :formData, type: :file, required: true, description: 'Image file to upload'
+      parameter name: :image, in: :formData, schema: {type: :object,
+      properties: {
+        image: { type: :file }
+      },
+      required: ['image']}
+      # parameter name: :image, in: :formData, type: :file, required: true, description: 'Image file to upload'
 
       response '200', 'Image updated' do
         let(:id) { user.id }
