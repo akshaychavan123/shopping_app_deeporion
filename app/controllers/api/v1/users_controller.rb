@@ -15,6 +15,7 @@ class Api::V1::UsersController < ApplicationController
   def update_image
     @user = @current_user
 
+    @user.save(validate: false)
     if params[:image].present?
       @user.image.attach(params[:image])
 
@@ -27,6 +28,7 @@ class Api::V1::UsersController < ApplicationController
     else
       render json: { error: 'No image uploaded' }, status: :unprocessable_entity
     end
+    @user.save(validate: true)
   end
 
   def delete_image
