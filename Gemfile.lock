@@ -89,6 +89,8 @@ GEM
       faraday-net_http (>= 2.0, < 3.2)
     faraday-net_http (3.1.0)
       net-http
+    fast_jsonapi (1.5)
+      activesupport (>= 4.2)
     ffi (1.17.0-x86_64-linux-gnu)
     globalid (1.2.1)
       activesupport (>= 6.1)
@@ -302,6 +304,7 @@ DEPENDENCIES
   bootsnap
   byebug
   dotenv-rails
+  fast_jsonapi
   image_processing (~> 1.2)
   importmap-rails
   jbuilder

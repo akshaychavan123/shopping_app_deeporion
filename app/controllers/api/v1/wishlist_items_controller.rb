@@ -25,7 +25,8 @@ class Api::V1::WishlistItemsController < ApplicationController
     if wishlist_item
       cart = Cart.find_or_create_by(user: @wishlist.user)
       cart_item = cart.cart_items.find_or_initialize_by(product_item: wishlist_item.product_item)
-      cart_item.quantity = (cart_item.quantity || 0) + 1
+      cart_item.quantity = cart_item.new_record? ? 1 : cart_item.quantity
+      # cart_item.quantity = (cart_item.quantity || 0) + 1
       cart_item.save
       wishlist_item.destroy
       render json: cart, include: { cart_items: { include: :product_item } }
