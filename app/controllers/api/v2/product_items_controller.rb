@@ -4,44 +4,48 @@ class Api::V2::ProductItemsController < ApplicationController
 
   def index
     @product_items = ProductItem.all
-    render json: ProductItemSerializer.new(@product_items).serialized_json
+    render json: { data: ActiveModelSerializers::SerializableResource.new(@product_items, each_serializer: ProductItemSerializer)}
   end
 
 
   def show
-    @product_item = ProductItem.find(params[:id])
-    render json: ProductItemSerializer.new(@product_item).serialized_json
+    render json: { data: ActiveModelSerializers::SerializableResource.new(@product_item, each_serializer: ProductItemSerializer)}
   end
+
   
   def create
     @product = Product.find_by(id: params[:product_id])
     @product_item = @product.product_items.new(product_items_params)
   
     if params[:images].present?
-      params[:images].each do |image|
+      Array(params[:images]).each do |image|
         @product_item.images.attach(image)
       end
     end
   
     if @product_item.save
-      render json: @product_item, status: :created
+      render json: { data: ActiveModelSerializers::SerializableResource.new(@product_item, each_serializer: ProductItemSerializer)}
     else
-      render json: @product_item.errors, status: :unprocessable_entity
+      render json: { error: 'Some Issue occur' }, status: :unprocessable_entity
     end
   end
   
 
   def update
     if @product_item.update(product_items_params)
-      render json: @product_item
+      render json: { data: ActiveModelSerializers::SerializableResource.new(@product_item, each_serializer: ProductItemSerializer)}
     else
       render json: @product_item.errors, status: :unprocessable_entity
     end
   end
 
   def destroy
-    @product_item.destroy
-    head :no_content  
+    if @product_item.present?
+      @product_item.destroy
+      render json: { message: 'Succesfully deleted' }, status: :ok
+    else
+      render json: { message: 'Not found' }, status: :unprocessable_entity
+    end
   end
 
   private
@@ -51,7 +55,7 @@ class Api::V2::ProductItemsController < ApplicationController
   end  
 
   def set_product_items
-    @product_item = ProductItem.find(params[:id])
+    @product_item = ProductItem.find_by(id: params[:id])
   end
 
 end
