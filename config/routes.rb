@@ -45,8 +45,11 @@ Rails.application.routes.draw do
     end
 
     namespace :v2 do
+      resources :product_items, only: [:index, :show, :create, :update, :destroy] 
       resources :categories, only: [:index, :show, :create, :update, :destroy]
-      resources :products, only: [:index, :show, :create, :update, :destroy]
+      resources :products, only: [:index, :show, :create, :update, :destroy] do
+        # resources :product_items, only: [:index, :show, :create, :update, :destroy] 
+      end
       resources :categories do
         resources :subcategories, only: [:index, :show, :create, :update, :destroy]
       end

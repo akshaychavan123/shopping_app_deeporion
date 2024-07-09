@@ -7,6 +7,8 @@ class ProductItem < ApplicationRecord
   has_many :cart_items
   has_many :carts, through: :cart_items
   has_many :reviews
+  has_many_attached :images
+
 
   validates :name, presence: true
   validates :brand, presence: true
@@ -16,5 +18,5 @@ class ProductItem < ApplicationRecord
   # validates :size, presence: true, inclusion: { in: %w(XS S M L XL XXL), message: "%{value} is not a valid size" }
   validates :material, presence: true
   validates :care, presence: true
-  validates :product_code, presence: true, uniqueness: true
+  # validates :product_code, presence: true, uniqueness: true
 end
