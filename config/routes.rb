@@ -25,6 +25,12 @@ Rails.application.routes.draw do
 
       post 'auth/login', to: 'authentication#login'
 
+      get 'landing_page/categories_index', to: 'landing_page#categories_index'
+      get 'landing_page/sub_categories_index', to: 'landing_page#sub_categories_index'
+      get 'landing_page/products_index', to: 'landing_page#products_index'
+      get 'landing_page/product_items_index', to: 'landing_page#product_items_index'
+      get 'landing_page/gift_cards_index', to: 'landing_page#gift_cards_index'
+
       resources :orders, only: [:create]
 
       resources :wishlists, only: [] do

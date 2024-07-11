@@ -22,9 +22,10 @@ RSpec.describe 'api/v2/products', type: :request do
       parameter name: :product, in: :body, schema: {
         type: :object,
         properties: {
-          name: { type: :string }
+          name: { type: :string },
+          subcategory_id: { type: :integer }
         },
-        required: ['name']
+        required: ['name', 'subcategory_id']
       }
 
       response(201, 'created') do

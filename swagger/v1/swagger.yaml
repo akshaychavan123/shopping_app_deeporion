@@ -10,6 +10,66 @@ components:
       scheme: bearer
       bearerFormat: JWT
 paths:
+  "/api/v1/landing_page/categories_index":
+    get:
+      summary: list categories
+      tags:
+      - Landing Page
+      responses:
+        '200':
+          description: successful
+  "/api/v1/landing_page/sub_categories_index":
+    get:
+      summary: list subcategories
+      tags:
+      - Landing Page
+      parameters:
+      - name: id
+        in: query
+        description: Category ID
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: successful
+        '404':
+          description: not found
+  "/api/v1/landing_page/products_index":
+    get:
+      summary: list products
+      tags:
+      - Landing Page
+      parameters:
+      - name: id
+        in: query
+        description: Subcategory ID
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: successful
+  "/api/v1/landing_page/product_items_index":
+    get:
+      summary: list product items
+      tags:
+      - Landing Page
+      parameters:
+      - name: id
+        in: query
+        description: Product ID
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: successful
+  "/api/v1/landing_page/gift_cards_index":
+    get:
+      summary: list gift cards
+      tags:
+      - Landing Page
+      responses:
+        '200':
+          description: successful
   "/api/v1/passwords/forgot":
     post:
       summary: Forgot password
@@ -831,8 +891,11 @@ paths:
               properties:
                 name:
                   type: string
+                subcategory_id:
+                  type: integer
               required:
               - name
+              - subcategory_id
   "/api/v2/products/{id}":
     parameters:
     - name: id

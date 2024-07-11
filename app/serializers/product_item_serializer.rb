@@ -3,9 +3,7 @@ class ProductItemSerializer < ActiveModel::Serializer
 
   def images
     object.images.map do |image|
-      {
-        url: "#{base_url}#{Rails.application.routes.url_helpers.rails_blob_path(image, only_path: true)}"
-      }
+      "#{base_url}#{Rails.application.routes.url_helpers.rails_blob_path(image, only_path: true)}"
     end
   end
 
