@@ -63,4 +63,23 @@ RSpec.describe 'Api::V1::LandingPage', type: :request do
       end
     end
   end
+
+  path '/api/v1/landing_page/product_items_show/{id}' do
+    parameter name: :id, in: :path, type: :integer, description: 'ID of the product item'
+
+    get('retrieve product_item') do
+      tags 'Landing Page'
+      produces 'application/json'
+
+      response(200, 'successful') do
+        let(:id) { create(:product_item).id }
+        run_test!
+      end
+
+      response(404, 'not found') do
+        let(:id) { -1 }
+        run_test!
+      end
+    end
+  end
 end

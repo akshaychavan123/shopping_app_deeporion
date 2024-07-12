@@ -30,6 +30,7 @@ Rails.application.routes.draw do
       get 'landing_page/products_index', to: 'landing_page#products_index'
       get 'landing_page/product_items_index', to: 'landing_page#product_items_index'
       get 'landing_page/gift_cards_index', to: 'landing_page#gift_cards_index'
+      get '/landing_page/product_items_show/:id', to: 'landing_page#product_items_show'
 
       resources :orders, only: [:create]
 

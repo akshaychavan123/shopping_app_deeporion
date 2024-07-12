@@ -27,4 +27,11 @@ class Api::V1::LandingPageController < ApplicationController
     @gift_cards = GiftCard.all
     render json: { data: ActiveModelSerializers::SerializableResource.new(@gift_cards, each_serializer: GiftCardSerializer)}
   end
+
+  def product_items_show
+    @product_item = ProductItem.find_by(id: params[:id])
+    render json: { data: ActiveModelSerializers::SerializableResource.new(@product_item, each_serializer: ProductItemSerializer)}
+  end
+
+
 end
