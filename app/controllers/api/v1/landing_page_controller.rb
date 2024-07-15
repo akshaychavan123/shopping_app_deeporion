@@ -17,11 +17,9 @@ class Api::V1::LandingPageController < ApplicationController
   end
 
   def product_items_index
-    @product = Product.find(params[:id])
-    @product_items = @product.product_items
+    @product_items = ProductItem.includes(:product_item_variants).all
     render json: { data: ActiveModelSerializers::SerializableResource.new(@product_items, each_serializer: ProductItemSerializer)}
   end
-
 
   def gift_cards_index
     @gift_cards = GiftCard.all
@@ -30,7 +28,8 @@ class Api::V1::LandingPageController < ApplicationController
 
   def product_items_of_product
     @product = Product.find_by(id: params[:id])
-    @product_items = @product.product_items
+    # @product_items = @product.product_items
+    @product_items = @product.product_items.includes(:product_item_variants).all
     render json: { data: ActiveModelSerializers::SerializableResource.new(@product_items, each_serializer: ProductItemSerializer)}
   end
 
@@ -39,5 +38,40 @@ class Api::V1::LandingPageController < ApplicationController
     render json: { data: ActiveModelSerializers::SerializableResource.new(@product_item, each_serializer: ProductItemSerializer)}
   end
 
+  def product_items_filter
+    @product_items = ProductItem.includes(:product_item_variants).all
+    # @product_items = ProductItem.includes(product: :subcategory)
+
+    if params[:subcategory_id].present?   ##
+      # @product_items = @product_items.joins(product: :subcategory).where(products: { subcategory_id: params[:subcategory_id] })
+      @product_items = @product_items.where(products: { subcategory_id: params[:subcategory_id] })
+    end
+
+    if params[:product_id].present?
+      @product_items = @product_items.where(product_id: params[:product_id])
+    end
+
+    @product_items = @product_items.where(brand: params[:brand]) if params[:brand].present?
+
+    @product_items = @product_items.where(size: params[:size]) if params[:size].present?
+
+    @product_items = @product_items.where(color: params[:color]) if params[:color].present?
+
+    if params[:min_price].present? && params[:max_price].present?
+      @product_items = @product_items.where(price: params[:min_price]..params[:max_price])
+    elsif params[:min_price].present?
+      @product_items = @product_items.where('price >= ?', params[:min_price])
+    elsif params[:max_price].present?
+      @product_items = @product_items.where('price <= ?', params[:max_price])
+    end
+
+    # Search by name or description
+    # if params[:search].present?
+    #   search_term = "%#{params[:search]}%"
+    #   @product_items = @product_items.where('name LIKE ? OR description LIKE ?', search_term, search_term)
+    # end
+
+    render json: { data: ActiveModelSerializers::SerializableResource.new(@product_items, each_serializer: ProductItemSerializer) }, status: :ok
+  end
 
 end

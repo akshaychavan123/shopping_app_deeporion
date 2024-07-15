@@ -104,6 +104,59 @@ paths:
           description: successful
         '404':
           description: not found
+  "/api/v1/landing_page/product_items_filter":
+    get:
+      summary: list and filter product items
+      tags:
+      - Landing Page
+      parameters:
+      - name: subcategory_id
+        in: query
+        description: ID of the subcategory
+        schema:
+          type: integer
+      - name: product_id
+        in: query
+        description: ID of the product
+        schema:
+          type: integer
+      - name: brand
+        in: query
+        description: Brand of the product item
+        schema:
+          type: string
+      - name: size
+        in: query
+        description: Size of the product item
+        schema:
+          type: string
+      - name: color
+        in: query
+        description: Color of the product item
+        schema:
+          type: string
+      - name: min_price
+        in: query
+        format: float
+        description: Minimum price of the product item
+        schema:
+          type: number
+      - name: max_price
+        in: query
+        format: float
+        description: Maximum price of the product item
+        schema:
+          type: number
+      - name: search
+        in: query
+        description: Search term for the product item name or description
+        schema:
+          type: string
+      responses:
+        '200':
+          description: successful
+        '404':
+          description: not found
   "/api/v1/passwords/forgot":
     post:
       summary: Forgot password
@@ -254,6 +307,48 @@ paths:
           description: no content
         '404':
           description: not found
+  "/api/v2/product_item_variants":
+    post:
+      summary: create product_item_variant
+      tags:
+      - Product Item Variants
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '201':
+          description: created
+        '422':
+          description: unprocessable entity
+        '401':
+          description: unauthorized
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                product_item_id:
+                  type: integer
+                color:
+                  type: string
+                size:
+                  type: string
+                price:
+                  type: number
+                quantity:
+                  type: integer
+                photos:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+              required:
+              - product_item_id
+              - color
+              - size
+              - price
+              - quantity
   "/api/v2/product_items":
     get:
       summary: list product_items
@@ -286,21 +381,11 @@ paths:
               properties:
                 product_id:
                   type: integer
-                images:
-                  type: array
-                  items:
-                    type: file
                 name:
                   type: string
                 brand:
                   type: string
-                price:
-                  type: number
-                discounted_price:
-                  type: number
                 description:
-                  type: string
-                size:
                   type: string
                 material:
                   type: string
@@ -309,10 +394,8 @@ paths:
                 product_code:
                   type: string
               required:
-              - images
               - name
               - brand
-              - price
               - description
               - product_code
               - product_id
@@ -355,21 +438,11 @@ paths:
             schema:
               type: object
               properties:
-                images:
-                  type: array
-                  items:
-                    type: file
                 name:
                   type: string
                 brand:
                   type: string
-                price:
-                  type: number
-                discounted_price:
-                  type: number
                 description:
-                  type: string
-                size:
                   type: string
                 material:
                   type: string

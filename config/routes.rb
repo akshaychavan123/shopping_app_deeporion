@@ -32,6 +32,7 @@ Rails.application.routes.draw do
       get 'landing_page/gift_cards_index', to: 'landing_page#gift_cards_index'
       get '/landing_page/product_items_of_product/:id', to: 'landing_page#product_items_of_product'
       get '/landing_page/product_items_show/:id', to: 'landing_page#product_items_show'
+      get '/landing_page/product_items_filter', to: 'landing_page#product_items_filter'
 
       resources :orders, only: [:create]
 
@@ -53,6 +54,7 @@ Rails.application.routes.draw do
     end
 
     namespace :v2 do
+      resources :product_item_variants, only: [:create]
       resources :product_items, only: [:index, :show, :create, :update, :destroy] 
       resources :categories, only: [:index, :show, :create, :update, :destroy]
       resources :products, only: [:index, :show, :create, :update, :destroy] do

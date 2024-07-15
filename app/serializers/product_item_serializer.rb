@@ -1,15 +1,16 @@
 class ProductItemSerializer < ActiveModel::Serializer
-  attributes :id, :name, :brand, :price, :discounted_price, :description, :size, :material, :care, :product_code, :product_id, :images
+  attributes :id, :name, :brand, :discounted_price, :description, :material, :care, :product_code, :product_id
+  has_many :product_item_variants
 
-  def images
-    object.images.map do |image|
-      "#{base_url}#{Rails.application.routes.url_helpers.rails_blob_path(image, only_path: true)}"
-    end
-  end
+  # def images
+  #   object.images.map do |image|
+  #     "#{base_url}#{Rails.application.routes.url_helpers.rails_blob_path(image, only_path: true)}"
+  #   end
+  # end
 
-  private
+  # private
 
-  def base_url
-    ENV['BASE_URL'] || 'http://localhost:3000'
-  end
+  # def base_url
+  #   ENV['BASE_URL'] || 'http://localhost:3000'
+  # end
 end

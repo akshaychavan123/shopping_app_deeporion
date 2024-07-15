@@ -17,12 +17,6 @@ class Api::V2::ProductItemsController < ApplicationController
     @product = Product.find_by(id: params[:product_id])
     @product_item = @product.product_items.new(product_items_params)
   
-    if params[:images].present?
-      Array(params[:images]).each do |image|
-        @product_item.images.attach(image)
-      end
-    end
-  
     if @product_item.save
       render json: { data: ActiveModelSerializers::SerializableResource.new(@product_item, each_serializer: ProductItemSerializer)}
     else
@@ -51,7 +45,7 @@ class Api::V2::ProductItemsController < ApplicationController
   private
 
   def product_items_params
-    params.permit(:name, :brand, :price, :discounted_price, :description, :size, :material, :care, :product_code, images: [])
+    params.permit(:name, :brand, :description, :material, :care, :product_code)
   end  
 
   def set_product_items

@@ -101,4 +101,28 @@ RSpec.describe 'Api::V1::LandingPage', type: :request do
       end
     end
   end
+
+  path '/api/v1/landing_page/product_items_filter' do
+    get('list and filter product items') do
+      tags 'Landing Page'
+      produces 'application/json'
+      
+      parameter name: :subcategory_id, in: :query, type: :integer, description: 'ID of the subcategory'
+      parameter name: :product_id, in: :query, type: :integer, description: 'ID of the product'
+      parameter name: :brand, in: :query, type: :string, description: 'Brand of the product item'
+      parameter name: :size, in: :query, type: :string, description: 'Size of the product item'
+      parameter name: :color, in: :query, type: :string, description: 'Color of the product item'
+      parameter name: :min_price, in: :query, type: :number, format: :float, description: 'Minimum price of the product item'
+      parameter name: :max_price, in: :query, type: :number, format: :float, description: 'Maximum price of the product item'
+      parameter name: :search, in: :query, type: :string, description: 'Search term for the product item name or description'
+
+      response(200, 'successful') do
+        run_test!
+      end
+
+      response(404, 'not found') do
+        run_test!
+      end
+    end
+  end
 end
