@@ -46,7 +46,6 @@ RSpec.describe 'Api::V1::LandingPage', type: :request do
     get('list product items') do
       tags 'Landing Page'
       produces 'application/json'
-      parameter name: :id, in: :query, type: :integer, description: 'Product ID'
       response(200, 'successful') do
         run_test!
       end
