@@ -1,5 +1,6 @@
 class ProductItemVariant < ApplicationRecord
   belongs_to :product_item
+  has_many :wishlist_items
   has_many_attached :photos
 
   validates :color, presence: true, length: { maximum: 255 }

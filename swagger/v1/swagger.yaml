@@ -1288,19 +1288,14 @@ paths:
           description: Unauthorized
         '422':
           description: Unprocessable entity
-  "/api/v1/wishlists/:wishlist_id/wishlist_items":
+  "/api/v1/wishlists/{wishlist_id}/wishlist_items":
     post:
       summary: Creates a wishlist item
       tags:
       - Wishlist Items
       security:
       - bearerAuth: []
-      parameters:
-      - name: wishlist_id
-        in: path
-        required: true
-        schema:
-          type: integer
+      parameters: []
       responses:
         '201':
           description: wishlist item created
@@ -1314,10 +1309,11 @@ paths:
             schema:
               type: object
               properties:
-                product_item_id:
+                product_item_variant_id:
                   type: integer
+                  description: ID of the product item variant
               required:
-              - product_item_id
+              - product_item_variant_id
   "/api/v1/wishlists/:wishlist_id/wishlist_items/{id}":
     delete:
       summary: Deletes a wishlist item
@@ -1371,14 +1367,7 @@ paths:
                   type: integer
               required:
               - product_item_id
-  "/api/v1/wishlists/{user_id}":
-    parameters:
-    - name: user_id
-      in: path
-      description: User ID
-      required: true
-      schema:
-        type: integer
+  "/api/v1/wishlists/show_wishlistitems":
     get:
       summary: show wishlist
       tags:

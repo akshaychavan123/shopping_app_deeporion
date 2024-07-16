@@ -37,7 +37,7 @@ Rails.application.routes.draw do
       resources :orders, only: [:create]
 
       resources :wishlists, only: [] do
-        get ':user_id', to: 'wishlists#show', on: :collection
+        get 'show_wishlistitems', to: 'wishlists#show_wishlistitems', on: :collection
         resources :wishlist_items, only: [:create, :destroy] do
           post 'add_to_cart', on: :collection
         end

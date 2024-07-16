@@ -1,10 +1,12 @@
 class ProductItemVariantSerializer < ActiveModel::Serializer
-  attributes :id, :color, :size, :price, :quantity, :photos
-	has_many :photos
+  include Rails.application.routes.url_helpers
+  attributes :id, :color, :size, :price, :photos, :product_item
+  has_many :photos
+  belongs_to :product_item
 
-	def photos
-		object.photos.map do |photo|
-		  "#{base_url}#{Rails.application.routes.url_helpers.rails_blob_path(photo, only_path: true)}"
+  def photos
+    object.photos.map do |photo|
+      "#{base_url}#{Rails.application.routes.url_helpers.rails_blob_path(photo, only_path: true)}"
     end
   end
 

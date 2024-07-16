@@ -4,8 +4,8 @@ class Api::V1::WishlistItemsController < ApplicationController
 
   def create
     @wishlist = Wishlist.find_by(user: @current_user)
-    @product_item = ProductItem.find(params[:product_item_id])
-    @wishlist_item = @wishlist.wishlist_items.build(product_item: @product_item)
+    @product_item_variant = ProductItemVariant.find(params[:product_item_variant_id])
+    @wishlist_item = @wishlist.wishlist_items.build(product_item_variant: @product_item_variant)
 
     if @wishlist_item.save
       render json: @wishlist_item, status: :created
