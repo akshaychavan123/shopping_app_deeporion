@@ -1,5 +1,6 @@
 class Api::V2::ProductItemVariantsController < ApplicationController
   before_action :authorize_request
+  before_action :check_user
 
   def create
     @product_item_variant = ProductItemVariant.new(product_item_variant_params)
@@ -19,5 +20,11 @@ class Api::V2::ProductItemVariantsController < ApplicationController
 
   def product_item_variant_params
     params.permit(:product_item_id, :color, :size, :price, :quantity, photos: [])
+  end
+
+  def check_user
+    unless @current_user.type == "Admin"
+      render json: { errors: ['Unauthorized access'] }, status: :forbidden
+    end
   end
 end

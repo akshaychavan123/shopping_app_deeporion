@@ -1,5 +1,6 @@
 class Api::V2::GiftCardsController < ApplicationController
   before_action :authorize_request
+  before_action :check_user
   before_action :set_gift_card, only: [:show, :update, :destroy]
 
   def index
@@ -55,5 +56,11 @@ class Api::V2::GiftCardsController < ApplicationController
 
   def gift_card_params
     params.permit(:gift_card_category_id, :price, images: [])
+  end
+
+  def check_user
+    unless @current_user.type == "Admin"
+      render json: { errors: ['Unauthorized access'] }, status: :forbidden
+    end
   end
 end

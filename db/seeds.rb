@@ -5,3 +5,11 @@
 #
 #   movies = Movie.create([{ name: "Star Wars" }, { name: "Lord of the Rings" }])
 #   Character.create(name: "Luke", movie: movies.first)
+# db/seeds.rb
+admin = User.find_or_create_by(email: "admin@yopmail.com") do |u|
+    u.name = "admin"
+    u.password = "Test@123"
+    u.type = "Admin"
+    u.terms_and_condition = true
+  end
+  

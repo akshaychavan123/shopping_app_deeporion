@@ -2,6 +2,7 @@ class Api::V2::SubcategoriesController < ApplicationController
   before_action :set_category
   before_action :set_subcategory, only: [:show, :update, :destroy]
   before_action :authorize_request
+  before_action :check_user
 
   def index
     @subcategories = @category.subcategories
@@ -46,5 +47,11 @@ class Api::V2::SubcategoriesController < ApplicationController
 
   def subcategory_params
     params.require(:subcategory).permit(:name)
+  end
+
+  def check_user
+    unless @current_user.type == "Admin"
+      render json: { errors: ['Unauthorized access'] }, status: :forbidden
+    end
   end
 end

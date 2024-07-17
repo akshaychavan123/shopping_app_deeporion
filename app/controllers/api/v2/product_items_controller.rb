@@ -1,5 +1,6 @@
 class Api::V2::ProductItemsController < ApplicationController
   before_action :authorize_request
+  before_action :check_user
   before_action :set_product_items, only: [:show, :update, :destroy]
 
   def index
@@ -52,4 +53,9 @@ class Api::V2::ProductItemsController < ApplicationController
     @product_item = ProductItem.find_by(id: params[:id])
   end
 
+  def check_user
+    unless @current_user.type == "Admin"
+      render json: { errors: ['Unauthorized access'] }, status: :forbidden
+    end
+  end
 end
