@@ -7,7 +7,7 @@ RSpec.describe 'Api::V2::ProductItems', type: :request do
   path '/api/v2/product_items' do
     get('list product_items') do
       tags 'Product Items'
-      security [bearerAuth: []]
+      security [bearerAuth2: []]
       produces 'application/json'
 
       response(200, 'successful') do
@@ -17,7 +17,7 @@ RSpec.describe 'Api::V2::ProductItems', type: :request do
 
     post('create product_item') do
       tags 'Product Items'
-      security [bearerAuth: []]
+      security [bearerAuth2: []]
       consumes 'multipart/form-data'
       parameter name: :product_item, in: :formData, schema: {
         type: :object,
@@ -56,7 +56,7 @@ RSpec.describe 'Api::V2::ProductItems', type: :request do
 
     get('retrieve product_item') do
       tags 'Product Items'
-      security [bearerAuth: []]
+      security [bearerAuth2: []]
       produces 'application/json'
 
       response(200, 'successful') do
@@ -72,7 +72,7 @@ RSpec.describe 'Api::V2::ProductItems', type: :request do
 
     patch('update product_item') do
       tags 'Product Items'
-      security [bearerAuth: []]
+      security [bearerAuth2: []]
       consumes 'multipart/form-data'
       parameter name: :product_item, in: :formData, schema: {
         type: :object,
@@ -109,7 +109,7 @@ RSpec.describe 'Api::V2::ProductItems', type: :request do
 
     delete('delete product_item') do
       tags 'Product Items'
-      security [bearerAuth: []]
+      security [bearerAuth2: []]
 
       response(204, 'no content') do
         let(:id) { create(:product_item).id }

@@ -7,7 +7,7 @@ RSpec.describe 'Api::V2::ProductItemVariants', type: :request do
   path '/api/v2/product_item_variants' do
     post('create product_item_variant') do
       tags 'Product Item Variants'
-      security [bearerAuth: []]
+      security [bearerAuth2: []]
       consumes 'multipart/form-data'
       parameter name: :product_item_variant, in: :formData, schema: {
         type: :object,

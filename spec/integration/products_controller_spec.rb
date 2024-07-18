@@ -7,7 +7,7 @@ RSpec.describe 'api/v2/products', type: :request do
   path '/api/v2/products' do
     get('list products') do
       tags 'Products'
-      security [bearerAuth: []]
+      security [bearerAuth2: []]
       produces 'application/json'
 
       response(200, 'successful') do
@@ -17,7 +17,7 @@ RSpec.describe 'api/v2/products', type: :request do
 
     post('create product') do
       tags 'Products'
-      security [bearerAuth: []]
+      security [bearerAuth2: []]
       consumes 'application/json'
       parameter name: :product, in: :body, schema: {
         type: :object,
@@ -51,7 +51,7 @@ RSpec.describe 'api/v2/products', type: :request do
 
     get('show product') do
       tags 'Products'
-      security [bearerAuth: []]
+      security [bearerAuth2: []]
       produces 'application/json'
 
       response(200, 'successful') do
@@ -73,7 +73,7 @@ RSpec.describe 'api/v2/products', type: :request do
 
     patch('update product') do
       tags 'Products'
-      security [bearerAuth: []]
+      security [bearerAuth2: []]
       consumes 'application/json'
       parameter name: :product, in: :body, schema: {
         type: :object,
@@ -105,7 +105,7 @@ RSpec.describe 'api/v2/products', type: :request do
 
     delete('delete product') do
       tags 'Products'
-      security [bearerAuth: []]
+      security [bearerAuth2: []]
 
       response(204, 'no content') do
         let(:id) { create(:product).id }

@@ -6,7 +6,7 @@ RSpec.describe 'Api::V2::GiftCards', type: :request do
     get('list gift_cards') do
       tags 'GiftCards'
       produces 'application/json'
-      security [ bearerAuth: [] ]
+      security [ bearerAuth2: [] ]
 
       response(200, 'successful') do
         run_test!
@@ -16,7 +16,7 @@ RSpec.describe 'Api::V2::GiftCards', type: :request do
     post('create gift_card') do
       tags 'GiftCards'
       consumes 'multipart/form-data'
-      security [ bearerAuth: [] ]
+      security [ bearerAuth2: [] ]
       
       parameter name: :gift_card, in: :formData, schema: {
         type: :object,
@@ -45,7 +45,7 @@ RSpec.describe 'Api::V2::GiftCards', type: :request do
     get('show gift_card') do
       tags 'GiftCards'
       produces 'application/json'
-      security [ bearerAuth: [] ]
+      security [ bearerAuth2: [] ]
 
       response(200, 'successful') do
         let(:id) { GiftCard.create(image: 'image_url', price: 50.0, gift_card_category_id: 1).id }
@@ -61,7 +61,7 @@ RSpec.describe 'Api::V2::GiftCards', type: :request do
     patch('update gift_card') do
       tags 'GiftCards'
       consumes 'multipart/form-data'
-      security [ bearerAuth: [] ]
+      security [ bearerAuth2: [] ]
     
       parameter name: :gift_card, in: :formData, schema: {
         type: :object,
@@ -88,7 +88,7 @@ RSpec.describe 'Api::V2::GiftCards', type: :request do
 
     delete('delete gift_card') do
       tags 'GiftCards'
-      security [ bearerAuth: [] ]
+      security [ bearerAuth2: [] ]
 
       response(204, 'no content') do
         let(:id) { GiftCard.create(image: 'image_url', price: 50.0, gift_card_category_id: 1).id }

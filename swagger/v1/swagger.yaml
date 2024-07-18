@@ -9,6 +9,10 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
+    bearerAuth2:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
 paths:
   "/api/v1/landing_page/categories_index":
     get:
@@ -207,7 +211,7 @@ paths:
       tags:
       - GiftCards
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       responses:
         '200':
           description: successful
@@ -216,7 +220,7 @@ paths:
       tags:
       - GiftCards
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       parameters: []
       responses:
         '201':
@@ -255,7 +259,7 @@ paths:
       tags:
       - GiftCards
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       responses:
         '200':
           description: successful
@@ -266,7 +270,7 @@ paths:
       tags:
       - GiftCards
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       parameters: []
       responses:
         '200':
@@ -295,7 +299,7 @@ paths:
       tags:
       - GiftCards
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       responses:
         '204':
           description: no content
@@ -307,7 +311,7 @@ paths:
       tags:
       - Product Item Variants
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       parameters: []
       responses:
         '201':
@@ -349,7 +353,7 @@ paths:
       tags:
       - Product Items
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       responses:
         '200':
           description: successful
@@ -358,7 +362,7 @@ paths:
       tags:
       - Product Items
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       parameters: []
       responses:
         '201':
@@ -406,7 +410,7 @@ paths:
       tags:
       - Product Items
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       responses:
         '200':
           description: successful
@@ -417,7 +421,7 @@ paths:
       tags:
       - Product Items
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       parameters: []
       responses:
         '200':
@@ -451,7 +455,7 @@ paths:
       tags:
       - Product Items
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       responses:
         '204':
           description: no content
@@ -728,7 +732,7 @@ paths:
       tags:
       - Categories
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       responses:
         '200':
           description: successful
@@ -737,7 +741,7 @@ paths:
       tags:
       - Categories
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       parameters: []
       responses:
         '201':
@@ -769,7 +773,7 @@ paths:
       tags:
       - Categories
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       responses:
         '200':
           description: successful
@@ -782,7 +786,7 @@ paths:
       tags:
       - Categories
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       parameters: []
       responses:
         '200':
@@ -806,7 +810,7 @@ paths:
       tags:
       - Categories
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       responses:
         '204':
           description: no content
@@ -820,7 +824,7 @@ paths:
       tags:
       - GiftCardCategories
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       responses:
         '200':
           description: successful
@@ -829,7 +833,7 @@ paths:
       tags:
       - GiftCardCategories
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       parameters: []
       responses:
         '201':
@@ -864,7 +868,7 @@ paths:
       tags:
       - GiftCardCategories
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       responses:
         '200':
           description: successful
@@ -875,7 +879,7 @@ paths:
       tags:
       - GiftCardCategories
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       responses:
         '204':
           description: no content
@@ -966,7 +970,7 @@ paths:
       tags:
       - Products
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       responses:
         '200':
           description: successful
@@ -975,7 +979,7 @@ paths:
       tags:
       - Products
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       parameters: []
       responses:
         '201':
@@ -1010,7 +1014,7 @@ paths:
       tags:
       - Products
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       responses:
         '200':
           description: successful
@@ -1023,7 +1027,7 @@ paths:
       tags:
       - Products
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       parameters: []
       responses:
         '200':
@@ -1047,7 +1051,7 @@ paths:
       tags:
       - Products
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       responses:
         '204':
           description: no content
@@ -1116,7 +1120,7 @@ paths:
       tags:
       - Subcategories
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       responses:
         '200':
           description: successful
@@ -1125,7 +1129,7 @@ paths:
       tags:
       - Subcategories
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       parameters: []
       responses:
         '201':
@@ -1163,7 +1167,7 @@ paths:
       tags:
       - Subcategories
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       responses:
         '200':
           description: successful
@@ -1176,7 +1180,7 @@ paths:
       tags:
       - Subcategories
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       parameters: []
       responses:
         '200':
@@ -1200,7 +1204,7 @@ paths:
       tags:
       - Subcategories
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       responses:
         '204':
           description: no content
