@@ -629,13 +629,10 @@ paths:
             schema:
               type: object
               properties:
-                product_item_id:
-                  type: integer
-                quantity:
+                product_item_variant_id:
                   type: integer
               required:
-              - product_item_id
-              - quantity
+              - product_item_variant_id
   "/api/v1/cart/cart_items/remove_or_move_to_wishlist":
     delete:
       summary: Removes or moves an item to wishlist
@@ -659,7 +656,7 @@ paths:
             schema:
               type: object
               properties:
-                product_item_id:
+                product_item_variant_id:
                   type: integer
                 action_type:
                   type: string
@@ -667,7 +664,7 @@ paths:
                   - remove
                   - wishlist
               required:
-              - product_item_id
+              - product_item_variant_id
               - action_type
   "/api/v1/cart":
     get:
@@ -1348,12 +1345,7 @@ paths:
       - Wishlist Items
       security:
       - bearerAuth: []
-      parameters:
-      - name: wishlist_id
-        in: path
-        required: true
-        schema:
-          type: integer
+      parameters: []
       responses:
         '200':
           description: item added to cart
@@ -1367,10 +1359,10 @@ paths:
             schema:
               type: object
               properties:
-                product_item_id:
+                product_item_variant_id:
                   type: integer
               required:
-              - product_item_id
+              - product_item_variant_id
   "/api/v1/wishlists/show_wishlistitems":
     get:
       summary: show wishlist

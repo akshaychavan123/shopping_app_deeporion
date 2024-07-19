@@ -2,7 +2,7 @@ class ProductItemVariantSerializer < ActiveModel::Serializer
   include Rails.application.routes.url_helpers
   attributes :id, :color, :size, :price, :photos, :product_item
   has_many :photos
-  belongs_to :product_item
+  belongs_to :product_item, serializer: ProductItemSerializer
 
   def photos
     object.photos.map do |photo|

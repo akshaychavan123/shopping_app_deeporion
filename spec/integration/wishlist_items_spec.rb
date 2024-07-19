@@ -74,20 +74,19 @@ RSpec.describe 'Api::V1::WishlistItems', type: :request do
       tags 'Wishlist Items'
       security [bearerAuth: []]
       consumes 'application/json'
-      parameter name: :wishlist_id, in: :path, type: :integer
       parameter name: :wishlist_item, in: :body, schema: {
         type: :object,
         properties: {
-          product_item_id: { type: :integer }
+          product_item_variant_id: { type: :integer }
         },
-        required: ['product_item_id']
+        required: ['product_item_variant_id']
       }
 
       response '200', 'item added to cart' do
         let(:wishlist_id) { create(:wishlist, user: user).id }
         let(:wishlist_item) { create(:wishlist_item, wishlist: Wishlist.find(wishlist_id)) }
-        let(:product_item_id) { wishlist_item.product_item.id }
-        let(:wishlist_item_params) { { product_item_id: product_item_id } }
+        let(:product_item_variant_id) { wishlist_item.product_item_variant_id.id }
+        let(:wishlist_item_params) { { product_item_variant_id: product_item_variant_id } }
 
         run_test!
       end
@@ -95,16 +94,16 @@ RSpec.describe 'Api::V1::WishlistItems', type: :request do
       response '401', 'unauthorized' do
         let(:Authorization) { nil }
         let(:wishlist_id) { create(:wishlist).id }
-        let(:product_item_id) { create(:product_item).id }
-        let(:wishlist_item_params) { { product_item_id: product_item_id } }
+        let(:product_item_variant_id) { create(:product_item_variant_id).id }
+        let(:wishlist_item_params) { { product_item_variant_id: product_item_variant_id } }
 
         run_test!
       end
 
       response '404', 'item not found in wishlist' do
         let(:wishlist_id) { create(:wishlist, user: user).id }
-        let(:product_item_id) { 'invalid' }
-        let(:wishlist_item_params) { { product_item_id: product_item_id } }
+        let(:product_item_variant_id) { 'invalid' }
+        let(:wishlist_item_params) { { product_item_variant_id: product_item_variant_id } }
 
         run_test!
       end
