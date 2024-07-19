@@ -1,5 +1,6 @@
 class Api::V2::CategoriesController < ApplicationController
   before_action :authorize_request
+  before_action :check_user
   before_action :set_category, only: [:show, :update, :destroy]
 
   def index
@@ -43,4 +44,9 @@ class Api::V2::CategoriesController < ApplicationController
     params.require(:category).permit(:name)
   end
 
+  def check_user
+    unless @current_user.type == "Admin"
+      render json: { errors: ['Unauthorized access'] }, status: :forbidden
+    end
+  end
 end

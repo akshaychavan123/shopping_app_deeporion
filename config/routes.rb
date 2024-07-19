@@ -25,10 +25,19 @@ Rails.application.routes.draw do
 
       post 'auth/login', to: 'authentication#login'
 
+      get 'landing_page/categories_index', to: 'landing_page#categories_index'
+      get 'landing_page/sub_categories_index', to: 'landing_page#sub_categories_index'
+      get 'landing_page/products_index', to: 'landing_page#products_index'
+      get 'landing_page/product_items_index', to: 'landing_page#product_items_index'
+      get 'landing_page/gift_cards_index', to: 'landing_page#gift_cards_index'
+      get '/landing_page/product_items_of_product/:id', to: 'landing_page#product_items_of_product'
+      get '/landing_page/product_items_show/:id', to: 'landing_page#product_items_show'
+      get '/landing_page/product_items_filter', to: 'landing_page#product_items_filter'
+
       resources :orders, only: [:create]
 
       resources :wishlists, only: [] do
-        get ':user_id', to: 'wishlists#show', on: :collection
+        get 'show_wishlistitems', to: 'wishlists#show_wishlistitems', on: :collection
         resources :wishlist_items, only: [:create, :destroy] do
           post 'add_to_cart', on: :collection
         end
@@ -45,6 +54,7 @@ Rails.application.routes.draw do
     end
 
     namespace :v2 do
+      resources :product_item_variants, only: [:create]
       resources :product_items, only: [:index, :show, :create, :update, :destroy] 
       resources :categories, only: [:index, :show, :create, :update, :destroy]
       resources :products, only: [:index, :show, :create, :update, :destroy] do

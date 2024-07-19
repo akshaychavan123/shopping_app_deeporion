@@ -9,7 +9,152 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
+    bearerAuth2:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
 paths:
+  "/api/v1/landing_page/categories_index":
+    get:
+      summary: list categories
+      tags:
+      - Landing Page
+      responses:
+        '200':
+          description: successful
+  "/api/v1/landing_page/sub_categories_index":
+    get:
+      summary: list subcategories
+      tags:
+      - Landing Page
+      parameters:
+      - name: id
+        in: query
+        description: Category ID
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: successful
+        '404':
+          description: not found
+  "/api/v1/landing_page/products_index":
+    get:
+      summary: list products
+      tags:
+      - Landing Page
+      parameters:
+      - name: id
+        in: query
+        description: Subcategory ID
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: successful
+  "/api/v1/landing_page/product_items_index":
+    get:
+      summary: list product items
+      tags:
+      - Landing Page
+      responses:
+        '200':
+          description: successful
+  "/api/v1/landing_page/gift_cards_index":
+    get:
+      summary: list gift cards
+      tags:
+      - Landing Page
+      responses:
+        '200':
+          description: successful
+  "/api/v1/landing_page/product_items_of_product/{id}":
+    parameters:
+    - name: id
+      in: path
+      description: ID of the product item
+      required: true
+      schema:
+        type: integer
+    get:
+      summary: retrieve product_item
+      tags:
+      - Landing Page
+      responses:
+        '200':
+          description: successful
+        '404':
+          description: not found
+  "/api/v1/landing_page/product_items_show/{id}":
+    parameters:
+    - name: id
+      in: path
+      description: ID of the product item
+      required: true
+      schema:
+        type: integer
+    get:
+      summary: retrieve product_item
+      tags:
+      - Landing Page
+      responses:
+        '200':
+          description: successful
+        '404':
+          description: not found
+  "/api/v1/landing_page/product_items_filter":
+    get:
+      summary: list and filter product items
+      tags:
+      - Landing Page
+      parameters:
+      - name: subcategory_id
+        in: query
+        description: ID of the subcategory
+        schema:
+          type: integer
+      - name: product_id
+        in: query
+        description: ID of the product
+        schema:
+          type: integer
+      - name: brand
+        in: query
+        description: Brand of the product item
+        schema:
+          type: string
+      - name: size
+        in: query
+        description: Size of the product item
+        schema:
+          type: string
+      - name: color
+        in: query
+        description: Color of the product item
+        schema:
+          type: string
+      - name: min_price
+        in: query
+        format: float
+        description: Minimum price of the product item
+        schema:
+          type: number
+      - name: max_price
+        in: query
+        format: float
+        description: Maximum price of the product item
+        schema:
+          type: number
+      - name: search
+        in: query
+        description: Search term for the product item name or description
+        schema:
+          type: string
+      responses:
+        '200':
+          description: successful
+        '404':
+          description: not found
   "/api/v1/passwords/forgot":
     post:
       summary: Forgot password
@@ -66,7 +211,7 @@ paths:
       tags:
       - GiftCards
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       responses:
         '200':
           description: successful
@@ -75,7 +220,7 @@ paths:
       tags:
       - GiftCards
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       parameters: []
       responses:
         '201':
@@ -114,7 +259,7 @@ paths:
       tags:
       - GiftCards
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       responses:
         '200':
           description: successful
@@ -125,7 +270,7 @@ paths:
       tags:
       - GiftCards
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       parameters: []
       responses:
         '200':
@@ -154,19 +299,61 @@ paths:
       tags:
       - GiftCards
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       responses:
         '204':
           description: no content
         '404':
           description: not found
+  "/api/v2/product_item_variants":
+    post:
+      summary: create product_item_variant
+      tags:
+      - Product Item Variants
+      security:
+      - bearerAuth2: []
+      parameters: []
+      responses:
+        '201':
+          description: created
+        '422':
+          description: unprocessable entity
+        '401':
+          description: unauthorized
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                product_item_id:
+                  type: integer
+                color:
+                  type: string
+                size:
+                  type: string
+                price:
+                  type: number
+                quantity:
+                  type: integer
+                photos:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+              required:
+              - product_item_id
+              - color
+              - size
+              - price
+              - quantity
   "/api/v2/product_items":
     get:
       summary: list product_items
       tags:
       - Product Items
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       responses:
         '200':
           description: successful
@@ -175,7 +362,7 @@ paths:
       tags:
       - Product Items
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       parameters: []
       responses:
         '201':
@@ -192,21 +379,11 @@ paths:
               properties:
                 product_id:
                   type: integer
-                images:
-                  type: array
-                  items:
-                    type: file
                 name:
                   type: string
                 brand:
                   type: string
-                price:
-                  type: number
-                discounted_price:
-                  type: number
                 description:
-                  type: string
-                size:
                   type: string
                 material:
                   type: string
@@ -215,10 +392,8 @@ paths:
                 product_code:
                   type: string
               required:
-              - images
               - name
               - brand
-              - price
               - description
               - product_code
               - product_id
@@ -235,7 +410,7 @@ paths:
       tags:
       - Product Items
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       responses:
         '200':
           description: successful
@@ -246,7 +421,7 @@ paths:
       tags:
       - Product Items
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       parameters: []
       responses:
         '200':
@@ -261,21 +436,11 @@ paths:
             schema:
               type: object
               properties:
-                images:
-                  type: array
-                  items:
-                    type: file
                 name:
                   type: string
                 brand:
                   type: string
-                price:
-                  type: number
-                discounted_price:
-                  type: number
                 description:
-                  type: string
-                size:
                   type: string
                 material:
                   type: string
@@ -290,7 +455,7 @@ paths:
       tags:
       - Product Items
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       responses:
         '204':
           description: no content
@@ -464,13 +629,10 @@ paths:
             schema:
               type: object
               properties:
-                product_item_id:
-                  type: integer
-                quantity:
+                product_item_variant_id:
                   type: integer
               required:
-              - product_item_id
-              - quantity
+              - product_item_variant_id
   "/api/v1/cart/cart_items/remove_or_move_to_wishlist":
     delete:
       summary: Removes or moves an item to wishlist
@@ -494,7 +656,7 @@ paths:
             schema:
               type: object
               properties:
-                product_item_id:
+                product_item_variant_id:
                   type: integer
                 action_type:
                   type: string
@@ -502,7 +664,7 @@ paths:
                   - remove
                   - wishlist
               required:
-              - product_item_id
+              - product_item_variant_id
               - action_type
   "/api/v1/cart":
     get:
@@ -567,7 +729,7 @@ paths:
       tags:
       - Categories
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       responses:
         '200':
           description: successful
@@ -576,7 +738,7 @@ paths:
       tags:
       - Categories
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       parameters: []
       responses:
         '201':
@@ -608,7 +770,7 @@ paths:
       tags:
       - Categories
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       responses:
         '200':
           description: successful
@@ -621,7 +783,7 @@ paths:
       tags:
       - Categories
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       parameters: []
       responses:
         '200':
@@ -645,7 +807,7 @@ paths:
       tags:
       - Categories
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       responses:
         '204':
           description: no content
@@ -659,7 +821,7 @@ paths:
       tags:
       - GiftCardCategories
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       responses:
         '200':
           description: successful
@@ -668,7 +830,7 @@ paths:
       tags:
       - GiftCardCategories
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       parameters: []
       responses:
         '201':
@@ -703,7 +865,7 @@ paths:
       tags:
       - GiftCardCategories
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       responses:
         '200':
           description: successful
@@ -714,7 +876,7 @@ paths:
       tags:
       - GiftCardCategories
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       responses:
         '204':
           description: no content
@@ -805,7 +967,7 @@ paths:
       tags:
       - Products
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       responses:
         '200':
           description: successful
@@ -814,7 +976,7 @@ paths:
       tags:
       - Products
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       parameters: []
       responses:
         '201':
@@ -831,8 +993,11 @@ paths:
               properties:
                 name:
                   type: string
+                subcategory_id:
+                  type: integer
               required:
               - name
+              - subcategory_id
   "/api/v2/products/{id}":
     parameters:
     - name: id
@@ -846,7 +1011,7 @@ paths:
       tags:
       - Products
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       responses:
         '200':
           description: successful
@@ -859,7 +1024,7 @@ paths:
       tags:
       - Products
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       parameters: []
       responses:
         '200':
@@ -883,7 +1048,7 @@ paths:
       tags:
       - Products
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       responses:
         '204':
           description: no content
@@ -952,7 +1117,7 @@ paths:
       tags:
       - Subcategories
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       responses:
         '200':
           description: successful
@@ -961,7 +1126,7 @@ paths:
       tags:
       - Subcategories
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       parameters: []
       responses:
         '201':
@@ -999,7 +1164,7 @@ paths:
       tags:
       - Subcategories
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       responses:
         '200':
           description: successful
@@ -1012,7 +1177,7 @@ paths:
       tags:
       - Subcategories
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       parameters: []
       responses:
         '200':
@@ -1036,7 +1201,7 @@ paths:
       tags:
       - Subcategories
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       responses:
         '204':
           description: no content
@@ -1124,19 +1289,14 @@ paths:
           description: Unauthorized
         '422':
           description: Unprocessable entity
-  "/api/v1/wishlists/:wishlist_id/wishlist_items":
+  "/api/v1/wishlists/{wishlist_id}/wishlist_items":
     post:
       summary: Creates a wishlist item
       tags:
       - Wishlist Items
       security:
       - bearerAuth: []
-      parameters:
-      - name: wishlist_id
-        in: path
-        required: true
-        schema:
-          type: integer
+      parameters: []
       responses:
         '201':
           description: wishlist item created
@@ -1150,10 +1310,11 @@ paths:
             schema:
               type: object
               properties:
-                product_item_id:
+                product_item_variant_id:
                   type: integer
+                  description: ID of the product item variant
               required:
-              - product_item_id
+              - product_item_variant_id
   "/api/v1/wishlists/:wishlist_id/wishlist_items/{id}":
     delete:
       summary: Deletes a wishlist item
@@ -1184,12 +1345,7 @@ paths:
       - Wishlist Items
       security:
       - bearerAuth: []
-      parameters:
-      - name: wishlist_id
-        in: path
-        required: true
-        schema:
-          type: integer
+      parameters: []
       responses:
         '200':
           description: item added to cart
@@ -1203,18 +1359,11 @@ paths:
             schema:
               type: object
               properties:
-                product_item_id:
+                product_item_variant_id:
                   type: integer
               required:
-              - product_item_id
-  "/api/v1/wishlists/{user_id}":
-    parameters:
-    - name: user_id
-      in: path
-      description: User ID
-      required: true
-      schema:
-        type: integer
+              - product_item_variant_id
+  "/api/v1/wishlists/show_wishlistitems":
     get:
       summary: show wishlist
       tags:

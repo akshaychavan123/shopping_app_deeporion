@@ -4,7 +4,7 @@ RSpec.describe 'api/v2/categories', type: :request do
   path '/api/v2/categories' do
     get('list categories') do
       tags 'Categories'
-      security [bearerAuth: []]
+      security [bearerAuth2: []]
       produces 'application/json'
 
       response(200, 'successful') do
@@ -16,7 +16,7 @@ RSpec.describe 'api/v2/categories', type: :request do
 
     post('create category') do
       tags 'Categories'
-      security [bearerAuth: []]
+      security [bearerAuth2: []]
       consumes 'application/json'
       parameter name: :category, in: :body, schema: {
         type: :object,
@@ -53,7 +53,7 @@ RSpec.describe 'api/v2/categories', type: :request do
 
     get('show category') do
       tags 'Categories'
-      security [bearerAuth: []]
+      security [bearerAuth2: []]
       produces 'application/json'
 
       response(200, 'successful') do
@@ -79,7 +79,7 @@ RSpec.describe 'api/v2/categories', type: :request do
 
     patch('update category') do
       tags 'Categories'
-      security [bearerAuth: []]
+      security [bearerAuth2: []]
       consumes 'application/json'
       parameter name: :category, in: :body, schema: {
         type: :object,
@@ -115,7 +115,7 @@ RSpec.describe 'api/v2/categories', type: :request do
 
     delete('delete category') do
       tags 'Categories'
-      security [bearerAuth: []]
+      security [bearerAuth2: []]
 
       response(204, 'no content') do
         let(:Authorization) { "Bearer #{token}" }

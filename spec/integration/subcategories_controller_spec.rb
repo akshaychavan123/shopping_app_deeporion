@@ -10,7 +10,7 @@ RSpec.describe 'api/v2/subcategories', type: :request do
 
     get('list subcategories') do
       tags 'Subcategories'
-      security [bearerAuth: []]
+      security [bearerAuth2: []]
       produces 'application/json'
 
       response(200, 'successful') do
@@ -21,7 +21,7 @@ RSpec.describe 'api/v2/subcategories', type: :request do
 
     post('create subcategory') do
       tags 'Subcategories'
-      security [bearerAuth: []]
+      security [bearerAuth2: []]
       consumes 'application/json'
       parameter name: :subcategory, in: :body, schema: {
         type: :object,
@@ -58,7 +58,7 @@ RSpec.describe 'api/v2/subcategories', type: :request do
 
     get('show subcategory') do
       tags 'Subcategories'
-      security [bearerAuth: []]
+      security [bearerAuth2: []]
       produces 'application/json'
 
       response(200, 'successful') do
@@ -83,7 +83,7 @@ RSpec.describe 'api/v2/subcategories', type: :request do
 
     patch('update subcategory') do
       tags 'Subcategories'
-      security [bearerAuth: []]
+      security [bearerAuth2: []]
       consumes 'application/json'
       parameter name: :subcategory, in: :body, schema: {
         type: :object,
@@ -118,7 +118,7 @@ RSpec.describe 'api/v2/subcategories', type: :request do
 
     delete('delete subcategory') do
       tags 'Subcategories'
-      security [bearerAuth: []]
+      security [bearerAuth2: []]
 
       response(204, 'no content') do
         let(:category_id) { category.id }

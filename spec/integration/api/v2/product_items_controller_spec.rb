@@ -7,7 +7,7 @@ RSpec.describe 'Api::V2::ProductItems', type: :request do
   path '/api/v2/product_items' do
     get('list product_items') do
       tags 'Product Items'
-      security [bearerAuth: []]
+      security [bearerAuth2: []]
       produces 'application/json'
 
       response(200, 'successful') do
@@ -17,28 +17,24 @@ RSpec.describe 'Api::V2::ProductItems', type: :request do
 
     post('create product_item') do
       tags 'Product Items'
-      security [bearerAuth: []]
+      security [bearerAuth2: []]
       consumes 'multipart/form-data'
       parameter name: :product_item, in: :formData, schema: {
         type: :object,
         properties: {
           product_id: { type: :integer },
-          images: { type: :array, items: { type: :file } },
           name: { type: :string },
           brand: { type: :string },
-          price: { type: :number },
-          discounted_price: { type: :number },
           description: { type: :string },
-          size: { type: :string },
           material: { type: :string },
           care: { type: :string },
           product_code: { type: :string },
         },
-        required: ['images','name', 'brand', 'price', 'description', 'product_code', 'product_id']
+        required: ['name', 'brand', 'description', 'product_code', 'product_id']
       }
 
       response(201, 'created') do
-        let(:product_item) { { name: 'New Product', brand: 'Brand', price: 100, discounted_price: 90, description: 'Description', size: 'L', material: 'Cotton', care: 'Machine wash', product_code: 'Code123', product_id: create(:product).id, images: [Rack::Test::UploadedFile.new(Rails.root.join('spec/fixtures/test_image.jpg'), 'image/jpeg'), Rack::Test::UploadedFile.new(Rails.root.join('spec/fixtures/image2.jpg'), 'image/jpeg')] } }
+        let(:product_item) { { name: 'New Product', brand: 'Brand', description: 'Description', material: 'Cotton', care: 'Machine wash', product_code: 'Code123', product_id: create(:product).id } }
         run_test!
       end
 
@@ -60,7 +56,7 @@ RSpec.describe 'Api::V2::ProductItems', type: :request do
 
     get('retrieve product_item') do
       tags 'Product Items'
-      security [bearerAuth: []]
+      security [bearerAuth2: []]
       produces 'application/json'
 
       response(200, 'successful') do
@@ -76,18 +72,14 @@ RSpec.describe 'Api::V2::ProductItems', type: :request do
 
     patch('update product_item') do
       tags 'Product Items'
-      security [bearerAuth: []]
+      security [bearerAuth2: []]
       consumes 'multipart/form-data'
       parameter name: :product_item, in: :formData, schema: {
         type: :object,
         properties: {
-          images: { type: :array, items: { type: :file } },
           name: { type: :string },
           brand: { type: :string },
-          price: { type: :number },
-          discounted_price: { type: :number },
           description: { type: :string },
-          size: { type: :string },
           material: { type: :string },
           care: { type: :string },
           product_code: { type: :string },
@@ -117,7 +109,7 @@ RSpec.describe 'Api::V2::ProductItems', type: :request do
 
     delete('delete product_item') do
       tags 'Product Items'
-      security [bearerAuth: []]
+      security [bearerAuth2: []]
 
       response(204, 'no content') do
         let(:id) { create(:product_item).id }

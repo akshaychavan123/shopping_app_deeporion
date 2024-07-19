@@ -6,7 +6,7 @@ RSpec.describe 'Api::V2::GiftCardCategories', type: :request do
     get('list gift_card_categories') do
       tags 'GiftCardCategories'
       produces 'application/json'
-      security [ bearerAuth: [] ]
+      security [ bearerAuth2: [] ]
 
       response(200, 'successful') do
         run_test!
@@ -16,7 +16,7 @@ RSpec.describe 'Api::V2::GiftCardCategories', type: :request do
     post('create gift_card_category') do
       tags 'GiftCardCategories'
       consumes 'application/json'
-      security [ bearerAuth: [] ]
+      security [ bearerAuth2: [] ]
       parameter name: :gift_card_category, in: :body, schema: {
         type: :object,
         properties: {
@@ -49,7 +49,7 @@ RSpec.describe 'Api::V2::GiftCardCategories', type: :request do
     get('show gift_card_category') do
       tags 'GiftCardCategories'
       produces 'application/json'
-      security [ bearerAuth: [] ]
+      security [ bearerAuth2: [] ]
 
       response(200, 'successful') do
         let(:id) { GiftCardCategory.create(title: 'New Category').id }
@@ -64,7 +64,7 @@ RSpec.describe 'Api::V2::GiftCardCategories', type: :request do
 
     delete('delete gift_card_category') do
       tags 'GiftCardCategories'
-      security [ bearerAuth: [] ]
+      security [ bearerAuth2: [] ]
 
       response(204, 'no content') do
         let(:id) { GiftCardCategory.create(title: 'New Category').id }

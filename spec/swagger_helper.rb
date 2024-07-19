@@ -18,6 +18,11 @@ RSpec.configure do |config|
             type: :http,
             scheme: :bearer,
             bearerFormat: :JWT
+          },
+          bearerAuth2: {
+            type: :http,
+            scheme: :bearer,
+            bearerFormat: :JWT
           }
         }
       },

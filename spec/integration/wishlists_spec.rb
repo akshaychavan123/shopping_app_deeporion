@@ -6,8 +6,7 @@ RSpec.describe 'api/v1/wishlists', type: :request do
   let(:token) { JsonWebToken.encode(user_id: user.id) }
   let(:Authorization) { "Bearer #{token}" }
 
-  path '/api/v1/wishlists/{user_id}' do
-    parameter name: 'user_id', in: :path, type: :integer, description: 'User ID'
+  path '/api/v1/wishlists/show_wishlistitems' do
 
     get('show wishlist') do
       tags 'Wishlists'
