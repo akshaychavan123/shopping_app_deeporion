@@ -21,7 +21,7 @@ class Api::V1::UsersController < ApplicationController
 
       if @user.image.attached?
         image_url = url_for(@user.image)
-        render json: { status: 'ok', user: @user, image_url: image_url }, status: :ok
+        render json: { user: @user, image_url: image_url }, status: :ok
       else
         render json: { error: 'Failed to attach image' }, status: :unprocessable_entity
       end
