@@ -205,6 +205,88 @@ paths:
               - token
               - password
               - password_confirmation
+  "/api/v2/coupons":
+    get:
+      summary: list coupons
+      tags:
+      - Coupons
+      security:
+      - bearerAuth2: []
+      responses:
+        '200':
+          description: successful
+    post:
+      summary: create coupon
+      tags:
+      - Coupons
+      security:
+      - bearerAuth2: []
+      parameters: []
+      responses:
+        '201':
+          description: created
+        '422':
+          description: unprocessable entity
+        '401':
+          description: unauthorized
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                promo_code_name:
+                  type: string
+                promo_code:
+                  type: string
+                start_date:
+                  type: string
+                  format: date
+                end_date:
+                  type: string
+                  format: date
+                promo_type:
+                  type: string
+                amount_off:
+                  type: number
+                  format: float
+                max_uses_per_client:
+                  type: integer
+                max_uses_per_promo:
+                  type: integer
+                couponable_id:
+                  type: integer
+                couponable_type:
+                  type: string
+                image:
+                  type: string
+                  format: binary
+              required:
+              - promo_code_name
+              - promo_code
+              - start_date
+              - end_date
+              - promo_type
+              - amount_off
+  "/api/v2/coupons/{id}":
+    parameters:
+    - name: id
+      in: path
+      description: ID of the coupon
+      required: true
+      schema:
+        type: integer
+    get:
+      summary: show coupon
+      tags:
+      - Coupons
+      security:
+      - bearerAuth2: []
+      responses:
+        '200':
+          description: successful
+        '404':
+          description: not found
   "/api/v2/gift_cards":
     get:
       summary: list gift_cards

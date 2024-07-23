@@ -65,6 +65,7 @@ Rails.application.routes.draw do
       end
       resources :gift_card_categories, only: [:index, :show, :create, :destroy]
       resources :gift_cards
+      resources :coupons, only: [:index, :show, :create]
     end
   end
 end

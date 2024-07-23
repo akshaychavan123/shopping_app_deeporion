@@ -3,6 +3,7 @@ class ProductItemVariant < ApplicationRecord
   has_many :wishlist_items
   has_many_attached :photos
   has_many :cart_items
+  has_many :coupons, as: :couponable
 
   validates :color, presence: true, length: { maximum: 255 }
   validates :size, presence: true, length: { maximum: 50 }
