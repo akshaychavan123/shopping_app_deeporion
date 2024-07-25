@@ -30,6 +30,24 @@ paths:
       responses:
         '200':
           description: successful
+  "/api/v1/landing_page/product_items_by_category/{id}":
+    get:
+      summary: Get product items by category
+      tags:
+      - Landing Page
+      description: Fetches all product items associated with a specific category.
+      parameters:
+      - name: id
+        in: path
+        description: ID of the category to fetch product items for
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: successful
+        '404':
+          description: category not found
   "/api/v1/landing_page/products_index":
     get:
       summary: list products
@@ -64,7 +82,7 @@ paths:
     parameters:
     - name: id
       in: path
-      description: ID of the product item
+      description: ID of the product
       required: true
       schema:
         type: integer
@@ -451,12 +469,16 @@ paths:
             schema:
               type: object
               properties:
+                image:
+                  type: file
                 product_id:
                   type: integer
                 name:
                   type: string
                 brand:
                   type: string
+                price:
+                  type: number
                 description:
                   type: string
                 material:
@@ -466,6 +488,7 @@ paths:
                 product_code:
                   type: string
               required:
+              - image
               - name
               - brand
               - description

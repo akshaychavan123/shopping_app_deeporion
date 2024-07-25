@@ -19,6 +19,9 @@ class Api::V2::ProductItemsController < ApplicationController
     @product_item = @product.product_items.new(product_items_params)
   
     if @product_item.save
+      if params[:image].present?
+        @product_item.image.attach(params[:image])
+      end
       render json: { data: ActiveModelSerializers::SerializableResource.new(@product_item, each_serializer: ProductItemSerializer)}
     else
       render json: { error: 'Some Issue occur' }, status: :unprocessable_entity
@@ -46,7 +49,7 @@ class Api::V2::ProductItemsController < ApplicationController
   private
 
   def product_items_params
-    params.permit(:name, :brand, :description, :material, :care, :product_code)
+    params.permit(:name, :brand, :price, :description, :material, :care, :product_code)
   end  
 
   def set_product_items

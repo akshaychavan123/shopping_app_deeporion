@@ -12,6 +12,7 @@ class ProductItem < ApplicationRecord
   has_many :reviews
   has_many :product_item_variants
   has_many :coupons, as: :couponable
+  has_one_attached :image
 
   validates :name, presence: true
   validates :brand, presence: true

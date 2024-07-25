@@ -28,6 +28,7 @@ Rails.application.routes.draw do
       get 'landing_page/categories_index', to: 'landing_page#categories_index'
       get 'landing_page/index_with_subcategories_and_products', to: 'landing_page#index_with_subcategories_and_products'    
       # get 'landing_page/sub_categories_index', to: 'landing_page#sub_categories_index'
+      get 'landing_page/product_items_by_category/:id', to: 'landing_page#product_items_by_category', as: 'landing_page_product_items_by_category'
       get 'landing_page/products_index', to: 'landing_page#products_index'
       get 'landing_page/product_items_index', to: 'landing_page#product_items_index'
       get 'landing_page/gift_cards_index', to: 'landing_page#gift_cards_index'

@@ -23,23 +23,26 @@ RSpec.describe 'Api::V1::LandingPage', type: :request do
     end
   end
 
-	# path '/api/v1/landing_page/sub_categories_index' do
-  #   get('list subcategories') do
-  #     tags 'Landing Page'
-  #     produces 'application/json'
-  #     parameter name: :id, in: :query, type: :integer, description: 'Category ID'
+  path '/api/v1/landing_page/product_items_by_category/{id}' do
+    get('Get product items by category') do
+      tags 'Landing Page'
+      description 'Fetches all product items associated with a specific category.'
+      consumes 'application/json'
+      parameter name: :id, in: :path, type: :integer, description: 'ID of the category to fetch product items for', required: true
 
-  #     response(200, 'successful') do
-  #       let(:id) { create(:category).id }
-  #       run_test!
-  #     end
+      response(200, 'successful') do
+        let(:id) { create(:category).id }
+        run_test!
+      end
 
-  #     response(404, 'not found') do
-  #       let(:id) { -1 }
-  #       run_test!
-  #     end
-  #   end
-  # end
+      response(404, 'category not found') do
+        let(:id) { 'invalid' }
+        run_test!
+      end
+
+    end
+  end
+
 
   path '/api/v1/landing_page/products_index' do
     get('list products') do
@@ -75,7 +78,7 @@ RSpec.describe 'Api::V1::LandingPage', type: :request do
   end
 
   path '/api/v1/landing_page/product_items_of_product/{id}' do
-    parameter name: :id, in: :path, type: :integer, description: 'ID of the product item'
+    parameter name: :id, in: :path, type: :integer, description: 'ID of the product'
 
     get('retrieve product_item') do
       tags 'Landing Page'
