@@ -22,22 +22,14 @@ paths:
       responses:
         '200':
           description: successful
-  "/api/v1/landing_page/sub_categories_index":
+  "/api/v1/landing_page/index_with_subcategories_and_products":
     get:
-      summary: list subcategories
+      summary: list index_with_subcategories_and_products
       tags:
       - Landing Page
-      parameters:
-      - name: id
-        in: query
-        description: Category ID
-        schema:
-          type: integer
       responses:
         '200':
           description: successful
-        '404':
-          description: not found
   "/api/v1/landing_page/products_index":
     get:
       summary: list products
