@@ -22,7 +22,7 @@ class Api::V2::GiftCardsController < ApplicationController
     end
 
     if @gift_card.save
-      render json: { data: ActiveModelSerializers::SerializableResource.new(@gift_card, each_serializer: GiftCardSerializer)}
+      render json: { data: ActiveModelSerializers::SerializableResource.new(@gift_card, each_serializer: GiftCardSerializer)}, status: :created
     else
       render json: @gift_card.errors, status: :unprocessable_entity
     end
@@ -44,9 +44,13 @@ class Api::V2::GiftCardsController < ApplicationController
   end
 
   def destroy
-    @gift_card.destroy
-    head :no_content
+    if @gift_card.destroy
+      render json: { message: 'GiftCard successfully deleted' }, status: :ok
+    else
+      render json: { error: 'Failed to delete GiftCard' }, status: :unprocessable_entity
+    end
   end
+  
 
   private
 
@@ -55,7 +59,7 @@ class Api::V2::GiftCardsController < ApplicationController
   end
 
   def gift_card_params
-    params.permit(:gift_card_category_id, :price, images: [])
+    params.permit(:gift_card_category_id, :price)
   end
 
   def check_user

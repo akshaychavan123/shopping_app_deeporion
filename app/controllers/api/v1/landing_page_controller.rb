@@ -4,10 +4,15 @@ class Api::V1::LandingPageController < ApplicationController
     render json: @categories
   end
 
-  def sub_categories_index
+  def product_items_by_category
     @category = Category.find(params[:id])
-    @subcategories = @category.subcategories
-    render json: @subcategories
+    @product_items = ProductItem.joins(product: { subcategory: :category }).where(categories: { id: @category.id })
+    render json: { data: ActiveModelSerializers::SerializableResource.new(@product_items, each_serializer: ProductItem2Serializer) }
+  end
+
+  def index_with_subcategories_and_products
+    @categories = Category.includes(subcategories: :products).all
+    render json: @categories, include: { subcategories: { include: :products } }
   end
 
   def products_index

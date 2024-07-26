@@ -19,7 +19,7 @@ class Api::V2::ProductItemVariantsController < ApplicationController
   private
 
   def product_item_variant_params
-    params.permit(:product_item_id, :color, :size, :price, :quantity, photos: [])
+    params.permit(:product_item_id, :color, :size, :price, :quantity)
   end
 
   def check_user
