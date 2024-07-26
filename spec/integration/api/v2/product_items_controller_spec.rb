@@ -33,7 +33,7 @@ RSpec.describe 'Api::V2::ProductItems', type: :request do
             care: { type: :string },
             product_code: { type: :string },
           },
-          required: ['image', 'name', 'brand', 'description', 'product_code', 'product_id']
+          required: ['name', 'brand', 'description', 'product_code', 'product_id']
         }
     
         response(201, 'created') do

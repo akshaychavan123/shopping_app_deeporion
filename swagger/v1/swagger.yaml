@@ -418,27 +418,36 @@ paths:
             schema:
               type: object
               properties:
-                product_item_id:
-                  type: integer
                 color:
-                  type: string
-                size:
                   type: string
                 price:
                   type: number
-                quantity:
+                product_item_id:
                   type: integer
                 photos:
                   type: array
                   items:
                     type: string
                     format: binary
+                sizes_attributes:
+                  type: object
+                  additionalProperties:
+                    type: object
+                    properties:
+                      size_name:
+                        type: string
+                      price:
+                        type: number
+                      quantity:
+                        type: integer
+                    required:
+                    - size_name
+                    - price
+                    - quantity
               required:
               - product_item_id
               - color
-              - size
               - price
-              - quantity
   "/api/v2/product_items":
     get:
       summary: list product_items
@@ -488,7 +497,6 @@ paths:
                 product_code:
                   type: string
               required:
-              - image
               - name
               - brand
               - description
@@ -1407,11 +1415,11 @@ paths:
             schema:
               type: object
               properties:
-                product_item_variant_id:
+                product_item_id:
                   type: integer
-                  description: ID of the product item variant
+                  description: ID of the product item
               required:
-              - product_item_variant_id
+              - product_item_id
   "/api/v1/wishlists/:wishlist_id/wishlist_items/{id}":
     delete:
       summary: Deletes a wishlist item
