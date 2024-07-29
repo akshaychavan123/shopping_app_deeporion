@@ -6,8 +6,15 @@ class Api::V1::LandingPageController < ApplicationController
 
   def product_items_by_category
     @category = Category.find(params[:id])
-    @product_items = ProductItem.joins(product: { subcategory: :category }).where(categories: { id: @category.id })
-    render json: { data: ActiveModelSerializers::SerializableResource.new(@product_items, each_serializer: ProductItem2Serializer) }
+    @product_items = ProductItem.joins(product: { subcategory: :category })
+                                .where(categories: { id: @category.id })
+                                .page(params[:page])
+                                .per(params[:per_page])
+
+    render json: {
+      data: ActiveModelSerializers::SerializableResource.new(@product_items, each_serializer: ProductItem2Serializer),
+      meta: pagination_meta(@product_items)
+    }
   end
   
   def index_with_subcategories_and_products
@@ -85,4 +92,15 @@ class Api::V1::LandingPageController < ApplicationController
     render json: { data: ActiveModelSerializers::SerializableResource.new(@product_items, each_serializer: ProductItemSerializer) }, status: :ok
   end  
 
+  private
+
+  def pagination_meta(collection)
+    {
+      current_page: collection.current_page,
+      next_page: collection.next_page,
+      prev_page: collection.prev_page,
+      total_pages: collection.total_pages,
+      total_count: collection.total_count
+    }
+  end
 end
