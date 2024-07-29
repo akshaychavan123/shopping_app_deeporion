@@ -4,11 +4,12 @@ class ProductItemVariant < ApplicationRecord
   has_many_attached :photos
   has_many :cart_items
   has_many :coupons, as: :couponable
+  has_many :sizes, dependent: :destroy
 
-  validates :color, presence: true, length: { maximum: 255 }
-  validates :size, presence: true, length: { maximum: 50 }
-  validates :price, presence: true, numericality: { greater_than_or_equal_to: 0 }
-  validates :quantity, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validates :color, presence: true, uniqueness: { scope: :product_item_id }
+  # validates :price, presence: true, numericality: { greater_than_or_equal_to: 0 }
+
+  accepts_nested_attributes_for :sizes, allow_destroy: true
 
   # validate :unique_color_size_combination
 

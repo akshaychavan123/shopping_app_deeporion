@@ -1,6 +1,6 @@
 class ProductItemSerializer < ActiveModel::Serializer
-  attributes :id, :name, :brand, :price, :description, :material, :care, :product_code, :product_id, :image
-  has_many :product_item_variants
+  attributes :id, :name, :brand, :price, :description, :material, :care, :product_code, :product_id, :image, :product_item_variants
+  has_many :product_item_variants, serializer: ProductItemVariantSerializer
 
   def image
     object.image.attached? ? "#{base_url}#{Rails.application.routes.url_helpers.rails_blob_path(object.image, only_path: true)}" : nil

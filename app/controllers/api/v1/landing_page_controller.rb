@@ -6,10 +6,17 @@ class Api::V1::LandingPageController < ApplicationController
 
   def product_items_by_category
     @category = Category.find(params[:id])
-    @product_items = ProductItem.joins(product: { subcategory: :category }).where(categories: { id: @category.id })
-    render json: { data: ActiveModelSerializers::SerializableResource.new(@product_items, each_serializer: ProductItem2Serializer) }
-  end
+    @product_items = ProductItem.joins(product: { subcategory: :category })
+                                .where(categories: { id: @category.id })
+                                .page(params[:page])
+                                .per(params[:per_page])
 
+    render json: {
+      data: ActiveModelSerializers::SerializableResource.new(@product_items, each_serializer: ProductItem2Serializer),
+      meta: pagination_meta(@product_items)
+    }
+  end
+  
   def index_with_subcategories_and_products
     @categories = Category.includes(subcategories: :products).all
     render json: @categories, include: { subcategories: { include: :products } }
@@ -38,7 +45,7 @@ class Api::V1::LandingPageController < ApplicationController
   end
 
   def product_items_show
-    @product_item = ProductItem.includes(:product_item_variants).find_by(id: params[:id])
+    @product_item = ProductItem.includes(product_item_variants: :sizes).find_by(id: params[:id])
     
     if @product_item
       render json: { data: ActiveModelSerializers::SerializableResource.new(@product_item, serializer: ProductItemSerializer) }
@@ -46,6 +53,7 @@ class Api::V1::LandingPageController < ApplicationController
       render json: { errors: ['Product item not found'] }, status: :not_found
     end
   end
+  
   
   def product_items_filter
     @product_items = ProductItem.includes(:product_item_variants).all
@@ -84,4 +92,15 @@ class Api::V1::LandingPageController < ApplicationController
     render json: { data: ActiveModelSerializers::SerializableResource.new(@product_items, each_serializer: ProductItemSerializer) }, status: :ok
   end  
 
+  private
+
+  def pagination_meta(collection)
+    {
+      current_page: collection.current_page,
+      next_page: collection.next_page,
+      prev_page: collection.prev_page,
+      total_pages: collection.total_pages,
+      total_count: collection.total_count
+    }
+  end
 end

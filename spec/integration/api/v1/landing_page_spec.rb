@@ -29,21 +29,21 @@ RSpec.describe 'Api::V1::LandingPage', type: :request do
       description 'Fetches all product items associated with a specific category.'
       consumes 'application/json'
       parameter name: :id, in: :path, type: :integer, description: 'ID of the category to fetch product items for', required: true
-
+      parameter name: :page, in: :query, type: :integer, description: 'Page number for pagination'
+      parameter name: :per_page, in: :query, type: :integer, description: 'Number of items per page'
+  
       response(200, 'successful') do
         let(:id) { create(:category).id }
         run_test!
       end
-
+  
       response(404, 'category not found') do
         let(:id) { 'invalid' }
         run_test!
       end
-
     end
-  end
-
-
+  end 
+  
   path '/api/v1/landing_page/products_index' do
     get('list products') do
       tags 'Landing Page'
