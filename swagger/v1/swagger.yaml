@@ -1425,11 +1425,11 @@ paths:
             schema:
               type: object
               properties:
-                product_item_id:
+                product_item_variant_id:
                   type: integer
                   description: ID of the product item
               required:
-              - product_item_id
+              - product_item_variant_id
   "/api/v1/wishlists/:wishlist_id/wishlist_items/{id}":
     delete:
       summary: Deletes a wishlist item

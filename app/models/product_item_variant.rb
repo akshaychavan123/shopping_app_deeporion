@@ -1,6 +1,6 @@
 class ProductItemVariant < ApplicationRecord
   belongs_to :product_item
-  has_many :wishlist_items
+  has_many :wishlist_items, dependent: :destroy
   has_many_attached :photos
   has_many :cart_items
   has_many :coupons, as: :couponable
