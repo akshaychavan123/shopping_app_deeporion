@@ -38,7 +38,7 @@ class Api::V1::LandingPageController < ApplicationController
   end
 
   def product_items_show
-    @product_item = ProductItem.includes(:product_item_variants).find_by(id: params[:id])
+    @product_item = ProductItem.includes(product_item_variants: :sizes).find_by(id: params[:id])
     
     if @product_item
       render json: { data: ActiveModelSerializers::SerializableResource.new(@product_item, serializer: ProductItemSerializer) }
@@ -46,6 +46,7 @@ class Api::V1::LandingPageController < ApplicationController
       render json: { errors: ['Product item not found'] }, status: :not_found
     end
   end
+  
   
   def product_items_filter
     @product_items = ProductItem.includes(:product_item_variants).all

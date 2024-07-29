@@ -1,6 +1,6 @@
 class ProductItemVariantSerializer < ActiveModel::Serializer
-  include Rails.application.routes.url_helpers
-  attributes :id, :color, :price, :photos
+  # include Rails.application.routes.url_helpers
+  attributes :id, :color, :price, :photos, :sizes
   # belongs_to :product_item, serializer: ProductItemSerializer
   has_many :sizes, serializer: SizeSerializer
 
