@@ -10,6 +10,7 @@ class ProductItemVariant < ApplicationRecord
   # validates :price, presence: true, numericality: { greater_than_or_equal_to: 0 }
 
   accepts_nested_attributes_for :sizes, allow_destroy: true
+  scope :new_arrivals, -> { order(created_at: :desc).limit(10) }
 
   # validate :unique_color_size_combination
 
