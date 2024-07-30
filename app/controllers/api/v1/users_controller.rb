@@ -36,6 +36,22 @@ class Api::V1::UsersController < ApplicationController
     render json: { status: 'ok', user: @user }, status: :ok
   end
   
+  def update_profile
+    @user = @current_user
+  
+    @user.bio = params[:bio] if params[:bio].present? && !params[:bio].strip.empty?
+    @user.facebook = params[:facebook_link] if params[:facebook_link].present? && !params[:facebook_link].strip.empty?
+    @user.linkedin = params[:linkedin_link] if params[:linkedin_link].present? && !params[:linkedin_link].strip.empty?
+    @user.instagram = params[:instagram_link] if params[:instagram_link].present? && !params[:instagram_link].strip.empty?
+    @user.youtube = params[:youtube_link] if params[:youtube_link].present? && !params[:youtube_link].strip.empty?
+  
+    if @user.save
+      render json: { user: @user }, status: :ok
+    else
+      render json: { errors: @user.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def find_user

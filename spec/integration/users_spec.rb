@@ -95,4 +95,38 @@ RSpec.describe 'api/v1/users', type: :request do
       end
     end
   end
+
+  path '/api/v1/users/{id}/update_profile' do
+    patch 'Update user profile' do
+      tags 'Users'
+      security [bearerAuth: []]
+      consumes 'application/json'
+      parameter name: :profile, in: :body, schema: {
+        type: :object,
+        properties: {
+          bio: { type: :string },
+          facebook_link: { type: :string },
+          linkedin_link: { type: :string },
+          instagram_link: { type: :string },
+          youtube_link: { type: :string }
+        }
+      }
+
+      response '200', 'Profile updated' do
+        let(:profile) { { bio: 'Updated bio', facebook_link: 'https://facebook.com/user', linkedin_link: 'https://linkedin.com/in/user', instagram_link: 'https://instagram.com/user', youtube_link: 'https://youtube.com/user' } }
+        run_test!
+      end
+
+      response '401', 'Unauthorized' do
+        let(:Authorization) { nil }
+        let(:profile) { { bio: 'Updated bio' } }
+        run_test!
+      end
+
+      response '422', 'Invalid params' do
+        let(:profile) { { bio: '' } }
+        run_test!
+      end
+    end
+  end
 end

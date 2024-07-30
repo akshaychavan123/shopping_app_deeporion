@@ -1518,6 +1518,37 @@ paths:
           description: Unauthorized
         '422':
           description: Unprocessable entity
+  "/api/v1/users/{id}/update_profile":
+    patch:
+      summary: Update user profile
+      tags:
+      - Users
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '200':
+          description: Profile updated
+        '401':
+          description: Unauthorized
+        '422':
+          description: Invalid params
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                bio:
+                  type: string
+                facebook_link:
+                  type: string
+                linkedin_link:
+                  type: string
+                instagram_link:
+                  type: string
+                youtube_link:
+                  type: string
   "/api/v1/wishlists/{wishlist_id}/wishlist_items":
     post:
       summary: Creates a wishlist item
