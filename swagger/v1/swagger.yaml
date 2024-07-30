@@ -167,14 +167,128 @@ paths:
           type: number
       - name: search
         in: query
-        description: Search term for the product item name or description
+        description: Search term for the product item name, brand, color, or material
         schema:
           type: string
       responses:
         '200':
           description: successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        brand:
+                          type: string
+                        product_id:
+                          type: integer
+                        price_of_variant:
+                          type: number
+                          format: float
+                        id_of_first_variant:
+                          type: integer
+                        one_image_of_variant:
+                          type: string
+                        rating_and_review:
+                          type: string
+                          nullable: true
+                required:
+                - data
         '404':
           description: not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                required:
+                - errors
+        '422':
+          description: unprocessable entity
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                required:
+                - errors
+  "/api/v1/landing_page/new_arrivals":
+    get:
+      summary: new arrivals
+      tags:
+      - New Arrivals
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        color:
+                          type: string
+                        size:
+                          type: string
+                        price:
+                          type: number
+                          format: float
+                        photos:
+                          type: array
+                          items:
+                            type: string
+                        product_item:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                            name:
+                              type: string
+                            brand:
+                              type: string
+                            material:
+                              type: string
+                            created_at:
+                              type: string
+                              format: date-time
+                required:
+                - data
+        '404':
+          description: not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                required:
+                - errors
   "/api/v1/passwords/forgot":
     post:
       summary: Forgot password
@@ -1361,12 +1475,7 @@ paths:
       - Users
       security:
       - bearerAuth: []
-      parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
+      parameters: []
       responses:
         '200':
           description: Image updated
@@ -1391,12 +1500,6 @@ paths:
       - Users
       security:
       - bearerAuth: []
-      parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
       responses:
         '200':
           description: Image deleted
@@ -1404,6 +1507,37 @@ paths:
           description: Unauthorized
         '422':
           description: Unprocessable entity
+  "/api/v1/users/{id}/update_profile":
+    patch:
+      summary: Update user profile
+      tags:
+      - Users
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '200':
+          description: Profile updated
+        '401':
+          description: Unauthorized
+        '422':
+          description: Invalid params
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                bio:
+                  type: string
+                facebook_link:
+                  type: string
+                linkedin_link:
+                  type: string
+                instagram_link:
+                  type: string
+                youtube_link:
+                  type: string
   "/api/v1/wishlists/{wishlist_id}/wishlist_items":
     post:
       summary: Creates a wishlist item
@@ -1425,11 +1559,11 @@ paths:
             schema:
               type: object
               properties:
-                product_item_id:
+                product_item_variant_id:
                   type: integer
                   description: ID of the product item
               required:
-              - product_item_id
+              - product_item_variant_id
   "/api/v1/wishlists/:wishlist_id/wishlist_items/{id}":
     delete:
       summary: Deletes a wishlist item
@@ -1438,11 +1572,6 @@ paths:
       security:
       - bearerAuth: []
       parameters:
-      - name: wishlist_id
-        in: path
-        required: true
-        schema:
-          type: integer
       - name: id
         in: path
         required: true

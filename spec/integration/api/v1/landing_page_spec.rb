@@ -127,13 +127,119 @@ RSpec.describe 'Api::V1::LandingPage', type: :request do
       parameter name: :color, in: :query, type: :string, description: 'Color of the product item'
       parameter name: :min_price, in: :query, type: :number, format: :float, description: 'Minimum price of the product item'
       parameter name: :max_price, in: :query, type: :number, format: :float, description: 'Maximum price of the product item'
-      parameter name: :search, in: :query, type: :string, description: 'Search term for the product item name or description'
+      parameter name: :search, in: :query, type: :string, description: 'Search term for the product item name, brand, color, or material'
 
       response(200, 'successful') do
+        schema type: :object,
+          properties: {
+            data: {
+              type: :array,
+              items: {
+                type: :object,
+                properties: {
+                  id: { type: :integer },
+                  name: { type: :string },
+                  brand: { type: :string },
+                  product_id: { type: :integer },
+                  price_of_variant: { type: :number, format: :float },
+                  id_of_first_variant: { type: :integer },
+                  one_image_of_variant: { type: :string },
+                  rating_and_review: { type: :string, nullable: true }
+                }
+              }
+            }
+          },
+          required: [ 'data' ]
+
+        let(:subcategory_id) { nil }
+        let(:product_id) { nil }
+        let(:brand) { nil }
+        let(:size) { nil }
+        let(:color) { nil }
+        let(:min_price) { nil }
+        let(:max_price) { nil }
+        let(:search) { nil }
+
         run_test!
       end
 
       response(404, 'not found') do
+        schema type: :object,
+          properties: {
+            errors: {
+              type: :array,
+              items: { type: :string }
+            }
+          },
+          required: [ 'errors' ]
+
+        run_test!
+      end
+
+      response(422, 'unprocessable entity') do
+        schema type: :object,
+          properties: {
+            errors: {
+              type: :array,
+              items: { type: :string }
+            }
+          },
+          required: [ 'errors' ]
+
+        let(:search) { ' ' }
+
+        run_test!
+      end
+    end
+  end
+
+  path '/api/v1/landing_page/new_arrivals' do
+    get('new arrivals') do
+      tags 'New Arrivals'
+      produces 'application/json'
+
+      response(200, 'successful') do
+        schema type: :object,
+          properties: {
+            data: {
+              type: :array,
+              items: {
+                type: :object,
+                properties: {
+                  id: { type: :integer },
+                  color: { type: :string },
+                  size: { type: :string },
+                  price: { type: :number, format: :float },
+                  photos: { type: :array, items: { type: :string } },
+                  product_item: {
+                    type: :object,
+                    properties: {
+                      id: { type: :integer },
+                      name: { type: :string },
+                      brand: { type: :string },
+                      material: { type: :string },
+                      created_at: { type: :string, format: 'date-time' }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          required: ['data']
+
+        run_test!
+      end
+
+      response(404, 'not found') do
+        schema type: :object,
+          properties: {
+            errors: {
+              type: :array,
+              items: { type: :string }
+            }
+          },
+          required: ['errors']
+
         run_test!
       end
     end

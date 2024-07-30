@@ -22,6 +22,16 @@ class Api::V1::LandingPageController < ApplicationController
     render json: @categories, include: { subcategories: { include: :products } }
   end
 
+  def new_arrivals
+    @new_arrivals = ProductItemVariant.new_arrivals.includes(:product_item)
+
+    if @new_arrivals.any?
+      render json: { data: ActiveModelSerializers::SerializableResource.new(@new_arrivals, each_serializer: ProductItemVariantWithItemSerializer) }, status: :ok
+    else
+      render json: { errors: ['No new arrivals found'] }, status: :not_found
+    end
+  end
+
   def products_index
     @subcategory = Subcategory.find(params[:id])
     @products = @subcategory.products
@@ -54,8 +64,11 @@ class Api::V1::LandingPageController < ApplicationController
     end
   end
   
-  
   def product_items_filter
+    if params[:search].present? && params[:search].strip.empty?
+      return render json: { errors: ['Search term cannot be blank'] }, status: :unprocessable_entity
+    end
+  
     @product_items = ProductItem.includes(:product_item_variants).all
   
     if params[:subcategory_id].present?
@@ -86,11 +99,18 @@ class Api::V1::LandingPageController < ApplicationController
   
     if params[:search].present?
       search_term = "%#{params[:search]}%"
-      @product_items = @product_items.where('name LIKE ? OR product_code LIKE ?', search_term, search_term)
+      @product_items = @product_items.joins(:product_item_variants)
+                                     .where('product_items.name LIKE :search_term OR product_items.brand LIKE :search_term OR product_item_variants.color LIKE :search_term OR product_items.material LIKE :search_term', search_term: search_term)
     end
   
-    render json: { data: ActiveModelSerializers::SerializableResource.new(@product_items, each_serializer: ProductItemSerializer) }, status: :ok
-  end  
+    if @product_items.any?
+      render json: { data: ActiveModelSerializers::SerializableResource.new(@product_items, each_serializer: ProductItem2Serializer) }, status: :ok
+    else
+      render json: { errors: ['No product items found'] }, status: :not_found
+    end
+  end
+  
+  
 
   private
 

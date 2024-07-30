@@ -20,6 +20,7 @@ Rails.application.routes.draw do
         member do
           patch :update_image
           delete :delete_image
+          patch :update_profile
         end
       end
 
@@ -35,6 +36,7 @@ Rails.application.routes.draw do
       get '/landing_page/product_items_of_product/:id', to: 'landing_page#product_items_of_product'
       get '/landing_page/product_items_show/:id', to: 'landing_page#product_items_show'
       get '/landing_page/product_items_filter', to: 'landing_page#product_items_filter'
+      get '/landing_page/new_arrivals', to: 'landing_page#new_arrivals'
 
       resources :orders, only: [:create]
 

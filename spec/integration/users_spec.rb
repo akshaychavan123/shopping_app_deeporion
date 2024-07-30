@@ -38,7 +38,6 @@ RSpec.describe 'api/v1/users', type: :request do
       tags 'Users'
       security [bearerAuth: []]
       consumes 'multipart/form-data'
-      parameter name: :id, in: :path, type: :integer
       parameter name: :image, in: :formData, schema: {type: :object,
       properties: {
         image: { type: :file }
@@ -74,9 +73,6 @@ RSpec.describe 'api/v1/users', type: :request do
     delete 'Delete user image' do
       tags 'Users'
       security [bearerAuth: []]
-
-      parameter name: :id, in: :path, type: :integer
-
       response '200', 'Image deleted' do
         let(:id) { user.id }
         run_test!
@@ -91,6 +87,40 @@ RSpec.describe 'api/v1/users', type: :request do
 
       response '422', 'Unprocessable entity' do
         let(:id) { 'invalid_id' }
+        run_test!
+      end
+    end
+  end
+
+  path '/api/v1/users/{id}/update_profile' do
+    patch 'Update user profile' do
+      tags 'Users'
+      security [bearerAuth: []]
+      consumes 'application/json'
+      parameter name: :profile, in: :body, schema: {
+        type: :object,
+        properties: {
+          bio: { type: :string },
+          facebook_link: { type: :string },
+          linkedin_link: { type: :string },
+          instagram_link: { type: :string },
+          youtube_link: { type: :string }
+        }
+      }
+
+      response '200', 'Profile updated' do
+        let(:profile) { { bio: 'Updated bio', facebook_link: 'https://facebook.com/user', linkedin_link: 'https://linkedin.com/in/user', instagram_link: 'https://instagram.com/user', youtube_link: 'https://youtube.com/user' } }
+        run_test!
+      end
+
+      response '401', 'Unauthorized' do
+        let(:Authorization) { nil }
+        let(:profile) { { bio: 'Updated bio' } }
+        run_test!
+      end
+
+      response '422', 'Invalid params' do
+        let(:profile) { { bio: '' } }
         run_test!
       end
     end
