@@ -1475,12 +1475,7 @@ paths:
       - Users
       security:
       - bearerAuth: []
-      parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
+      parameters: []
       responses:
         '200':
           description: Image updated
@@ -1505,12 +1500,6 @@ paths:
       - Users
       security:
       - bearerAuth: []
-      parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: integer
       responses:
         '200':
           description: Image deleted
@@ -1583,11 +1572,6 @@ paths:
       security:
       - bearerAuth: []
       parameters:
-      - name: wishlist_id
-        in: path
-        required: true
-        schema:
-          type: integer
       - name: id
         in: path
         required: true

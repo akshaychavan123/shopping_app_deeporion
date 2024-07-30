@@ -49,7 +49,6 @@ RSpec.describe 'Api::V1::WishlistItems', type: :request do
     delete 'Deletes a wishlist item' do
       tags 'Wishlist Items'
       security [bearerAuth: []]
-      parameter name: :wishlist_id, in: :path, type: :integer
       parameter name: :id, in: :path, type: :integer
 
       response '204', 'wishlist item deleted' do

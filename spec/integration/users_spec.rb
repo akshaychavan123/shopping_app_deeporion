@@ -38,7 +38,6 @@ RSpec.describe 'api/v1/users', type: :request do
       tags 'Users'
       security [bearerAuth: []]
       consumes 'multipart/form-data'
-      parameter name: :id, in: :path, type: :integer
       parameter name: :image, in: :formData, schema: {type: :object,
       properties: {
         image: { type: :file }
@@ -74,9 +73,6 @@ RSpec.describe 'api/v1/users', type: :request do
     delete 'Delete user image' do
       tags 'Users'
       security [bearerAuth: []]
-
-      parameter name: :id, in: :path, type: :integer
-
       response '200', 'Image deleted' do
         let(:id) { user.id }
         run_test!
