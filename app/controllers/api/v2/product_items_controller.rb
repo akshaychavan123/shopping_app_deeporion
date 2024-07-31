@@ -17,14 +17,21 @@ class Api::V2::ProductItemsController < ApplicationController
   def create
     @product = Product.find_by(id: params[:product_id])
     @product_item = @product.product_items.new(product_items_params)
-  
+
     if @product_item.save
       if params[:image].present?
         @product_item.image.attach(params[:image])
       end
+
+      if params[:photos].present?
+        Array(params[:photos]).each do |photo|
+          @product_item.photos.attach(photo)
+        end
+      end
+
       render json: { data: ActiveModelSerializers::SerializableResource.new(@product_item, each_serializer: ProductItemSerializer)}
     else
-      render json: { error: 'Some Issue occur' }, status: :unprocessable_entity
+      render json: { error: 'Something went to wrong' }, status: :unprocessable_entity
     end
   end
   

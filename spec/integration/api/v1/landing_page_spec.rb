@@ -244,4 +244,57 @@ RSpec.describe 'Api::V1::LandingPage', type: :request do
       end
     end
   end
+
+  path '/api/v1/landing_page/product_items_search' do
+    get('search product items') do
+      tags 'Search API'
+      produces 'application/json'
+      parameter name: :search, in: :query, type: :string, description: 'Search term for the product item name, brand, material'
+      parameter name: :page, in: :query, type: :integer, description: 'Page number for pagination'
+      parameter name: :per_page, in: :query, type: :integer, description: 'Number of items per page for pagination'
+      response(200, 'successful') do
+        schema type: :object,
+          properties: {
+            data: {
+              type: :array,
+              items: {
+                type: :object,
+                properties: {
+                  id: { type: :integer },
+                  name: { type: :string },
+                  brand: { type: :string },
+                  price: { type: :number },
+                  rating_and_review: { type: :string, nullable: true },
+                  image: { type: :string, nullable: true }
+                }
+              }
+            },
+            meta: {
+              type: :object,
+              properties: {
+                current_page: { type: :integer },
+                next_page: { type: :integer, nullable: true },
+                prev_page: { type: :integer, nullable: true },
+                total_pages: { type: :integer },
+                total_count: { type: :integer }
+              }
+            }
+          }
+  
+        let(:product_item) { create_list(:product_item, 10) }
+        run_test!
+      end
+  
+      response(404, 'not found') do
+        schema type: :object,
+          properties: {
+            errors: { type: :array, items: { type: :string } }
+          }
+  
+        let(:product_item) { [] }
+        run_test!
+      end
+    end
+  end
+  
 end

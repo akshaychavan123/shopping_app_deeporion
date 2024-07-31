@@ -6,28 +6,18 @@ class Api::V2::ProductItemVariantsController < ApplicationController
   def create
     @product_item_variant = ProductItemVariant.new(product_item_variant_params)
 
-    begin
-      if @product_item_variant.save
-        if params[:data][:photos].present?
-          Array(params[:data][:photos]).each do |photo|
-            @product_item_variant.photos.attach(photo)
-          end
-        end
-        render json: { data: ActiveModelSerializers::SerializableResource.new(@product_item_variant, serializer: ProductItemVariantSerializer) }, status: :created
-      else
-        render json: { errors: @product_item_variant.errors.full_messages }, status: :unprocessable_entity
-      end
-    rescue ActiveRecord::RecordNotUnique => e
-      render json: { errors: ["A product item variant with the same size name already exists."] }, status: :unprocessable_entity
+    if @product_item_variant.save
+      render json: { data: ActiveModelSerializers::SerializableResource.new(@product_item_variant, serializer: ProductItemVariantSerializer) }, status: :created
+    else
+      render json: { errors: @product_item_variant.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
   private
 
   def product_item_variant_params
-    params.require(:data).permit(
-      :color, :size, :price, :product_item_id,
-      sizes_attributes: [:size_name, :price, :quantity, :_destroy]
+    params.permit(
+      :color, :size, :price, :product_item_id, :quantity
     )
   end
 

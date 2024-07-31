@@ -4,8 +4,8 @@ class Api::V1::WishlistItemsController < ApplicationController
 
   def create
     @wishlist = Wishlist.find_by(user: @current_user)
-    @product_item_variant = ProductItemVariant.find(params[:product_item_variant_id])
-    @wishlist_item = @wishlist.wishlist_items.build(product_item_variant: @product_item_variant)
+    @product_item = ProductItem.find(params[:product_item_id])
+    @wishlist_item = @wishlist.wishlist_items.build(product_item: @product_item)
 
     if @wishlist_item.save
       render json: @wishlist_item, status: :created
@@ -25,10 +25,10 @@ class Api::V1::WishlistItemsController < ApplicationController
   end
 
   def add_to_cart
-    wishlist_item = @wishlist.wishlist_items.find_by(product_item_variant_id: params[:product_item_variant_id])
+    wishlist_item = @wishlist.wishlist_items.find_by(product_item_id: params[:product_item_id])
     if wishlist_item
       cart = Cart.find_or_create_by(user: @wishlist.user)
-      cart_item = cart.cart_items.find_or_initialize_by(product_item_variant: wishlist_item.product_item_variant)
+      cart_item = cart.cart_items.find_or_initialize_by(product_item_id: wishlist_item.product_item_id)
       cart_item.quantity = cart_item.new_record? ? 1 : cart_item.quantity + 1
       if cart_item.save
         wishlist_item.destroy
