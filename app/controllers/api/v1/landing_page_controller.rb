@@ -4,18 +4,34 @@ class Api::V1::LandingPageController < ApplicationController
     render json: @categories
   end
 
+  # def product_items_by_category
+  #   @category = Category.find(params[:id])
+  #   @product_items = ProductItem.joins(product: { subcategory: :category })
+  #                               .where(categories: { id: @category.id })
+  #                               .page(params[:page])
+  #                               .per(params[:per_page])
+
+  #   render json: {
+  #     data: ActiveModelSerializers::SerializableResource.new(@product_items, each_serializer: ProductItem2Serializer),
+  #     meta: pagination_meta(@product_items)
+  #   }
+  # end
+
   def product_items_by_category
     @category = Category.find(params[:id])
-    @product_items = ProductItem.joins(product: { subcategory: :category })
+    @product_items = ProductItem.joins(:product_item_variants)
+                                .joins(product: { subcategory: :category })
                                 .where(categories: { id: @category.id })
+                                .distinct
                                 .page(params[:page])
                                 .per(params[:per_page])
-
+  
     render json: {
       data: ActiveModelSerializers::SerializableResource.new(@product_items, each_serializer: ProductItem2Serializer),
       meta: pagination_meta(@product_items)
     }
   end
+  
   
   def index_with_subcategories_and_products
     @categories = Category.includes(subcategories: :products).all
@@ -69,7 +85,8 @@ class Api::V1::LandingPageController < ApplicationController
       return render json: { errors: ['Search term cannot be blank'] }, status: :unprocessable_entity
     end
   
-    @product_items = ProductItem.includes(:product_item_variants).all
+    # @product_items = ProductItem.includes(:product_item_variants).all
+    @product_items = ProductItem.joins(:product_item_variants).distinct
   
     if params[:subcategory_id].present?
       @product_items = @product_items.joins(product: :subcategory).where(products: { subcategory_id: params[:subcategory_id] })

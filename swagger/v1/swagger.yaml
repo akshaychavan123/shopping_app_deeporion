@@ -14,6 +14,44 @@ components:
       scheme: bearer
       bearerFormat: JWT
 paths:
+  "/api/v1/contact_us":
+    post:
+      summary: Creates a Contact Us record
+      tags:
+      - ContactUs
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '201':
+          description: contact_us created
+        '422':
+          description: invalid request
+        '401':
+          description: unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                contact_number:
+                  type: string
+                subject:
+                  type: string
+                details:
+                  type: string
+              required:
+              - name
+              - email
+              - contact_number
+              - subject
+              - details
   "/api/v1/landing_page/categories_index":
     get:
       summary: list categories
@@ -692,6 +730,110 @@ paths:
           description: not found
         '401':
           description: unauthorized
+  "/api/v2/terms_and_conditions":
+    get:
+      summary: Retrieves all terms and conditions
+      tags:
+      - TermsAndConditions
+      responses:
+        '200':
+          description: terms and conditions found
+    post:
+      summary: Creates a terms and condition
+      tags:
+      - TermsAndConditions
+      security:
+      - bearerAuth2: []
+      parameters: []
+      responses:
+        '201':
+          description: terms and condition created
+        '422':
+          description: invalid request
+        '403':
+          description: Unauthorized access
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+                version:
+                  type: integer
+              required:
+              - content
+              - version
+  "/api/v2/terms_and_conditions/{id}":
+    get:
+      summary: Retrieves a terms and condition
+      tags:
+      - TermsAndConditions
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: terms and condition found
+        '404':
+          description: terms and condition not found
+    put:
+      summary: Updates a terms and condition
+      tags:
+      - TermsAndConditions
+      security:
+      - bearerAuth2: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: terms and condition updated
+        '404':
+          description: terms and condition not found
+        '422':
+          description: invalid request
+        '403':
+          description: Unauthorized access
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+                version:
+                  type: integer
+              required:
+              - content
+              - version
+    delete:
+      summary: Deletes a terms and condition
+      tags:
+      - TermsAndConditions
+      security:
+      - bearerAuth2: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: terms and condition deleted
+        '404':
+          description: terms and condition not found
+        '403':
+          description: Unauthorized access
   "/api/v1/auth/login":
     post:
       summary: Logs in a user
