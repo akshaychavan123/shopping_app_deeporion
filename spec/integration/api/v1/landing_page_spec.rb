@@ -66,6 +66,17 @@ RSpec.describe 'Api::V1::LandingPage', type: :request do
     end
   end
 
+  path '/api/v1/landing_page/index_of_product_by_category/{id}' do
+    parameter name: :id, in: :path, type: :integer, description: 'ID of the category to fetch product', required: true
+    get('list Top Categories') do
+      tags 'List of Prodcut'
+      produces 'application/json'
+      response(200, 'successful') do
+        run_test!
+      end
+    end
+  end
+
   path '/api/v1/landing_page/gift_cards_index' do
     get('list gift cards') do
       tags 'Landing Page'

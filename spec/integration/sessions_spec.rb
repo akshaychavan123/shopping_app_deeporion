@@ -6,7 +6,13 @@ RSpec.describe 'Api::V1::Sessions', type: :request do
       tags 'Sessions'
       consumes 'application/json'
       produces 'application/json'
-      parameter name: :auth_token, in: :header, type: :string, description: 'OAuth token'
+      parameter name: :id_token, in: :body, schema: {
+        type: :object,
+        properties: {
+          id_token: { type: :string }
+        },
+        required: ['id_token']
+      }
 
       response '200', 'successful' do
         schema type: :object,
@@ -24,7 +30,7 @@ RSpec.describe 'Api::V1::Sessions', type: :request do
           },
           required: ['jwt', 'user']
 
-        let(:auth_token) { 'example_oauth_token' }
+        let(:id_token) { 'example_oauth_token' }
         run_test!
       end
 
@@ -35,7 +41,7 @@ RSpec.describe 'Api::V1::Sessions', type: :request do
           },
           required: ['error']
 
-        let(:auth_token) { nil }
+        let(:id_token) { nil }
         run_test!
       end
     end

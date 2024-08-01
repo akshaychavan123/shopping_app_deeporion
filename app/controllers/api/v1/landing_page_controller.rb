@@ -23,6 +23,17 @@ class Api::V1::LandingPageController < ApplicationController
     render json: @categories, include: { subcategories: { include: :products } }
   end
 
+  def index_of_product_by_category
+    @category = Category.find(params[:id])
+  
+    if @category
+      products = @category.products
+      render json: products
+    else
+      render json: { error: 'Category not found' }, status: :not_found
+    end
+  end
+
   def new_arrivals
     @new_arrivals = ProductItem.new_arrivals.includes(:product)
 

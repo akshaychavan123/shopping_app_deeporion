@@ -118,6 +118,21 @@ paths:
       responses:
         '200':
           description: successful
+  "/api/v1/landing_page/index_of_product_by_category/{id}":
+    parameters:
+    - name: id
+      in: path
+      description: ID of the category to fetch product
+      required: true
+      schema:
+        type: integer
+    get:
+      summary: list Top Categories
+      tags:
+      - List of Prodcut
+      responses:
+        '200':
+          description: successful
   "/api/v1/landing_page/gift_cards_index":
     get:
       summary: list gift cards
@@ -1522,12 +1537,7 @@ paths:
       summary: Google OAuth2 Authentication
       tags:
       - Sessions
-      parameters:
-      - name: auth_token
-        in: header
-        description: OAuth token
-        schema:
-          type: string
+      parameters: []
       responses:
         '200':
           description: successful
@@ -1565,6 +1575,16 @@ paths:
                     type: string
                 required:
                 - error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id_token:
+                  type: string
+              required:
+              - id_token
   "/api/v2/categories/{category_id}/subcategories":
     parameters:
     - name: category_id

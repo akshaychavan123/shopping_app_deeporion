@@ -36,6 +36,39 @@ class User < ApplicationRecord
     nil
   end
 
+  def self.create_user_for_google(data)
+    where(uid: data["email"]).first_or_initialize.tap do |user|
+      user.provider="google_oauth2"
+      user.uid=data["email"]
+      user.email=data["email"]
+      user.password=generate_secure_password
+      user.password_confirmation=user.password
+      user.save!
+    end
+  end  
+
+  def self.generate_secure_password
+    length = 8
+    chars = [
+      ('a'..'z').to_a,
+      ('A'..'Z').to_a,
+      ('0'..'9').to_a,
+      %w[! @ # $ % ^ & *]
+    ].flatten
+    password = [
+      ('a'..'z').to_a.sample,
+      ('A'..'Z').to_a.sample,
+      ('0'..'9').to_a.sample,
+      %w[! @ # $ % ^ & *].sample
+    ]
+
+    (length - password.size).times do
+      password << chars.sample
+    end
+
+    password.shuffle.join
+  end
+
   private
 
   def create_wishlist
