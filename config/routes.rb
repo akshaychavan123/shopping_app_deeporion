@@ -4,6 +4,8 @@ Rails.application.routes.draw do
   
   namespace :api do
     namespace :v1 do
+      resources :reviews, only: [:create, :index]
+      resources :review_votes, only: [:create]
 
       root to: 'home#index'
       resources :home, only: [:index]
