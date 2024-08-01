@@ -77,6 +77,29 @@ RSpec.describe 'Api::V1::LandingPage', type: :request do
     end
   end
 
+  path '/api/v1/landing_page/gift_cards_category' do
+    get('list gift_card_categories') do
+      tags 'GiftCardCategoriesAll'
+      produces 'application/json'
+
+      response(200, 'successful') do
+        run_test!
+      end
+    end
+  end
+
+  path '/api/v1/landing_page/gift_cards_by_category/{id}' do
+    parameter name: :id, in: :path, type: :integer, description: 'ID of the GiftCardCategory'
+    get('list gift_card_categories') do
+      tags 'GiftCardByCategories'
+      produces 'application/json'
+
+      response(200, 'successful') do
+        run_test!
+      end
+    end
+  end
+
   path '/api/v1/landing_page/product_items_of_product/{id}' do
     parameter name: :id, in: :path, type: :integer, description: 'ID of the product'
 

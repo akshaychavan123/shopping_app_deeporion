@@ -33,6 +33,8 @@ Rails.application.routes.draw do
       get 'landing_page/products_index', to: 'landing_page#products_index'
       get 'landing_page/product_items_index', to: 'landing_page#product_items_index'
       get 'landing_page/gift_cards_index', to: 'landing_page#gift_cards_index'
+      get 'landing_page/gift_cards_category', to: 'landing_page#gift_cards_category'
+      get 'landing_page/gift_cards_by_category/:id', to: 'landing_page#gift_cards_by_category'
       get '/landing_page/product_items_of_product/:id', to: 'landing_page#product_items_of_product'
       get '/landing_page/product_items_show/:id', to: 'landing_page#product_items_show'
       get '/landing_page/product_items_filter', to: 'landing_page#product_items_filter'
