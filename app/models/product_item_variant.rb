@@ -1,16 +1,15 @@
 class ProductItemVariant < ApplicationRecord
   belongs_to :product_item
-  has_many :wishlist_items, dependent: :destroy
-  has_many_attached :photos
-  has_many :cart_items
+  # has_many :wishlist_items, dependent: :destroy
+  # has_many :cart_items
   has_many :coupons, as: :couponable
-  has_many :sizes, dependent: :destroy
-
-  validates :color, presence: true, uniqueness: { scope: :product_item_id }
+  validates :size, presence: true
+  validates :quantity, presence: true
+  # has_many :sizes, dependent: :destroy
+  # validates :color, presence: true, uniqueness: { scope: :product_item_id }
   # validates :price, presence: true, numericality: { greater_than_or_equal_to: 0 }
 
-  accepts_nested_attributes_for :sizes, allow_destroy: true
-  scope :new_arrivals, -> { order(created_at: :desc).limit(10) }
+  # accepts_nested_attributes_for :sizes, allow_destroy: true
 
   # validate :unique_color_size_combination
 

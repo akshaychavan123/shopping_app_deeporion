@@ -1,4 +1,33 @@
 class CartItemSerializer < ActiveModel::Serializer
-	attributes :id, :quantity
-	belongs_to :product_item_variant, serializer: ProductItemVariantSerializer
+  attributes :id, :quantity, :product_item_id, :product_item_name, :product_item_brand, :price_of_product, :rating_and_review, :image
+  
+  def product_item_name
+    object.product_item.name
+  end
+
+  def product_item_brand
+    object.product_item.brand
+  end
+
+  def price_of_product
+    object.product_item.price
+  end
+
+  def image
+    if object.product_item.image.attached?
+      "#{base_url}#{Rails.application.routes.url_helpers.rails_blob_path(object.product_item.image, only_path: true)}"
+    else
+      nil
+    end
+  end  
+
+  def rating_and_review
+    nil
+  end
+
+  private
+
+  def base_url
+    ENV['BASE_URL'] || 'http://localhost:3000'
+  end
 end

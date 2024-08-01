@@ -3,7 +3,8 @@ class Api::V1::CartsController < ApplicationController
   before_action :set_cart, only: [:show]
 
   def show
-    render json: @cart, include: { cart_items: { include: :product_item } }
+    @cart_items = @cart.cart_items.includes(:product_item)
+    render json: { data: ActiveModelSerializers::SerializableResource.new(@cart_items, each_serializer: CartItemSerializer) }
   end
 
   private

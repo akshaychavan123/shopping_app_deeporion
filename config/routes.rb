@@ -7,7 +7,7 @@ Rails.application.routes.draw do
 
       root to: 'home#index'
       resources :home, only: [:index]
-
+      
       post 'passwords/forgot', to: 'passwords#forgot'
       post 'passwords/reset', to: 'passwords#reset'
 
@@ -33,12 +33,16 @@ Rails.application.routes.draw do
       get 'landing_page/products_index', to: 'landing_page#products_index'
       get 'landing_page/product_items_index', to: 'landing_page#product_items_index'
       get 'landing_page/gift_cards_index', to: 'landing_page#gift_cards_index'
+      get 'landing_page/gift_cards_category', to: 'landing_page#gift_cards_category'
+      get 'landing_page/gift_cards_by_category/:id', to: 'landing_page#gift_cards_by_category'
       get '/landing_page/product_items_of_product/:id', to: 'landing_page#product_items_of_product'
       get '/landing_page/product_items_show/:id', to: 'landing_page#product_items_show'
       get '/landing_page/product_items_filter', to: 'landing_page#product_items_filter'
+      get '/landing_page/product_items_search', to: 'landing_page#product_items_search'
       get '/landing_page/new_arrivals', to: 'landing_page#new_arrivals'
 
       resources :orders, only: [:create]
+      resources :contact_us, only: [:create]
 
       resources :wishlists, only: [] do
         get 'show_wishlistitems', to: 'wishlists#show_wishlistitems', on: :collection
@@ -61,6 +65,7 @@ Rails.application.routes.draw do
       resources :product_item_variants, only: [:create]
       resources :product_items, only: [:index, :show, :create, :update, :destroy] 
       resources :categories, only: [:index, :show, :create, :update, :destroy]
+      resources :terms_and_conditions, only: [:index, :show, :create, :update, :destroy]
       resources :products, only: [:index, :show, :create, :update, :destroy] do
         # resources :product_items, only: [:index, :show, :create, :update, :destroy] 
       end

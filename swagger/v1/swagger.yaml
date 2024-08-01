@@ -14,6 +14,44 @@ components:
       scheme: bearer
       bearerFormat: JWT
 paths:
+  "/api/v1/contact_us":
+    post:
+      summary: Creates a Contact Us record
+      tags:
+      - ContactUs
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '201':
+          description: contact_us created
+        '422':
+          description: invalid request
+        '401':
+          description: unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                contact_number:
+                  type: string
+                subject:
+                  type: string
+                details:
+                  type: string
+              required:
+              - name
+              - email
+              - contact_number
+              - subject
+              - details
   "/api/v1/landing_page/categories_index":
     get:
       summary: list categories
@@ -85,6 +123,29 @@ paths:
       summary: list gift cards
       tags:
       - Landing Page
+      responses:
+        '200':
+          description: successful
+  "/api/v1/landing_page/gift_cards_category":
+    get:
+      summary: list gift_card_categories
+      tags:
+      - GiftCardCategoriesAll
+      responses:
+        '200':
+          description: successful
+  "/api/v1/landing_page/gift_cards_by_category/{id}":
+    parameters:
+    - name: id
+      in: path
+      description: ID of the GiftCardCategory
+      required: true
+      schema:
+        type: integer
+    get:
+      summary: list gift_card_categories
+      tags:
+      - GiftCardByCategories
       responses:
         '200':
           description: successful
@@ -289,6 +350,80 @@ paths:
                       type: string
                 required:
                 - errors
+  "/api/v1/landing_page/product_items_search":
+    get:
+      summary: search product items
+      tags:
+      - Search API
+      parameters:
+      - name: search
+        in: query
+        description: Search term for the product item name, brand, material
+        schema:
+          type: string
+      - name: page
+        in: query
+        description: Page number for pagination
+        schema:
+          type: integer
+      - name: per_page
+        in: query
+        description: Number of items per page for pagination
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        brand:
+                          type: string
+                        price:
+                          type: number
+                        rating_and_review:
+                          type: string
+                          nullable: true
+                        image:
+                          type: string
+                          nullable: true
+                  meta:
+                    type: object
+                    properties:
+                      current_page:
+                        type: integer
+                      next_page:
+                        type: integer
+                        nullable: true
+                      prev_page:
+                        type: integer
+                        nullable: true
+                      total_pages:
+                        type: integer
+                      total_count:
+                        type: integer
+        '404':
+          description: not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
   "/api/v1/passwords/forgot":
     post:
       summary: Forgot password
@@ -546,29 +681,15 @@ paths:
                   type: string
                 price:
                   type: number
+                size:
+                  type: string
+                quantity:
+                  type: number
                 product_item_id:
                   type: integer
-                photos:
-                  type: array
-                  items:
-                    type: string
-                    format: binary
-                sizes_attributes:
-                  type: object
-                  additionalProperties:
-                    type: object
-                    properties:
-                      size_name:
-                        type: string
-                      price:
-                        type: number
-                      quantity:
-                        type: integer
-                    required:
-                    - size_name
-                    - price
-                    - quantity
               required:
+              - size
+              - quantity
               - product_item_id
               - color
               - price
@@ -604,6 +725,11 @@ paths:
               properties:
                 image:
                   type: file
+                photos:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
                 product_id:
                   type: integer
                 name:
@@ -621,6 +747,8 @@ paths:
                 product_code:
                   type: string
               required:
+              - image
+              - photos
               - name
               - brand
               - description
@@ -692,6 +820,110 @@ paths:
           description: not found
         '401':
           description: unauthorized
+  "/api/v2/terms_and_conditions":
+    get:
+      summary: Retrieves all terms and conditions
+      tags:
+      - TermsAndConditions
+      responses:
+        '200':
+          description: terms and conditions found
+    post:
+      summary: Creates a terms and condition
+      tags:
+      - TermsAndConditions
+      security:
+      - bearerAuth2: []
+      parameters: []
+      responses:
+        '201':
+          description: terms and condition created
+        '422':
+          description: invalid request
+        '403':
+          description: Unauthorized access
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+                version:
+                  type: integer
+              required:
+              - content
+              - version
+  "/api/v2/terms_and_conditions/{id}":
+    get:
+      summary: Retrieves a terms and condition
+      tags:
+      - TermsAndConditions
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: terms and condition found
+        '404':
+          description: terms and condition not found
+    put:
+      summary: Updates a terms and condition
+      tags:
+      - TermsAndConditions
+      security:
+      - bearerAuth2: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: terms and condition updated
+        '404':
+          description: terms and condition not found
+        '422':
+          description: invalid request
+        '403':
+          description: Unauthorized access
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+                version:
+                  type: integer
+              required:
+              - content
+              - version
+    delete:
+      summary: Deletes a terms and condition
+      tags:
+      - TermsAndConditions
+      security:
+      - bearerAuth2: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: terms and condition deleted
+        '404':
+          description: terms and condition not found
+        '403':
+          description: Unauthorized access
   "/api/v1/auth/login":
     post:
       summary: Logs in a user
@@ -858,10 +1090,10 @@ paths:
             schema:
               type: object
               properties:
-                product_item_variant_id:
+                product_item_id:
                   type: integer
               required:
-              - product_item_variant_id
+              - product_item_id
   "/api/v1/cart/cart_items/remove_or_move_to_wishlist":
     delete:
       summary: Removes or moves an item to wishlist
@@ -885,7 +1117,7 @@ paths:
             schema:
               type: object
               properties:
-                product_item_variant_id:
+                product_item_id:
                   type: integer
                 action_type:
                   type: string
@@ -893,7 +1125,7 @@ paths:
                   - remove
                   - wishlist
               required:
-              - product_item_variant_id
+              - product_item_id
               - action_type
   "/api/v1/cart":
     get:
@@ -1559,11 +1791,11 @@ paths:
             schema:
               type: object
               properties:
-                product_item_variant_id:
+                product_item_id:
                   type: integer
                   description: ID of the product item
               required:
-              - product_item_variant_id
+              - product_item_id
   "/api/v1/wishlists/:wishlist_id/wishlist_items/{id}":
     delete:
       summary: Deletes a wishlist item
@@ -1603,10 +1835,10 @@ paths:
             schema:
               type: object
               properties:
-                product_item_variant_id:
+                product_item_id:
                   type: integer
               required:
-              - product_item_variant_id
+              - product_item_id
   "/api/v1/wishlists/show_wishlistitems":
     get:
       summary: show wishlist

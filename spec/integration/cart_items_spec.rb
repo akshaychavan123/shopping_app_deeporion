@@ -89,31 +89,31 @@ RSpec.describe 'Api::V1::CartItems', type: :request do
         parameter name: :cart_item, in: :body, schema: {
           type: :object,
           properties: {
-            product_item_variant_id: { type: :integer },
+            product_item_id: { type: :integer },
             # quantity: { type: :integer }
           },
-          required: ['product_item_variant_id']
+          required: ['product_item_id']
         }
   
         response '200', 'item added to cart' do
-          let(:product_item_variant_id) { create(:product_item_variant_id).id }
+          let(:product_item_id) { create(:product_item_id).id }
           let(:quantity) { 1 }
   
-          let(:cart_item) { { product_item_variant_id: product_item_variant_id} }
+          let(:cart_item) { { product_item_id: product_item_id} }
   
           run_test!
         end
   
         response '401', 'unauthorized' do
           let(:Authorization) { nil }
-          let(:cart_item) { { product_item_variant_id: create(:product_item_variant_id).id } }
+          let(:cart_item) { { product_item_id: create(:product_item_id).id } }
   
           run_test!
         end
   
         response '404', 'product item not found' do
-          let(:product_item_variant_id) { 'invalid' }
-          let(:cart_item) { { product_item_variant_id: product_item_variant_id} }
+          let(:product_item_id) { 'invalid' }
+          let(:cart_item) { { product_item_id: product_item_id} }
   
           run_test!
         end
@@ -128,42 +128,42 @@ RSpec.describe 'Api::V1::CartItems', type: :request do
         parameter name: :cart_item, in: :body, schema: {
           type: :object,
           properties: {
-            product_item_variant_id: { type: :integer },
+            product_item_id: { type: :integer },
             action_type: { type: :string, enum: ['remove', 'wishlist'] }
           },
-          required: ['product_item_variant_id', 'action_type']
+          required: ['product_item_id', 'action_type']
         }
   
         response '200', 'item removed or moved to wishlist' do
-          let(:product_item_variant_id) { create(:product_item_variant_id).id }
+          let(:product_item_id) { create(:product_item_id).id }
           let(:action_type) { 'remove' }
   
-          let(:cart_item) { { product_item_variant_id: product_item_variant_id, action_type: action_type } }
+          let(:cart_item) { { product_item_id: product_item_id, action_type: action_type } }
   
           run_test!
         end
   
         response '401', 'unauthorized' do
           let(:Authorization) { nil }
-          let(:cart_item) { { product_item_variant_id: create(:product_item_variant_id).id, action_type: 'remove' } }
+          let(:cart_item) { { product_item_id: create(:product_item_id).id, action_type: 'remove' } }
   
           run_test!
         end
   
         response '404', 'item not found in cart' do
-          let(:product_item_variant_id) { 'invalid' }
+          let(:product_item_id) { 'invalid' }
           let(:action_type) { 'remove' }
   
-          let(:cart_item) { { product_item_variant_id: product_item_variant_id, action_type: action_type } }
+          let(:cart_item) { { product_item_id: product_item_id, action_type: action_type } }
   
           run_test!
         end
   
         response '400', 'invalid action type' do
-          let(:product_item_variant_id) { create(:product_item).id }
+          let(:product_item_id) { create(:product_item).id }
           let(:action_type) { 'invalid' }
   
-          let(:cart_item) { { product_item_variant_id: product_item_variant_id, action_type: action_type } }
+          let(:cart_item) { { product_item_id: product_item_id, action_type: action_type } }
   
           run_test!
         end

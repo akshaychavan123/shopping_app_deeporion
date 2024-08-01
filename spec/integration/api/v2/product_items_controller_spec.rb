@@ -24,6 +24,10 @@ RSpec.describe 'Api::V2::ProductItems', type: :request do
           type: :object,
           properties: {
             image: { type: :file },
+            photos: {
+              type: :array,
+              items: { type: :string, format: :binary }
+            },
             product_id: { type: :integer },
             name: { type: :string },
             brand: { type: :string },
@@ -33,7 +37,7 @@ RSpec.describe 'Api::V2::ProductItems', type: :request do
             care: { type: :string },
             product_code: { type: :string },
           },
-          required: ['name', 'brand', 'description', 'product_code', 'product_id']
+          required: ['image','photos','name', 'brand', 'description', 'product_code', 'product_id']
         }
     
         response(201, 'created') do
@@ -47,7 +51,8 @@ RSpec.describe 'Api::V2::ProductItems', type: :request do
               material: 'Cotton',
               care: 'Machine wash',
               product_code: 'Code123',
-              image: Rack::Test::UploadedFile.new(Rails.root.join('spec/fixtures/test_image.jpg'), 'image/jpeg')
+              image: Rack::Test::UploadedFile.new(Rails.root.join('spec/fixtures/test_image.jpg'), 'image/jpeg'),
+              photos: Rack::Test::UploadedFile.new(Rails.root.join('spec/fixtures/test_image.jpg'), 'image/jpeg')
             }
           end
           run_test!

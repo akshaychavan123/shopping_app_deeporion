@@ -3,7 +3,7 @@ class Api::V1::CartItemsController < ApplicationController
   before_action :set_cart, only: [:index, :update, :add_item, :remove_or_move_to_wishlist]
 
   def index
-    @cart_items = @cart.cart_items.includes(product_item_variant: :product_item)
+    @cart_items = @cart.cart_items.includes(:product_item)
     render json: { data: ActiveModelSerializers::SerializableResource.new(@cart_items, each_serializer: CartItemSerializer) }
   end
   
@@ -17,24 +17,26 @@ class Api::V1::CartItemsController < ApplicationController
   end
 
   def add_item
-    product_item_variant = ProductItemVariant.find(params[:product_item_variant_id])
-    cart_item = @cart.cart_items.find_or_initialize_by(product_item_variant: product_item_variant)
+    product_item = ProductItem.find(params[:product_item_id])
+    cart_item = @cart.cart_items.find_or_initialize_by(product_item: product_item)
     if cart_item.save
-      render json: { data: ActiveModelSerializers::SerializableResource.new(@cart.cart_items.includes(product_item_variant: :product_item), each_serializer: CartItemSerializer) }
+      render json: { message: 'Item added to cart' }
     else
       render json: cart_item.errors, status: :unprocessable_entity
     end
   end
 
   def remove_or_move_to_wishlist
-    cart_item = @cart.cart_items.find_by(product_item_variant_id: params[:product_item_variant_id])
+    cart_item = @cart.cart_items.find_by(product_item_id: params[:product_item_id])
+  
     if cart_item
-      if params[:action_type] == 'remove'
+      case params[:action_type]
+      when 'remove'
         cart_item.destroy
-        render json: @cart, include: { cart_items: { include: { product_item_variant: { include: :product_item } } } }
-      elsif params[:action_type] == 'wishlist'
+        render json: { message: 'Item removed' }
+      when 'wishlist'
         wishlist = Wishlist.find_or_create_by(user: @cart.user)
-        wishlist.wishlist_items.find_or_create_by(product_item_variant: cart_item.product_item_variant)
+        wishlist.wishlist_items.find_or_create_by(product_item: cart_item.product_item)
         cart_item.destroy
         render json: { message: 'Item moved to wishlist' }
       else
@@ -44,6 +46,7 @@ class Api::V1::CartItemsController < ApplicationController
       render json: { error: 'Item not found in cart' }, status: :not_found
     end
   end
+  
 
   private
 
