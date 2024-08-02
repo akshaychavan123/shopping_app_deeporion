@@ -15,10 +15,12 @@ class Api::V1::ReviewsController < ApplicationController
 
   
   def index
-    @reviews = @product_item.reviews
-
-    render json: @reviews
+    @reviews = @product_item.reviews.includes(:review_votes)
+    render json: {
+    data: ActiveModelSerializers::SerializableResource.new(@reviews, each_serializer: Review2Serializer)
+  }
   end
+  
 
   def show_all_review
     @reviews = Review.all.page(params[:page]).per(params[:per_page])
