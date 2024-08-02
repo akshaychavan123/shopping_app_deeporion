@@ -23,6 +23,7 @@ Rails.application.routes.draw do
           patch :update_image
           delete :delete_image
           patch :update_profile
+          get :show_profile
         end
       end
 
