@@ -601,6 +601,27 @@ paths:
                   - updated_at
         '404':
           description: not found
+  "/api/v1/reviews/show_all_review":
+    get:
+      summary: List All Reviews
+      tags:
+      - Reviews
+      parameters:
+      - name: page
+        in: query
+        description: Page number for pagination
+        schema:
+          type: integer
+      - name: per_page
+        in: query
+        description: Number of items per page
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: successful
+        '404':
+          description: not found
   "/api/v2/coupons":
     get:
       summary: list coupons

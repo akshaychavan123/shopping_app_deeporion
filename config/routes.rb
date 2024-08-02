@@ -4,7 +4,12 @@ Rails.application.routes.draw do
   
   namespace :api do
     namespace :v1 do
-      resources :reviews, only: [:create, :index]
+      resources :reviews, only: [:create, :index] do
+        collection do
+          get :show_all_review
+        end
+      end
+
       resources :review_votes, only: [:create]
 
       root to: 'home#index'
