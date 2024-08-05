@@ -148,4 +148,50 @@ RSpec.describe 'api/v1/users', type: :request do
       end
     end
   end
+
+  path '/api/v1/users/{id}/update_address' do
+    patch 'Update user address' do
+      tags 'Users'
+      security [bearerAuth: []]
+      consumes 'application/json'
+      parameter name: :user, in: :body, schema: {
+        type: :object,
+        properties: {
+          user: {
+            type: :object,
+            properties: {
+              first_name: { type: :string },
+              last_name: { type: :string },
+              address: { type: :string },
+              city: { type: :string },
+              state: { type: :string },
+              country: { type: :string },
+              pincode: { type: :string },
+              area: { type: :string },
+              address_type: { type: :string },
+              phone_number: { type: :string },
+              email: { type: :string }
+            },
+            required: ['first_name', 'last_name', 'address', 'city', 'state', 'country', 'pincode', 'area', 'address_type', 'phone_number', 'email']
+          }
+        }
+      }
+  
+      response '200', 'Address updated' do
+        let(:user) { { user: { first_name: 'Tessa', last_name: 'Rain', address: '19f Abhinay Theatre Complex, bvk Iyengar Street', city: 'Bangalore', state: 'Karnataka', country: 'India', pincode: '560009', area: 'bvk Iyengar Street', address_type: 'Home', phone_number: '+91 1234567890', email: 'tessarain@gmail.com' } } }
+        run_test!
+      end
+  
+      response '401', 'Unauthorized' do
+        let(:Authorization) { nil }
+        let(:user) { { user: { first_name: 'Tessa', last_name: 'Rain' } } }
+        run_test!
+      end
+  
+      response '422', 'Invalid params' do
+        let(:user) { { user: { first_name: '', last_name: '' } } }
+        run_test!
+      end
+    end
+  end  
 end

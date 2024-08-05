@@ -1,5 +1,11 @@
 class CartItemSerializer < ActiveModel::Serializer
-  attributes :id, :quantity, :product_item_id, :product_item_name, :product_item_brand, :price_of_product, :rating_and_review, :image
+  attributes :id, :quantity, :size#, :product_item :quantity#, :product_item_id#, :product_item_name, :product_item_brand, :price_of_product, :rating_and_review, :image
+  belongs_to :product_item, serializer: ProductItem3Serializer
+  # belongs_to :product_item_variant
+
+  def size
+    object.product_item_variant&.size
+  end
   
   def product_item_name
     object.product_item.name
