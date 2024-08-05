@@ -1,5 +1,6 @@
 class User < ApplicationRecord
   has_secure_password
+  before_validation :downcase_email
 
   validates :password, format: { with: /\A(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}\z/,
   message: "must contain at least one uppercase letter, one lowercase letter, and one digit" }, if: :password_digest_changed?
@@ -85,5 +86,9 @@ class User < ApplicationRecord
     self.full_phone_number = phone.sanitized
     self.country_code = phone.country_code
     self.phone_number = phone.national
+  end
+
+  def downcase_email
+    self.email = email.downcase if email.present?
   end
 end
