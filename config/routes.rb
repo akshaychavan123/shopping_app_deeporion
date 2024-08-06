@@ -11,6 +11,7 @@ Rails.application.routes.draw do
       end
 
       resources :review_votes, only: [:create]
+      resources :addresses
 
       root to: 'home#index'
       resources :home, only: [:index]
@@ -24,6 +25,9 @@ Rails.application.routes.draw do
       post '/auth/google_oauth2', to: 'sessions#google_auth'
 
       resources :users, only: [:create] do
+        collection do
+          get :user_details
+        end
         member do
           patch :update_image
           delete :delete_image

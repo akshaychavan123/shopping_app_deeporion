@@ -145,10 +145,10 @@ class Api::V1::LandingPageController < ApplicationController
   
   def product_items_search
     @product_items = ProductItem.all
-   
+
     if params[:search].present?
-      search_term = "%#{params[:search]}%"
-      @product_items = @product_items.where('product_items.name LIKE :search_term OR product_items.brand LIKE :search_term OR product_items.material LIKE :search_term', search_term: search_term)
+      search_term = "%#{params[:search].downcase}%"
+      @product_items = @product_items.where('LOWER(product_items.name) LIKE :search_term OR LOWER(product_items.brand) LIKE :search_term OR LOWER(product_items.material) LIKE :search_term', search_term: search_term)
     end
     
     @product_items = @product_items.page(params[:page]).per(params[:per_page])

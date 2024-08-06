@@ -148,4 +148,29 @@ RSpec.describe 'api/v1/users', type: :request do
       end
     end
   end
+
+  path '/api/v1/users/user_details' do
+    get 'Show User user_details' do
+      tags 'Users'
+      security [bearerAuth: []]
+      response '200', 'Profile data' do
+        let(:id) { user.id }
+        run_test!
+      end
+
+      response '401', 'Unauthorized' do
+        let(:Authorization) { nil }
+        let(:id) { user.id }
+
+        run_test!
+      end
+
+      response '422', 'Unprocessable entity' do
+        let(:id) { 'invalid_id' }
+        run_test!
+      end
+    end
+  end
+
+
 end

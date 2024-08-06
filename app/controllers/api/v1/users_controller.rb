@@ -59,6 +59,13 @@ class Api::V1::UsersController < ApplicationController
   }
   end
 
+  def user_details
+    render json: {
+      data: ActiveModelSerializers::SerializableResource.new(@user, each_serializer: UserDetailSerializer)
+  }
+  end
+
+
   private
 
   def find_user
