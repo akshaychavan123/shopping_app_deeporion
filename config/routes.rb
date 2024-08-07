@@ -83,6 +83,7 @@ Rails.application.routes.draw do
       resources :product_items, only: [:index, :show, :create, :update, :destroy] 
       resources :categories, only: [:index, :show, :create, :update, :destroy]
       resources :terms_and_conditions, only: [:index, :show, :create, :update, :destroy]
+      resources :about_us, only: [:index, :show, :create, :update, :destroy]
       resources :products, only: [:index, :show, :create, :update, :destroy] do
         # resources :product_items, only: [:index, :show, :create, :update, :destroy] 
       end
