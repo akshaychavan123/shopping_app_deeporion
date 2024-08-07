@@ -48,12 +48,13 @@ Rails.application.routes.draw do
       get 'landing_page/gift_cards_category', to: 'landing_page#gift_cards_category'
       get 'landing_page/gift_cards_by_category/:id', to: 'landing_page#gift_cards_by_category'
       get '/landing_page/product_items_of_product/:id', to: 'landing_page#product_items_of_product'
+      get '/landing_page/product_items_by_sub_category/:id', to: 'landing_page#product_items_by_sub_category'
       get '/landing_page/product_items_show/:id', to: 'landing_page#product_items_show'
       get '/landing_page/product_items_filter', to: 'landing_page#product_items_filter'
       get '/landing_page/product_items_search', to: 'landing_page#product_items_search'
       get '/landing_page/new_arrivals', to: 'landing_page#new_arrivals'
       get '/landing_page/index_of_product_by_category/:id', to: 'landing_page#index_of_product_by_category'     
-
+      
       resources :orders, only: [:create]
       resources :contact_us, only: [:create]
 

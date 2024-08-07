@@ -22,4 +22,17 @@ class ApplicationController < ActionController::Base
       render json: { errors: e.message }, status: :unauthorized
     end
   end
+
+  def set_current_user
+    header = request.headers['Authorization']
+    if header
+      token = header.split(' ').last
+      begin
+        decoded_token = JsonWebToken.decode(token)
+        @current_user = User.find(decoded_token[:user_id])
+      rescue ActiveRecord::RecordNotFound, JWT::DecodeError
+        @current_user = nil
+      end
+    end
+  end
 end
