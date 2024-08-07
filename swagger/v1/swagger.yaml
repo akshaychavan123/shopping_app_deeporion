@@ -1415,6 +1415,93 @@ paths:
           description: terms and condition not found
         '403':
           description: Unauthorized access
+  "/api/v2/video_libraries":
+    get:
+      summary: Retrieves all Video Libraries
+      tags:
+      - Video Libraries
+      responses:
+        '200':
+          description: video_library found
+    post:
+      summary: Creates a Video Library
+      tags:
+      - Video Libraries
+      security:
+      - bearerAuth2: []
+      parameters: []
+      responses:
+        '201':
+          description: video_library created
+        '422':
+          description: invalid request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                description:
+                  type: string
+                video_link:
+                  type: string
+              required:
+              - description
+              - video_link
+  "/api/v2/video_libraries/{id}":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Retrieves a specific Video Library
+      tags:
+      - Video Libraries
+      responses:
+        '200':
+          description: video_library found
+        '404':
+          description: video_library not found
+    put:
+      summary: Updates a specific Video Library
+      tags:
+      - Video Libraries
+      security:
+      - bearerAuth2: []
+      parameters: []
+      responses:
+        '200':
+          description: video_library updated
+        '422':
+          description: invalid request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                description:
+                  type: string
+                video_link:
+                  type: string
+              required:
+              - description
+              - video_link
+    delete:
+      summary: Deletes a specific Video Library
+      tags:
+      - Video Libraries
+      security:
+      - bearerAuth2: []
+      responses:
+        '204':
+          description: video_library deleted
+        '404':
+          description: video_library not found
+        '422':
+          description: cannot delete video_library
   "/api/v1/auth/login":
     post:
       summary: Logs in a user

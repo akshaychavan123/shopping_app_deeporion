@@ -86,6 +86,7 @@ Rails.application.routes.draw do
       resources :about_us, only: [:index, :show, :create, :update, :destroy]
       resources :exchange_return_policies, only: [:index, :show, :create, :update, :destroy]
       resources :shipping_policies, only: [:index, :show, :create, :update, :destroy]
+      resources :video_libraries, only: [:index, :show, :create, :update, :destroy]
       resources :products, only: [:index, :show, :create, :update, :destroy] do
         # resources :product_items, only: [:index, :show, :create, :update, :destroy] 
       end
