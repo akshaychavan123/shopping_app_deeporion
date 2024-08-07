@@ -873,6 +873,93 @@ paths:
           description: successful
         '404':
           description: not found
+  "/api/v2/exchange_return_policies":
+    get:
+      summary: Retrieves all Exchange & Return Policies
+      tags:
+      - Exchange & Return Policies
+      responses:
+        '200':
+          description: exchange_return_policy found
+    post:
+      summary: Creates an Exchange & Return Policy
+      tags:
+      - Exchange & Return Policies
+      security:
+      - bearerAuth2: []
+      parameters: []
+      responses:
+        '201':
+          description: exchange_return_policy created
+        '422':
+          description: invalid request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                heading:
+                  type: string
+                description:
+                  type: string
+              required:
+              - heading
+              - description
+  "/api/v2/exchange_return_policies/{id}":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Retrieves a specific Exchange & Return Policy
+      tags:
+      - Exchange & Return Policies
+      responses:
+        '200':
+          description: exchange_return_policy found
+        '404':
+          description: exchange_return_policy not found
+    put:
+      summary: Updates a specific Exchange & Return Policy
+      tags:
+      - Exchange & Return Policies
+      security:
+      - bearerAuth2: []
+      parameters: []
+      responses:
+        '200':
+          description: exchange_return_policy updated
+        '422':
+          description: invalid request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                heading:
+                  type: string
+                description:
+                  type: string
+              required:
+              - heading
+              - description
+    delete:
+      summary: Deletes a specific Exchange & Return Policy
+      tags:
+      - Exchange & Return Policies
+      security:
+      - bearerAuth2: []
+      responses:
+        '204':
+          description: exchange_return_policy deleted
+        '404':
+          description: exchange_return_policy not found
+        '422':
+          description: cannot delete exchange_return_policy
   "/api/v2/gift_cards":
     get:
       summary: list gift_cards
