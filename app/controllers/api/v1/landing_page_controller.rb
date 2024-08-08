@@ -47,6 +47,16 @@ class Api::V1::LandingPageController < ApplicationController
     end
   end
 
+  def top_category
+    @top_category = Product.top_category.includes(:subcategory)
+
+    if @top_category.any?
+      render json: { data: ActiveModelSerializers::SerializableResource.new(@top_category, each_serializer: ProductSerializer)}
+    else
+      render json: { errors: ['No new arrivals found'] }, status: :not_found
+    end
+  end
+
   def product_items_index
     @product_items = ProductItem.includes(:product_item_variants).all
     render json: { data: ActiveModelSerializers::SerializableResource.new(@product_items, each_serializer: ProductItemSerializer)}
@@ -78,7 +88,8 @@ class Api::V1::LandingPageController < ApplicationController
     @product_item = ProductItem.includes(:product_item_variants).find_by(id: params[:id])
 
     if @product_item
-      render json: { data: ActiveModelSerializers::SerializableResource.new(@product_item, serializer: ProductItemSerializer, current_user: @current_user) }
+      review_summary = calculate_review_summary(@product_item.id)
+      render json: { data: ActiveModelSerializers::SerializableResource.new(@product_item, serializer: ProductItemSerializer, current_user: @current_user), summary: review_summary }
     else
       render json: { errors: ['Product item not found'] }, status: :not_found
     end
@@ -169,6 +180,19 @@ class Api::V1::LandingPageController < ApplicationController
       prev_page: collection.prev_page,
       total_pages: collection.total_pages,
       total_count: collection.total_count
+    }
+  end
+
+  def calculate_review_summary(id)
+    reviews = Review.where(product_item_id: id)
+    {
+      total_review_count: reviews.count,
+      average_rating: reviews.average(:star).to_f,
+      one_star_count: reviews.where(star: 1).count,
+      two_star_count: reviews.where(star: 2).count,
+      three_star_count: reviews.where(star: 3).count,
+      four_star_count: reviews.where(star: 4).count,
+      five_star_count: reviews.where(star: 5).count
     }
   end
 end

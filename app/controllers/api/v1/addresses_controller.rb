@@ -3,7 +3,7 @@ class Api::V1::AddressesController < ApplicationController
   before_action :find_user
   
   def create
-    @address = @user.addresses.build(address_params)
+    @address = @user.build_address(address_params)
     if @address.save
       render json: { message: 'Address was successfully created.', address: @address }, status: :created
     else

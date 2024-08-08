@@ -307,6 +307,55 @@ RSpec.describe 'Api::V1::LandingPage', type: :request do
     end
   end
 
+  path '/api/v1/landing_page/top_category' do
+    get('top category') do
+      tags 'Landing Page'
+      produces 'application/json'
+  
+      response(200, 'successful') do
+        schema type: :object,
+          properties: {
+            data: {
+              type: :array,
+              items: {
+                type: :object,
+                properties: {
+                  id: { type: :integer },
+                  name: { type: :string },
+                  image: { type: :string, format: :uri },
+                  subcategory: {
+                    type: :object,
+                    properties: {
+                      id: { type: :integer },
+                      name: { type: :string }
+                    },
+                    required: ['id', 'name']
+                  }
+                },
+                required: ['id', 'name', 'image', 'subcategory']
+              }
+            }
+          },
+          required: ['data']
+  
+        run_test!
+      end
+  
+      response(404, 'not found') do
+        schema type: :object,
+          properties: {
+            errors: {
+              type: :array,
+              items: { type: :string }
+            }
+          },
+          required: ['errors']
+  
+        run_test!
+      end
+    end
+  end  
+
   path '/api/v1/landing_page/product_items_search' do
     get('search product items') do
       tags 'Search API'
