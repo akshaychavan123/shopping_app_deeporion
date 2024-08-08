@@ -2176,8 +2176,6 @@ paths:
       summary: list products
       tags:
       - Products
-      security:
-      - bearerAuth2: []
       responses:
         '200':
           description: successful
@@ -2197,7 +2195,7 @@ paths:
           description: unauthorized
       requestBody:
         content:
-          application/json:
+          multipart/form-data:
             schema:
               type: object
               properties:
@@ -2205,7 +2203,10 @@ paths:
                   type: string
                 subcategory_id:
                   type: integer
+                image:
+                  type: file
               required:
+              - image
               - name
               - subcategory_id
   "/api/v2/products/{id}":
@@ -2235,7 +2236,13 @@ paths:
       - Products
       security:
       - bearerAuth2: []
-      parameters: []
+      parameters:
+      - name: id
+        in: path
+        description: ID of the product to update
+        required: true
+        schema:
+          type: integer
       responses:
         '200':
           description: successful
@@ -2245,12 +2252,16 @@ paths:
           description: unauthorized
       requestBody:
         content:
-          application/json:
+          multipart/form-data:
             schema:
               type: object
               properties:
                 name:
                   type: string
+                subcategory_id:
+                  type: integer
+                image:
+                  type: file
               required:
               - name
     delete:

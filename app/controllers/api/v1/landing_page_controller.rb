@@ -8,9 +8,9 @@ class Api::V1::LandingPageController < ApplicationController
 
   def index_with_subcategories_and_products
     @categories = Category.includes(subcategories: :products).all
-    render json: @categories, include: { subcategories: { include: :products } }
+    render json: @categories, each_serializer: CategorySerializer
   end
-
+  
   def product_items_by_category
     @category = Category.find(params[:id])
     @product_items = ProductItem.joins(product: { subcategory: :category })
@@ -36,17 +36,6 @@ class Api::V1::LandingPageController < ApplicationController
       meta: pagination_meta(@product_items)
     }
   end
-  
-  # def index_of_product_by_category
-  #   @category = Category.find(params[:id])
-  
-  #   if @category
-  #     products = @category.products
-  #     render json: products
-  #   else
-  #     render json: { error: 'Category not found' }, status: :not_found
-  #   end
-  # end
 
   def new_arrivals
     @new_arrivals = ProductItem.new_arrivals.includes(:product)
@@ -57,12 +46,6 @@ class Api::V1::LandingPageController < ApplicationController
       render json: { errors: ['No new arrivals found'] }, status: :not_found
     end
   end
-
-  # def products_index
-  #   @subcategory = Subcategory.find(params[:id])
-  #   @products = @subcategory.products
-  #   render json: @products
-  # end
 
   def product_items_index
     @product_items = ProductItem.includes(:product_item_variants).all
