@@ -9,7 +9,7 @@ class ProductItem < ApplicationRecord
   # has_many :wishlists, through: :wishlist_items
   has_many :cart_items
   has_many :carts, through: :cart_items
-  has_many :reviews
+  has_many :reviews, dependent: :destroy
   has_many :product_item_variants
   has_many :coupons, as: :couponable
   has_one_attached :image

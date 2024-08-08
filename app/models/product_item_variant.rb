@@ -1,5 +1,6 @@
 class ProductItemVariant < ApplicationRecord
   belongs_to :product_item
+  belongs_to :cart_item, optional: true  # Allow nil value
   # has_many :wishlist_items, dependent: :destroy
   # has_many :cart_items
   has_many :coupons, as: :couponable

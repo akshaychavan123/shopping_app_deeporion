@@ -52,6 +52,20 @@ class Api::V1::UsersController < ApplicationController
     end
   end
 
+  def show_profile
+    @user = @current_user
+    render json: {
+      data: ActiveModelSerializers::SerializableResource.new(@user, each_serializer: UserSerializer)
+  }
+  end
+
+  def user_details
+    render json: {
+      data: ActiveModelSerializers::SerializableResource.new(@user, each_serializer: UserDetailSerializer)
+  }
+  end
+
+
   private
 
   def find_user

@@ -1,18 +1,12 @@
+require 'httparty'                                                             
+require 'json'
 class Api::V1::SessionsController < ApplicationController
+  include HTTParty
 
   def google_auth
-    auth = request.env['omniauth.auth']
-    
-    if auth.nil?
-      render json: { error: 'OAuth authentication data not received' }, status: :unprocessable_entity
-      return
-    end
-  
-    @user = User.find_or_initialize_by(uid: auth['uid'], provider: auth['provider']) do |u|
-      u.name = auth['info']['name']
-      u.email = auth['info']['email']
-      u.password = SecureRandom.hex(10)
-    end
+    url = "https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=#{params["id_token"]}"                  
+    response = HTTParty.get(url)                   
+    @user = User.create_user_for_google(response.parsed_response)      
 
     if @user.new_record?
       if @user.save

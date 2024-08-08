@@ -14,6 +14,64 @@ components:
       scheme: bearer
       bearerFormat: JWT
 paths:
+  "/api/v1/addresses":
+    post:
+      summary: Creates an Address
+      tags:
+      - Addresses
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '201':
+          description: address created
+        '422':
+          description: invalid request
+        '401':
+          description: unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                last_name:
+                  type: string
+                phone_number:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                country:
+                  type: string
+                pincode:
+                  type: string
+                area:
+                  type: string
+                state:
+                  type: string
+                address:
+                  type: string
+                city:
+                  type: string
+                address_type:
+                  type: string
+                default:
+                  type: boolean
+              required:
+              - first_name
+              - last_name
+              - phone_number
+              - email
+              - country
+              - pincode
+              - area
+              - state
+              - address
+              - city
+              - address_type
   "/api/v1/contact_us":
     post:
       summary: Creates a Contact Us record
@@ -74,6 +132,8 @@ paths:
       tags:
       - Landing Page
       description: Fetches all product items associated with a specific category.
+      security:
+      - bearerAuth: []
       parameters:
       - name: id
         in: path
@@ -96,20 +156,36 @@ paths:
           description: successful
         '404':
           description: category not found
-  "/api/v1/landing_page/products_index":
+  "/api/v1/landing_page/product_items_by_sub_category/{id}":
     get:
-      summary: list products
+      summary: Get product items by subcategory
       tags:
       - Landing Page
+      description: Fetches all product items associated with a specific subcategory.
+      security:
+      - bearerAuth: []
       parameters:
       - name: id
+        in: path
+        description: ID of the subcategory to fetch product items for
+        required: true
+        schema:
+          type: integer
+      - name: page
         in: query
-        description: Subcategory ID
+        description: Page number for pagination
+        schema:
+          type: integer
+      - name: per_page
+        in: query
+        description: Number of items per page
         schema:
           type: integer
       responses:
         '200':
           description: successful
+        '404':
+          description: subcategory not found
   "/api/v1/landing_page/product_items_index":
     get:
       summary: list product items
@@ -161,6 +237,8 @@ paths:
       summary: retrieve product_item
       tags:
       - Landing Page
+      security:
+      - bearerAuth: []
       responses:
         '200':
           description: successful
@@ -178,6 +256,8 @@ paths:
       summary: retrieve product_item
       tags:
       - Landing Page
+      security:
+      - bearerAuth: []
       responses:
         '200':
           description: successful
@@ -188,7 +268,15 @@ paths:
       summary: list and filter product items
       tags:
       - Landing Page
+      security:
+      - bearerAuth: []
       parameters:
+      - name: category_id
+        in: query
+        description: ID of the Category
+        required: true
+        schema:
+          type: integer
       - name: subcategory_id
         in: query
         description: ID of the subcategory
@@ -295,6 +383,8 @@ paths:
       summary: new arrivals
       tags:
       - New Arrivals
+      security:
+      - bearerAuth: []
       responses:
         '200':
           description: successful
@@ -355,6 +445,8 @@ paths:
       summary: search product items
       tags:
       - Search API
+      security:
+      - bearerAuth: []
       parameters:
       - name: search
         in: query
@@ -474,6 +566,364 @@ paths:
               - token
               - password
               - password_confirmation
+  "/api/v1/review_votes":
+    post:
+      summary: Create Review Vote
+      tags:
+      - Review Votes
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '201':
+          description: created
+        '422':
+          description: unprocessable entity
+        '401':
+          description: unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                helpful:
+                  type: boolean
+                review_id:
+                  type: integer
+              required:
+              - helpful
+              - review_id
+  "/api/v1/reviews":
+    post:
+      summary: Create Review
+      tags:
+      - Reviews
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '201':
+          description: created
+        '422':
+          description: unprocessable entity
+        '401':
+          description: unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                star:
+                  type: integer
+                recommended:
+                  type: boolean
+                review:
+                  type: string
+                product_item_id:
+                  type: integer
+              required:
+              - star
+              - recommended
+              - review
+              - product_item_id
+    get:
+      summary: List Reviews
+      tags:
+      - Reviews
+      parameters:
+      - name: product_item_id
+        in: query
+        description: Product Item ID
+        required: false
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    user_id:
+                      type: integer
+                    product_item_id:
+                      type: integer
+                    star:
+                      type: integer
+                    recommended:
+                      type: boolean
+                    review:
+                      type: string
+                    created_at:
+                      type: string
+                      format: date-time
+                    updated_at:
+                      type: string
+                      format: date-time
+                  required:
+                  - id
+                  - user_id
+                  - product_item_id
+                  - star
+                  - recommended
+                  - review
+                  - created_at
+                  - updated_at
+        '404':
+          description: not found
+  "/api/v1/reviews/show_all_review":
+    get:
+      summary: List All Reviews
+      tags:
+      - Reviews
+      parameters:
+      - name: page
+        in: query
+        description: Page number for pagination
+        schema:
+          type: integer
+      - name: per_page
+        in: query
+        description: Number of items per page
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: successful
+        '404':
+          description: not found
+  "/api/v2/about_us":
+    get:
+      summary: Retrieves all About Us entries
+      tags:
+      - About Us
+      responses:
+        '200':
+          description: about us found
+    post:
+      summary: Creates an About Us entry
+      tags:
+      - About Us
+      security:
+      - bearerAuth2: []
+      parameters: []
+      responses:
+        '201':
+          description: about us created
+        '422':
+          description: invalid request
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                heading:
+                  type: string
+                description:
+                  type: string
+                images:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+              required:
+              - heading
+              - description
+  "/api/v2/about_us/{id}":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Retrieves a specific About Us entry
+      tags:
+      - About Us
+      responses:
+        '200':
+          description: about us found
+        '404':
+          description: about us not found
+    put:
+      summary: Updates a specific About Us entry
+      tags:
+      - About Us
+      security:
+      - bearerAuth2: []
+      parameters: []
+      responses:
+        '200':
+          description: about us updated
+        '422':
+          description: invalid request
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                heading:
+                  type: string
+                description:
+                  type: string
+                images:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+    delete:
+      summary: Deletes a specific About Us entry
+      tags:
+      - About Us
+      security:
+      - bearerAuth2: []
+      responses:
+        '204':
+          description: about us deleted
+        '404':
+          description: about us not found
+  "/api/v2/careers":
+    get:
+      summary: Retrieves all Careers
+      tags:
+      - Careers
+      responses:
+        '200':
+          description: careers found
+    post:
+      summary: Creates a Career
+      tags:
+      - Careers
+      security:
+      - bearerAuth2: []
+      parameters: []
+      responses:
+        '201':
+          description: career created
+        '422':
+          description: invalid request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                header:
+                  type: string
+                career_roles_attributes:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      role_name:
+                        type: string
+                      role_type:
+                        type: string
+                      location:
+                        type: string
+                      role_overview:
+                        type: string
+                      key_responsibility:
+                        type: string
+                      requirements:
+                        type: string
+                      email_id:
+                        type: string
+                    required:
+                    - role_name
+                    - role_type
+                    - location
+                    - role_overview
+                    - key_responsibility
+                    - requirements
+                    - email_id
+              required:
+              - header
+  "/api/v2/careers/{id}":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Retrieves a specific Career
+      tags:
+      - Careers
+      responses:
+        '200':
+          description: career found
+        '404':
+          description: career not found
+    put:
+      summary: Updates a specific Career
+      tags:
+      - Careers
+      security:
+      - bearerAuth2: []
+      parameters: []
+      responses:
+        '200':
+          description: career updated
+        '404':
+          description: career not found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                header:
+                  type: string
+                career_roles_attributes:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      role_name:
+                        type: string
+                      role_type:
+                        type: string
+                      location:
+                        type: string
+                      role_overview:
+                        type: string
+                      key_responsibility:
+                        type: string
+                      requirements:
+                        type: string
+                      email_id:
+                        type: string
+                    required:
+                    - role_name
+                    - role_type
+                    - location
+                    - role_overview
+                    - key_responsibility
+                    - requirements
+                    - email_id
+              required:
+              - header
+    delete:
+      summary: Deletes a specific Career
+      tags:
+      - Careers
+      security:
+      - bearerAuth2: []
+      responses:
+        '204':
+          description: career deleted
+        '404':
+          description: career not found
   "/api/v2/coupons":
     get:
       summary: list coupons
@@ -556,6 +1006,93 @@ paths:
           description: successful
         '404':
           description: not found
+  "/api/v2/exchange_return_policies":
+    get:
+      summary: Retrieves all Exchange & Return Policies
+      tags:
+      - Exchange & Return Policies
+      responses:
+        '200':
+          description: exchange_return_policy found
+    post:
+      summary: Creates an Exchange & Return Policy
+      tags:
+      - Exchange & Return Policies
+      security:
+      - bearerAuth2: []
+      parameters: []
+      responses:
+        '201':
+          description: exchange_return_policy created
+        '422':
+          description: invalid request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                heading:
+                  type: string
+                description:
+                  type: string
+              required:
+              - heading
+              - description
+  "/api/v2/exchange_return_policies/{id}":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Retrieves a specific Exchange & Return Policy
+      tags:
+      - Exchange & Return Policies
+      responses:
+        '200':
+          description: exchange_return_policy found
+        '404':
+          description: exchange_return_policy not found
+    put:
+      summary: Updates a specific Exchange & Return Policy
+      tags:
+      - Exchange & Return Policies
+      security:
+      - bearerAuth2: []
+      parameters: []
+      responses:
+        '200':
+          description: exchange_return_policy updated
+        '422':
+          description: invalid request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                heading:
+                  type: string
+                description:
+                  type: string
+              required:
+              - heading
+              - description
+    delete:
+      summary: Deletes a specific Exchange & Return Policy
+      tags:
+      - Exchange & Return Policies
+      security:
+      - bearerAuth2: []
+      responses:
+        '204':
+          description: exchange_return_policy deleted
+        '404':
+          description: exchange_return_policy not found
+        '422':
+          description: cannot delete exchange_return_policy
   "/api/v2/gift_cards":
     get:
       summary: list gift_cards
@@ -820,6 +1357,93 @@ paths:
           description: not found
         '401':
           description: unauthorized
+  "/api/v2/shipping_policies":
+    get:
+      summary: Retrieves all Shipping Policies
+      tags:
+      - Shipping Policies
+      responses:
+        '200':
+          description: shipping_policy found
+    post:
+      summary: Creates a Shipping Policy
+      tags:
+      - Shipping Policies
+      security:
+      - bearerAuth2: []
+      parameters: []
+      responses:
+        '201':
+          description: shipping_policy created
+        '422':
+          description: invalid request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                heading:
+                  type: string
+                description:
+                  type: string
+              required:
+              - heading
+              - description
+  "/api/v2/shipping_policies/{id}":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Retrieves a specific Shipping Policy
+      tags:
+      - Shipping Policies
+      responses:
+        '200':
+          description: shipping_policy found
+        '404':
+          description: shipping_policy not found
+    put:
+      summary: Updates a specific Shipping Policy
+      tags:
+      - Shipping Policies
+      security:
+      - bearerAuth2: []
+      parameters: []
+      responses:
+        '200':
+          description: shipping_policy updated
+        '422':
+          description: invalid request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                heading:
+                  type: string
+                description:
+                  type: string
+              required:
+              - heading
+              - description
+    delete:
+      summary: Deletes a specific Shipping Policy
+      tags:
+      - Shipping Policies
+      security:
+      - bearerAuth2: []
+      responses:
+        '204':
+          description: shipping_policy deleted
+        '404':
+          description: shipping_policy not found
+        '422':
+          description: cannot delete shipping_policy
   "/api/v2/terms_and_conditions":
     get:
       summary: Retrieves all terms and conditions
@@ -924,6 +1548,93 @@ paths:
           description: terms and condition not found
         '403':
           description: Unauthorized access
+  "/api/v2/video_libraries":
+    get:
+      summary: Retrieves all Video Libraries
+      tags:
+      - Video Libraries
+      responses:
+        '200':
+          description: video_library found
+    post:
+      summary: Creates a Video Library
+      tags:
+      - Video Libraries
+      security:
+      - bearerAuth2: []
+      parameters: []
+      responses:
+        '201':
+          description: video_library created
+        '422':
+          description: invalid request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                description:
+                  type: string
+                video_link:
+                  type: string
+              required:
+              - description
+              - video_link
+  "/api/v2/video_libraries/{id}":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Retrieves a specific Video Library
+      tags:
+      - Video Libraries
+      responses:
+        '200':
+          description: video_library found
+        '404':
+          description: video_library not found
+    put:
+      summary: Updates a specific Video Library
+      tags:
+      - Video Libraries
+      security:
+      - bearerAuth2: []
+      parameters: []
+      responses:
+        '200':
+          description: video_library updated
+        '422':
+          description: invalid request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                description:
+                  type: string
+                video_link:
+                  type: string
+              required:
+              - description
+              - video_link
+    delete:
+      summary: Deletes a specific Video Library
+      tags:
+      - Video Libraries
+      security:
+      - bearerAuth2: []
+      responses:
+        '204':
+          description: video_library deleted
+        '404':
+          description: video_library not found
+        '422':
+          description: cannot delete video_library
   "/api/v1/auth/login":
     post:
       summary: Logs in a user
@@ -1067,8 +1778,11 @@ paths:
               properties:
                 quantity:
                   type: integer
+                product_item_variant_id:
+                  type: integer
               required:
               - quantity
+              - product_item_variant_id
   "/api/v1/cart/cart_items/add_item":
     post:
       summary: Adds an item to the cart
@@ -1127,6 +1841,41 @@ paths:
               required:
               - product_item_id
               - action_type
+  "/api/v1/cart/cart_items/{id}/size_list":
+    get:
+      summary: Retrieves size list for a product item
+      tags:
+      - Cart Items
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        description: ID of the product item
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: sizes retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    size:
+                      type: string
+                  required:
+                  - id
+                  - size
+        '404':
+          description: product item not found
+        '401':
+          description: unauthorized
   "/api/v1/cart":
     get:
       summary: Retrieves the user's cart
@@ -1522,12 +2271,7 @@ paths:
       summary: Google OAuth2 Authentication
       tags:
       - Sessions
-      parameters:
-      - name: auth_token
-        in: header
-        description: OAuth token
-        schema:
-          type: string
+      parameters: []
       responses:
         '200':
           description: successful
@@ -1565,6 +2309,16 @@ paths:
                     type: string
                 required:
                 - error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id_token:
+                  type: string
+              required:
+              - id_token
   "/api/v2/categories/{category_id}/subcategories":
     parameters:
     - name: category_id
@@ -1770,6 +2524,34 @@ paths:
                   type: string
                 youtube_link:
                   type: string
+  "/api/v1/users/{id}/show_profile":
+    get:
+      summary: Show User Profile
+      tags:
+      - Users
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Profile data
+        '401':
+          description: Unauthorized
+        '422':
+          description: Unprocessable entity
+  "/api/v1/users/user_details":
+    get:
+      summary: Show User user_details
+      tags:
+      - Users
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Profile data
+        '401':
+          description: Unauthorized
+        '422':
+          description: Unprocessable entity
   "/api/v1/wishlists/{wishlist_id}/wishlist_items":
     post:
       summary: Creates a wishlist item

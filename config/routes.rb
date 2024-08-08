@@ -4,6 +4,14 @@ Rails.application.routes.draw do
   
   namespace :api do
     namespace :v1 do
+      resources :reviews, only: [:create, :index] do
+        collection do
+          get :show_all_review
+        end
+      end
+
+      resources :review_votes, only: [:create]
+      resources :addresses
 
       root to: 'home#index'
       resources :home, only: [:index]
@@ -17,10 +25,14 @@ Rails.application.routes.draw do
       post '/auth/google_oauth2', to: 'sessions#google_auth'
 
       resources :users, only: [:create] do
+        collection do
+          get :user_details
+        end
         member do
           patch :update_image
           delete :delete_image
           patch :update_profile
+          get :show_profile
         end
       end
 
@@ -36,11 +48,13 @@ Rails.application.routes.draw do
       get 'landing_page/gift_cards_category', to: 'landing_page#gift_cards_category'
       get 'landing_page/gift_cards_by_category/:id', to: 'landing_page#gift_cards_by_category'
       get '/landing_page/product_items_of_product/:id', to: 'landing_page#product_items_of_product'
+      get '/landing_page/product_items_by_sub_category/:id', to: 'landing_page#product_items_by_sub_category'
       get '/landing_page/product_items_show/:id', to: 'landing_page#product_items_show'
       get '/landing_page/product_items_filter', to: 'landing_page#product_items_filter'
       get '/landing_page/product_items_search', to: 'landing_page#product_items_search'
       get '/landing_page/new_arrivals', to: 'landing_page#new_arrivals'
-
+      get '/landing_page/index_of_product_by_category/:id', to: 'landing_page#index_of_product_by_category'     
+      
       resources :orders, only: [:create]
       resources :contact_us, only: [:create]
 
@@ -57,6 +71,9 @@ Rails.application.routes.draw do
             post 'add_item'
             delete 'remove_or_move_to_wishlist'
           end
+          member do
+            get 'size_list'
+          end
         end
       end
     end
@@ -66,6 +83,11 @@ Rails.application.routes.draw do
       resources :product_items, only: [:index, :show, :create, :update, :destroy] 
       resources :categories, only: [:index, :show, :create, :update, :destroy]
       resources :terms_and_conditions, only: [:index, :show, :create, :update, :destroy]
+      resources :about_us, only: [:index, :show, :create, :update, :destroy]
+      resources :exchange_return_policies, only: [:index, :show, :create, :update, :destroy]
+      resources :shipping_policies, only: [:index, :show, :create, :update, :destroy]
+      resources :video_libraries, only: [:index, :show, :create, :update, :destroy]
+      resources :careers, only: [:index, :show, :create, :update, :destroy]
       resources :products, only: [:index, :show, :create, :update, :destroy] do
         # resources :product_items, only: [:index, :show, :create, :update, :destroy] 
       end

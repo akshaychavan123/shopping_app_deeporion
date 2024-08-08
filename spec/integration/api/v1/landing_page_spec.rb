@@ -28,6 +28,7 @@ RSpec.describe 'Api::V1::LandingPage', type: :request do
       tags 'Landing Page'
       description 'Fetches all product items associated with a specific category.'
       consumes 'application/json'
+      security [bearerAuth: []]
       parameter name: :id, in: :path, type: :integer, description: 'ID of the category to fetch product items for', required: true
       parameter name: :page, in: :query, type: :integer, description: 'Page number for pagination'
       parameter name: :per_page, in: :query, type: :integer, description: 'Number of items per page'
@@ -43,18 +44,40 @@ RSpec.describe 'Api::V1::LandingPage', type: :request do
       end
     end
   end 
-  
-  path '/api/v1/landing_page/products_index' do
-    get('list products') do
-      tags 'Landing Page'
-      produces 'application/json'
-      parameter name: :id, in: :query, type: :integer, description: 'Subcategory ID'
 
+  path '/api/v1/landing_page/product_items_by_sub_category/{id}' do
+    get('Get product items by subcategory') do
+      tags 'Landing Page'
+      description 'Fetches all product items associated with a specific subcategory.'
+      consumes 'application/json'
+      security [bearerAuth: []]
+      parameter name: :id, in: :path, type: :integer, description: 'ID of the subcategory to fetch product items for', required: true
+      parameter name: :page, in: :query, type: :integer, description: 'Page number for pagination'
+      parameter name: :per_page, in: :query, type: :integer, description: 'Number of items per page'
+  
       response(200, 'successful') do
+        let(:id) { create(:subcategory).id }
+        run_test!
+      end
+  
+      response(404, 'subcategory not found') do
+        let(:id) { 'invalid' }
         run_test!
       end
     end
-  end
+  end 
+  
+  # path '/api/v1/landing_page/products_index' do
+  #   get('list products') do
+  #     tags 'Landing Page'
+  #     produces 'application/json'
+  #     parameter name: :id, in: :query, type: :integer, description: 'Subcategory ID'
+
+  #     response(200, 'successful') do
+  #       run_test!
+  #     end
+  #   end
+  # end
 
   path '/api/v1/landing_page/product_items_index' do
     get('list product items') do
@@ -65,6 +88,17 @@ RSpec.describe 'Api::V1::LandingPage', type: :request do
       end
     end
   end
+
+  # path '/api/v1/landing_page/index_of_product_by_category/{id}' do
+  #   parameter name: :id, in: :path, type: :integer, description: 'ID of the category to fetch product', required: true
+  #   get('list Top Categories') do
+  #     tags 'List of Prodcut'
+  #     produces 'application/json'
+  #     response(200, 'successful') do
+  #       run_test!
+  #     end
+  #   end
+  # end
 
   path '/api/v1/landing_page/gift_cards_index' do
     get('list gift cards') do
@@ -106,6 +140,7 @@ RSpec.describe 'Api::V1::LandingPage', type: :request do
     get('retrieve product_item') do
       tags 'Landing Page'
       produces 'application/json'
+      security [bearerAuth: []]
 
       response(200, 'successful') do
         let(:id) { create(:product_item).id }
@@ -125,6 +160,7 @@ RSpec.describe 'Api::V1::LandingPage', type: :request do
     get('retrieve product_item') do
       tags 'Landing Page'
       produces 'application/json'
+      security [bearerAuth: []]
 
       response(200, 'successful') do
         let(:id) { create(:product_item).id }
@@ -142,7 +178,8 @@ RSpec.describe 'Api::V1::LandingPage', type: :request do
     get('list and filter product items') do
       tags 'Landing Page'
       produces 'application/json'
-      
+      security [bearerAuth: []]
+      parameter name: :category_id, in: :query, type: :integer, description: 'ID of the Category', required: true
       parameter name: :subcategory_id, in: :query, type: :integer, description: 'ID of the subcategory'
       parameter name: :product_id, in: :query, type: :integer, description: 'ID of the product'
       parameter name: :brand, in: :query, type: :string, description: 'Brand of the product item'
@@ -174,6 +211,7 @@ RSpec.describe 'Api::V1::LandingPage', type: :request do
           },
           required: [ 'data' ]
 
+        let(:category_id) { nil }  
         let(:subcategory_id) { nil }
         let(:product_id) { nil }
         let(:brand) { nil }
@@ -220,6 +258,7 @@ RSpec.describe 'Api::V1::LandingPage', type: :request do
     get('new arrivals') do
       tags 'New Arrivals'
       produces 'application/json'
+      security [bearerAuth: []]
 
       response(200, 'successful') do
         schema type: :object,
@@ -272,6 +311,7 @@ RSpec.describe 'Api::V1::LandingPage', type: :request do
     get('search product items') do
       tags 'Search API'
       produces 'application/json'
+      security [bearerAuth: []]
       parameter name: :search, in: :query, type: :string, description: 'Search term for the product item name, brand, material'
       parameter name: :page, in: :query, type: :integer, description: 'Page number for pagination'
       parameter name: :per_page, in: :query, type: :integer, description: 'Number of items per page for pagination'

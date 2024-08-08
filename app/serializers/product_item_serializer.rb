@@ -1,5 +1,5 @@
 class ProductItemSerializer < ActiveModel::Serializer
-  attributes :id, :name, :brand, :price, :description, :material, :care, :product_code, :product_id, :image, :photos, :product_item_variants
+  attributes :id, :name, :brand, :price, :description, :material, :care, :product_code, :product_id, :is_favorite, :image, :photos, :product_item_variants
   has_many :product_item_variants, serializer: ProductItemVariantSerializer
 
   def image
@@ -12,9 +12,18 @@ class ProductItemSerializer < ActiveModel::Serializer
     end
   end
 
+  def is_favorite
+    return false unless current_user.present?
+    current_user.wishlist&.wishlist_items.exists?(product_item_id: object.id)
+  end
+
   private
 
   def base_url
     ENV['BASE_URL'] || 'http://localhost:3000'
-  end      
+  end   
+  
+  def current_user
+    @instance_options[:current_user]
+  end
 end
