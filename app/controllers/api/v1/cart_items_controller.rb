@@ -22,15 +22,32 @@ class Api::V1::CartItemsController < ApplicationController
     end
   end
 
+  # def add_item
+  #   product_item = ProductItem.find(params[:product_item_id])
+  #   cart_item = @cart.cart_items.find_or_initialize_by(product_item: product_item)
+  #   if cart_item.save
+  #     render json: { message: 'Item added to cart' }
+  #   else
+  #     render json: cart_item.errors, status: :unprocessable_entity
+  #   end
+  # end
+
   def add_item
     product_item = ProductItem.find(params[:product_item_id])
-    cart_item = @cart.cart_items.find_or_initialize_by(product_item: product_item)
-    if cart_item.save
-      render json: { message: 'Item added to cart' }
+    cart_item = @cart.cart_items.find_by(product_item: product_item)
+  
+    if cart_item.present?
+      render json: { message: 'Item is already in the cart' }, status: :unprocessable_entity
     else
-      render json: cart_item.errors, status: :unprocessable_entity
+      cart_item = @cart.cart_items.build(product_item: product_item)
+      if cart_item.save
+        render json: { message: 'Item added to cart' }
+      else
+        render json: cart_item.errors, status: :unprocessable_entity
+      end
     end
   end
+  
 
   def remove_or_move_to_wishlist
     cart_item = @cart.cart_items.find_by(product_item_id: params[:product_item_id])
