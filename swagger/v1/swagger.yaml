@@ -2618,6 +2618,27 @@ paths:
           description: Unauthorized
         '422':
           description: Unprocessable entity
+  "/api/v1/users/{id}":
+    delete:
+      summary: Deletes a user
+      tags:
+      - Users
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        description: User ID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Account deleted
+        '422':
+          description: Account not found
+        '401':
+          description: Unauthorized
   "/api/v1/wishlists/{wishlist_id}/wishlist_items":
     post:
       summary: Creates a wishlist item

@@ -172,5 +172,36 @@ RSpec.describe 'api/v1/users', type: :request do
     end
   end
 
+  path '/api/v1/users/{id}' do
+    delete 'Deletes a user' do
+      tags 'Users'
+      consumes 'application/json'
+      produces 'application/json'
+      security [bearerAuth: []]
+      
+      parameter name: :id, in: :path, type: :string, description: 'User ID'
 
+      response '200', 'Account deleted' do
+        let(:Authorization) { "Bearer #{JsonWebToken.encode(user_id: create(:user).id)}" }
+        let(:id) { create(:user).id }
+
+        run_test!
+      end
+
+      response '422', 'Account not found' do
+        let(:Authorization) { "Bearer #{JsonWebToken.encode(user_id: create(:user).id)}" }
+        let(:id) { 'nonexistent' }
+
+        run_test! 
+      end
+
+      response '401', 'Unauthorized' do
+        let(:id) { create(:user).id }
+
+        run_test! do |response|
+          expect(response.status).to eq(401)
+        end
+      end
+    end
+  end
 end

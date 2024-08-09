@@ -52,6 +52,16 @@ class Api::V1::UsersController < ApplicationController
     end
   end
 
+  def destroy
+    @user = User.find_by(id: params[:id])
+    if @user.present?
+      @user.destroy
+      render json: { message: "Account deleted" }, status: :ok
+    else
+      render json: { error: 'Account not found' }, status: :unprocessable_entity
+    end
+  end
+
   def show_profile
     @user = @current_user
     render json: {

@@ -24,7 +24,7 @@ Rails.application.routes.draw do
 
       post '/auth/google_oauth2', to: 'sessions#google_auth'
 
-      resources :users, only: [:create] do
+      resources :users, only: [:create, :destroy] do
         collection do
           get :user_details
         end
