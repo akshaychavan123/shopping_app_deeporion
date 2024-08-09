@@ -1,7 +1,7 @@
 class UserSerializer < ActiveModel::Serializer
   attributes :id, :name, :email, :phone_confirmed, :phone_number, :phone_verification_code,
   :full_phone_number, :country_code, :phone_verification_code_sent_at, :uid, 
-  :provider, :terms_and_condition, :image, :bio, :facebook, :linkedin, :instagram, :youtube
+  :provider, :terms_and_condition, :image, :bio, :facebook, :linkedin, :instagram, :youtube, :password_digest
   has_one :address
 
   def image

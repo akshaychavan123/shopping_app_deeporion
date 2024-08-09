@@ -2788,6 +2788,35 @@ paths:
               - current_password
               - password
               - password_confirmation
+  "/api/v1/users/update_personal_details":
+    patch:
+      summary: Update user personal details
+      tags:
+      - Users
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '200':
+          description: Personal details updated successfully
+        '422':
+          description: Validation errors
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                phone_number:
+                  type: string
+              required:
+              - name
+              - email
+              - phone_number
   "/api/v1/wishlists/{wishlist_id}/wishlist_items":
     post:
       summary: Creates a wishlist item

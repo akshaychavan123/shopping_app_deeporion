@@ -26,7 +26,11 @@ class WishlistItemSerializer < ActiveModel::Serializer
   end  
 
   def rating_and_review
-    nil
+    reviews = Review.where(product_item_id: object.product_item.id)
+    {
+      total_review_count: reviews.count,
+      average_rating: reviews.average(:star).to_f,
+    }    
   end
 
   private

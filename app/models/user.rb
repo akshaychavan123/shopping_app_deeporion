@@ -5,6 +5,7 @@ class User < ApplicationRecord
   validates :password, format: { with: /\A(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}\z/,
   message: "must contain at least one uppercase letter, one lowercase letter, and one digit" }, if: :password_digest_changed?
   validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }, unless: -> { phone_number.present? }
+  validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }
   # validates :password, presence: true, length: { minimum: 6 }, unless: -> { phone_number.present? } 
   # validates :phone_number, presence: true, uniqueness: true, if: -> { phone_number.present? }
   # validates :full_phone_number, uniqueness: true, if: -> { full_phone_number.present? }

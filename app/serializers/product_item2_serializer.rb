@@ -1,13 +1,17 @@
 class ProductItem2Serializer < ActiveModel::Serializer
-    attributes :id, :name, :brand, :price, :rating_and_review, :image, :price_of_first_variant, :is_favorite, :product_item_variants
-    has_many :product_item_variants, serializer: ProductItemVariantSerializer
+    attributes :id, :name, :brand, :price, :rating_and_review, :image, :price_of_first_variant, :is_favorite
+    # has_many :product_item_variants, serializer: ProductItemVariantSerializer
 
     def image
       object.image.attached? ? "#{base_url}#{Rails.application.routes.url_helpers.rails_blob_path(object.image, only_path: true)}" : nil
     end
 
     def rating_and_review
-      nil
+      reviews = Review.where(product_item_id: object.id)
+      {
+        total_review_count: reviews.count,
+        average_rating: reviews.average(:star).to_f,
+      }    
     end
 
     def price_of_first_variant

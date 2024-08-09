@@ -22,16 +22,6 @@ class Api::V1::CartItemsController < ApplicationController
     end
   end
 
-  # def add_item
-  #   product_item = ProductItem.find(params[:product_item_id])
-  #   cart_item = @cart.cart_items.find_or_initialize_by(product_item: product_item)
-  #   if cart_item.save
-  #     render json: { message: 'Item added to cart' }
-  #   else
-  #     render json: cart_item.errors, status: :unprocessable_entity
-  #   end
-  # end
-
   def add_item
     product_item = ProductItem.find(params[:product_item_id])
     cart_item = @cart.cart_items.find_by(product_item: product_item)

@@ -1,6 +1,6 @@
 class ProductItem3Serializer < ActiveModel::Serializer
-  attributes :id, :name, :brand, :price, :image#, :product_item_variants
-  # has_many :product_item_variants, serializer: ProductItemVariantSerializer
+  attributes :id, :name, :brand, :price, :image, :product_item_variants
+  has_many :product_item_variants, serializer: ProductItemVariantSerializer
 
   # has_many :product_item_variants, if: -> { instance_options[:selected_variants] } do
   #   instance_options[:selected_variants]
