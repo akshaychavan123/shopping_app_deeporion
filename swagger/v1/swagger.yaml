@@ -72,6 +72,124 @@ paths:
               - address
               - city
               - address_type
+  "/api/v1/card_details":
+    get:
+      summary: Retrieves Card Detail
+      tags:
+      - CardDetails
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: card details found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    holder_name:
+                      type: string
+                    card_number:
+                      type: string
+                    expiry_date:
+                      type: string
+                    cvv:
+                      type: string
+                  required:
+                  - id
+                  - holder_name
+                  - card_number
+                  - expiry_date
+                  - cvv
+        '401':
+          description: unauthorized
+    post:
+      summary: Creates Card Details
+      tags:
+      - CardDetails
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '201':
+          description: card detail created
+        '422':
+          description: invalid request
+        '401':
+          description: unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                holder_name:
+                  type: string
+                card_number:
+                  type: string
+                expiry_date:
+                  type: string
+                cvv:
+                  type: string
+              required:
+              - holder_name
+              - card_number
+              - expiry_date
+              - cvv
+    put:
+      summary: Updates Card Details
+      tags:
+      - CardDetails
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '200':
+          description: card detail updated
+        '422':
+          description: invalid request
+        '401':
+          description: unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                holder_name:
+                  type: string
+                card_number:
+                  type: string
+                expiry_date:
+                  type: string
+                cvv:
+                  type: string
+              required:
+              - holder_name
+              - card_number
+              - expiry_date
+              - cvv
+    delete:
+      summary: Deletes Card Details
+      tags:
+      - CardDetails
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: card detail deleted
+        '401':
+          description: unauthorized
   "/api/v1/contact_us":
     post:
       summary: Creates a Contact Us record
@@ -2639,6 +2757,37 @@ paths:
           description: Account not found
         '401':
           description: Unauthorized
+  "/api/v1/users/update_password":
+    patch:
+      summary: Update user password
+      tags:
+      - Users
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '200':
+          description: Password updated successfully
+        '401':
+          description: Current password is incorrect
+        '422':
+          description: Validation errors
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                current_password:
+                  type: string
+                password:
+                  type: string
+                password_confirmation:
+                  type: string
+              required:
+              - current_password
+              - password
+              - password_confirmation
   "/api/v1/wishlists/{wishlist_id}/wishlist_items":
     post:
       summary: Creates a wishlist item

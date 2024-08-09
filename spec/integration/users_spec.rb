@@ -204,4 +204,36 @@ RSpec.describe 'api/v1/users', type: :request do
       end
     end
   end
+
+  path '/api/v1/users/update_password' do
+    patch 'Update user password' do
+      tags 'Users'
+      security [bearerAuth: []]
+      consumes 'application/json'
+      parameter name: :user, in: :body, schema: {
+        type: :object,
+        properties: {
+          current_password: { type: :string },
+          password: { type: :string },
+          password_confirmation: { type: :string },
+        },
+        required: ['current_password', 'password', 'password_confirmation']
+      }
+  
+      response '200', 'Password updated successfully' do
+        let(:passwords) { { current_password: 'current_password', password: 'new_password', password_confirmation: 'new_password' } }
+        run_test!
+      end
+  
+      response '401', 'Current password is incorrect' do
+        let(:passwords) { { current_password: 'wrong_password', password: 'new_password', password_confirmation: 'new_password' } }
+        run_test!
+      end
+  
+      response '422', 'Validation errors' do
+        let(:passwords) { { current_password: 'current_password', password: 'new_password', password_confirmation: 'different_password' } }
+        run_test!
+      end
+    end
+  end
 end

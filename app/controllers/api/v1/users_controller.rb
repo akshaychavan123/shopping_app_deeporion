@@ -75,8 +75,24 @@ class Api::V1::UsersController < ApplicationController
   }
   end
 
+  def update_password
+    if @current_user.authenticate(params[:current_password])
+      if @current_user.update(password_params)
+        render json: { message: 'Password updated successfully' }, status: :ok
+      else
+        render json: { errors: @current_user.errors.full_messages }, status: :unprocessable_entity
+      end
+    else
+      render json: { error: 'Current password is incorrect' }, status: :unauthorized
+    end
+  end
+
 
   private
+
+  def password_params
+    params.permit(:password, :password_confirmation)
+  end
 
   def find_user
     @user = @current_user

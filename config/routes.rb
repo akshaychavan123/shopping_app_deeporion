@@ -12,6 +12,7 @@ Rails.application.routes.draw do
 
       resources :review_votes, only: [:create]
       resources :addresses
+      resource :card_details, only: [:index, :show, :create, :update, :destroy]
 
       root to: 'home#index'
       resources :home, only: [:index]
@@ -27,6 +28,7 @@ Rails.application.routes.draw do
       resources :users, only: [:create, :destroy] do
         collection do
           get :user_details
+          patch :update_password
         end
         member do
           patch :update_image
