@@ -12,6 +12,7 @@ Rails.application.routes.draw do
 
       resources :review_votes, only: [:create]
       resources :addresses
+      resource :card_details, only: [:index, :show, :create, :update, :destroy]
 
       root to: 'home#index'
       resources :home, only: [:index]
@@ -24,9 +25,10 @@ Rails.application.routes.draw do
 
       post '/auth/google_oauth2', to: 'sessions#google_auth'
 
-      resources :users, only: [:create] do
+      resources :users, only: [:create, :destroy] do
         collection do
           get :user_details
+          patch :update_password
         end
         member do
           patch :update_image
@@ -53,6 +55,7 @@ Rails.application.routes.draw do
       get '/landing_page/product_items_filter', to: 'landing_page#product_items_filter'
       get '/landing_page/product_items_search', to: 'landing_page#product_items_search'
       get '/landing_page/new_arrivals', to: 'landing_page#new_arrivals'
+      get '/landing_page/top_category', to: 'landing_page#top_category'      
       get '/landing_page/index_of_product_by_category/:id', to: 'landing_page#index_of_product_by_category'     
       
       resources :orders, only: [:create]

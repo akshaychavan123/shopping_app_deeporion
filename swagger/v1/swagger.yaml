@@ -72,6 +72,124 @@ paths:
               - address
               - city
               - address_type
+  "/api/v1/card_details":
+    get:
+      summary: Retrieves Card Detail
+      tags:
+      - CardDetails
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: card details found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    holder_name:
+                      type: string
+                    card_number:
+                      type: string
+                    expiry_date:
+                      type: string
+                    cvv:
+                      type: string
+                  required:
+                  - id
+                  - holder_name
+                  - card_number
+                  - expiry_date
+                  - cvv
+        '401':
+          description: unauthorized
+    post:
+      summary: Creates Card Details
+      tags:
+      - CardDetails
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '201':
+          description: card detail created
+        '422':
+          description: invalid request
+        '401':
+          description: unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                holder_name:
+                  type: string
+                card_number:
+                  type: string
+                expiry_date:
+                  type: string
+                cvv:
+                  type: string
+              required:
+              - holder_name
+              - card_number
+              - expiry_date
+              - cvv
+    put:
+      summary: Updates Card Details
+      tags:
+      - CardDetails
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '200':
+          description: card detail updated
+        '422':
+          description: invalid request
+        '401':
+          description: unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                holder_name:
+                  type: string
+                card_number:
+                  type: string
+                expiry_date:
+                  type: string
+                cvv:
+                  type: string
+              required:
+              - holder_name
+              - card_number
+              - expiry_date
+              - cvv
+    delete:
+      summary: Deletes Card Details
+      tags:
+      - CardDetails
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: card detail deleted
+        '401':
+          description: unauthorized
   "/api/v1/contact_us":
     post:
       summary: Creates a Contact Us record
@@ -425,6 +543,61 @@ paths:
                             created_at:
                               type: string
                               format: date-time
+                required:
+                - data
+        '404':
+          description: not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                required:
+                - errors
+  "/api/v1/landing_page/top_category":
+    get:
+      summary: top category
+      tags:
+      - Landing Page
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        image:
+                          type: string
+                          format: uri
+                        subcategory:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                            name:
+                              type: string
+                          required:
+                          - id
+                          - name
+                      required:
+                      - id
+                      - name
+                      - image
+                      - subcategory
                 required:
                 - data
         '404':
@@ -2176,8 +2349,6 @@ paths:
       summary: list products
       tags:
       - Products
-      security:
-      - bearerAuth2: []
       responses:
         '200':
           description: successful
@@ -2197,7 +2368,7 @@ paths:
           description: unauthorized
       requestBody:
         content:
-          application/json:
+          multipart/form-data:
             schema:
               type: object
               properties:
@@ -2205,7 +2376,10 @@ paths:
                   type: string
                 subcategory_id:
                   type: integer
+                image:
+                  type: file
               required:
+              - image
               - name
               - subcategory_id
   "/api/v2/products/{id}":
@@ -2235,7 +2409,13 @@ paths:
       - Products
       security:
       - bearerAuth2: []
-      parameters: []
+      parameters:
+      - name: id
+        in: path
+        description: ID of the product to update
+        required: true
+        schema:
+          type: integer
       responses:
         '200':
           description: successful
@@ -2245,12 +2425,16 @@ paths:
           description: unauthorized
       requestBody:
         content:
-          application/json:
+          multipart/form-data:
             schema:
               type: object
               properties:
                 name:
                   type: string
+                subcategory_id:
+                  type: integer
+                image:
+                  type: file
               required:
               - name
     delete:
@@ -2552,6 +2736,58 @@ paths:
           description: Unauthorized
         '422':
           description: Unprocessable entity
+  "/api/v1/users/{id}":
+    delete:
+      summary: Deletes a user
+      tags:
+      - Users
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        description: User ID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Account deleted
+        '422':
+          description: Account not found
+        '401':
+          description: Unauthorized
+  "/api/v1/users/update_password":
+    patch:
+      summary: Update user password
+      tags:
+      - Users
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '200':
+          description: Password updated successfully
+        '401':
+          description: Current password is incorrect
+        '422':
+          description: Validation errors
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                current_password:
+                  type: string
+                password:
+                  type: string
+                password_confirmation:
+                  type: string
+              required:
+              - current_password
+              - password
+              - password_confirmation
   "/api/v1/wishlists/{wishlist_id}/wishlist_items":
     post:
       summary: Creates a wishlist item

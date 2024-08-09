@@ -21,7 +21,7 @@ class Api::V1::AuthenticationController < ApplicationController
       render json: { message: 'Verification code sent', user_id: @user.id }, status: :ok
     else
       @user = User.new(user_params)
-      @user.password ||= SecureRandom.hex(10)
+      @user.password ||= generate_secure_password
       @user.email ||= nil
 
       if @user.save
@@ -81,5 +81,27 @@ class Api::V1::AuthenticationController < ApplicationController
       full_phone_number = full_phone_number[1..-1]
     end
     "+#{full_phone_number}"
+  end
+
+  def generate_secure_password
+    length = 8
+    chars = [
+      ('a'..'z').to_a,
+      ('A'..'Z').to_a,
+      ('0'..'9').to_a,
+      %w[! @ # $ % ^ & *]
+    ].flatten
+    password = [
+      ('a'..'z').to_a.sample,
+      ('A'..'Z').to_a.sample,
+      ('0'..'9').to_a.sample,
+      %w[! @ # $ % ^ & *].sample
+    ]
+
+    (length - password.size).times do
+      password << chars.sample
+    end
+
+    password.shuffle.join
   end
 end

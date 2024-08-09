@@ -14,13 +14,21 @@ class Api::V1::ReviewsController < ApplicationController
   end
 
   
+  # def index
+  #   @reviews = @product_item.reviews.includes(:review_votes)
+  #   render json: {
+  #   data: ActiveModelSerializers::SerializableResource.new(@reviews, each_serializer: Review2Serializer)
+  # }
+  # end
+  
   def index
     @reviews = @product_item.reviews.includes(:review_votes)
+    review_summary = calculate_review_summary(@product_item.id)
     render json: {
-    data: ActiveModelSerializers::SerializableResource.new(@reviews, each_serializer: Review2Serializer)
-  }
+      reviews: ActiveModelSerializers::SerializableResource.new(@reviews, each_serializer: Review2Serializer),
+      summary: review_summary
+    }
   end
-  
 
   def show_all_review
     @reviews = Review.all.page(params[:page]).per(params[:per_page])
@@ -47,6 +55,19 @@ class Api::V1::ReviewsController < ApplicationController
       prev_page: collection.prev_page,
       total_pages: collection.total_pages,
       total_count: collection.total_count
+    }
+  end
+
+  def calculate_review_summary(product_item_id)
+    reviews = Review.where(product_item_id: product_item_id)
+    {
+      total_review_count: reviews.count,
+      average_rating: reviews.average(:star).to_f,
+      one_star_count: reviews.where(star: 1).count,
+      two_star_count: reviews.where(star: 2).count,
+      three_star_count: reviews.where(star: 3).count,
+      four_star_count: reviews.where(star: 4).count,
+      five_star_count: reviews.where(star: 5).count
     }
   end
 end
