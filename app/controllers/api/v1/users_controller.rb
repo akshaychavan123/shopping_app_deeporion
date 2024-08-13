@@ -70,11 +70,7 @@ class Api::V1::UsersController < ApplicationController
   end
 
   def user_details
-    # render json: {
-      # data: ActiveModelSerializers::SerializableResource.new(@user, each_serializer: UserDetailSerializer)
-      render json: @user, serializer: UserDetailSerializer
-
-  # }
+    render json: @user, serializer: UserDetailSerializer
   end
 
   def update_password

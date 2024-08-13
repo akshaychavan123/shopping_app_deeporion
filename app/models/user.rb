@@ -17,7 +17,7 @@ class User < ApplicationRecord
   has_many :reviews
   has_many :review_votes
   has_one_attached :image
-  has_one :address, dependent: :destroy
+  has_many :addresses, dependent: :destroy
   has_one :card_detail, dependent: :destroy
 
   before_validation :parse_full_phone_number, if: -> { full_phone_number.present? }
