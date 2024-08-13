@@ -485,43 +485,48 @@ paths:
         required: true
         schema:
           type: integer
-      - name: subcategory_id
+      - name: subcategory_ids
         in: query
-        description: ID of the subcategory
-        schema:
+        items:
           type: integer
-      - name: product_id
-        in: query
-        description: ID of the product
+        description: IDs of the subcategories
         schema:
+          type: array
+      - name: product_ids
+        in: query
+        items:
           type: integer
-      - name: brand
-        in: query
-        description: Brand of the product item
+        description: IDs of the products
         schema:
+          type: array
+      - name: brands
+        in: query
+        items:
           type: string
-      - name: size
-        in: query
-        description: Size of the product item
+        description: Brands of the product items
         schema:
+          type: array
+      - name: sizes
+        in: query
+        items:
           type: string
-      - name: color
-        in: query
-        description: Color of the product item
+        description: Sizes of the product items
         schema:
+          type: array
+      - name: colors
+        in: query
+        items:
           type: string
-      - name: min_price
-        in: query
-        format: float
-        description: Minimum price of the product item
+        description: Colors of the product items
         schema:
-          type: number
-      - name: max_price
+          type: array
+      - name: price_ranges
         in: query
-        format: float
-        description: Maximum price of the product item
+        items:
+          type: string
+        description: Price ranges in the format "min-max"
         schema:
-          type: number
+          type: array
       - name: search
         in: query
         description: Search term for the product item name, brand, color, or material

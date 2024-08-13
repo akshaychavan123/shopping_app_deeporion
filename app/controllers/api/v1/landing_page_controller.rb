@@ -105,35 +105,42 @@ class Api::V1::LandingPageController < ApplicationController
     if params[:category_id].present?
       @product_items = @product_items.where(categories: { id: params[:category_id] })
     end
-  
-    if params[:subcategory_id].present?
-      @product_items = @product_items.where(products: { subcategory_id: params[:subcategory_id] })
-    end
-  
-    if params[:product_id].present?
-      @product_items = @product_items.where(product_id: params[:product_id])
-    end
-  
-    if params[:brand].present?
-      @product_items = @product_items.where('LOWER(product_items.brand) = ?', params[:brand].downcase)
+
+    if params[:subcategory_ids].present?
+      @product_items = @product_items.where(products: { subcategory_id: params[:subcategory_ids] })
     end
 
-    if params[:size].present?
-      @product_items = @product_items.joins(:product_item_variants).where('LOWER(product_item_variants.size) = ?', params[:size].downcase)
-    end
-  
-     if params[:color].present?
-      @product_items = @product_items.joins(:product_item_variants).where('LOWER(product_item_variants.color) = ?', params[:color].downcase)
-    end
-  
-    if params[:min_price].present? && params[:max_price].present?
-      @product_items = @product_items.where(price: params[:min_price]..params[:max_price])
+    if params[:product_ids].present?
+      @product_items = @product_items.where(product_id: params[:product_ids])
     end
 
+    if params[:brands].present?
+      brands = params[:brands].map(&:downcase)
+      @product_items = @product_items.where('LOWER(product_items.brand) IN (?)', brands)
+    end
+
+    if params[:sizes].present?
+      sizes = params[:sizes].map(&:downcase)
+      @product_items = @product_items.joins(:product_item_variants).where('LOWER(product_item_variants.size) IN (?)', sizes)
+    end
+
+    if params[:colors].present?
+      colors = params[:colors].map(&:downcase)
+      @product_items = @product_items.joins(:product_item_variants).where('LOWER(product_item_variants.color) IN (?)', colors)
+    end
+  
     # if params[:min_price].present? && params[:max_price].present?
-    #   @product_items = @product_items.joins(:product_item_variants).where(product_item_variants: { price: params[:min_price]..params[:max_price] }).distinct
+    #   @product_items = @product_items.where(price: params[:min_price]..params[:max_price])
     # end
-  
+
+    if params[:price_ranges].present?
+      price_conditions = params[:price_ranges].map do |range|
+        min_price, max_price = range.split('-').map(&:to_f)
+        "(product_items.price BETWEEN #{min_price} AND #{max_price})"
+      end
+      @product_items = @product_items.where(price_conditions.join(' OR '))
+    end
+    
     if params[:search].present?
       search_term = "%#{params[:search].downcase}%"
       @product_items = @product_items.where('LOWER(product_items.name) LIKE :search_term OR LOWER(product_items.brand) LIKE :search_term OR LOWER(product_items.material) LIKE :search_term', search_term: search_term)

@@ -66,18 +66,6 @@ RSpec.describe 'Api::V1::LandingPage', type: :request do
       end
     end
   end 
-  
-  # path '/api/v1/landing_page/products_index' do
-  #   get('list products') do
-  #     tags 'Landing Page'
-  #     produces 'application/json'
-  #     parameter name: :id, in: :query, type: :integer, description: 'Subcategory ID'
-
-  #     response(200, 'successful') do
-  #       run_test!
-  #     end
-  #   end
-  # end
 
   path '/api/v1/landing_page/product_items_index' do
     get('list product items') do
@@ -88,17 +76,6 @@ RSpec.describe 'Api::V1::LandingPage', type: :request do
       end
     end
   end
-
-  # path '/api/v1/landing_page/index_of_product_by_category/{id}' do
-  #   parameter name: :id, in: :path, type: :integer, description: 'ID of the category to fetch product', required: true
-  #   get('list Top Categories') do
-  #     tags 'List of Prodcut'
-  #     produces 'application/json'
-  #     response(200, 'successful') do
-  #       run_test!
-  #     end
-  #   end
-  # end
 
   path '/api/v1/landing_page/gift_cards_index' do
     get('list gift cards') do
@@ -174,85 +151,164 @@ RSpec.describe 'Api::V1::LandingPage', type: :request do
     end
   end
 
+  # path '/api/v1/landing_page/product_items_filter' do
+  #   get('list and filter product items') do
+  #     tags 'Landing Page'
+  #     produces 'application/json'
+  #     security [bearerAuth: []]
+  #     parameter name: :category_id, in: :query, type: :integer, description: 'ID of the Category', required: true
+  #     parameter name: :subcategory_id, in: :query, type: :integer, description: 'ID of the subcategory'
+  #     parameter name: :product_id, in: :query, type: :integer, description: 'ID of the product'
+  #     parameter name: :brand, in: :query, type: :string, description: 'Brand of the product item'
+  #     parameter name: :size, in: :query, type: :string, description: 'Size of the product item'
+  #     parameter name: :color, in: :query, type: :string, description: 'Color of the product item'
+  #     parameter name: :min_price, in: :query, type: :number, format: :float, description: 'Minimum price of the product item'
+  #     parameter name: :max_price, in: :query, type: :number, format: :float, description: 'Maximum price of the product item'
+  #     parameter name: :search, in: :query, type: :string, description: 'Search term for the product item name, brand, color, or material'
+
+  #     response(200, 'successful') do
+  #       schema type: :object,
+  #         properties: {
+  #           data: {
+  #             type: :array,
+  #             items: {
+  #               type: :object,
+  #               properties: {
+  #                 id: { type: :integer },
+  #                 name: { type: :string },
+  #                 brand: { type: :string },
+  #                 product_id: { type: :integer },
+  #                 price_of_variant: { type: :number, format: :float },
+  #                 id_of_first_variant: { type: :integer },
+  #                 one_image_of_variant: { type: :string },
+  #                 rating_and_review: { type: :string, nullable: true }
+  #               }
+  #             }
+  #           }
+  #         },
+  #         required: [ 'data' ]
+
+  #       let(:category_id) { nil }  
+  #       let(:subcategory_id) { nil }
+  #       let(:product_id) { nil }
+  #       let(:brand) { nil }
+  #       let(:size) { nil }
+  #       let(:color) { nil }
+  #       let(:min_price) { nil }
+  #       let(:max_price) { nil }
+  #       let(:search) { nil }
+
+  #       run_test!
+  #     end
+
+  #     response(404, 'not found') do
+  #       schema type: :object,
+  #         properties: {
+  #           errors: {
+  #             type: :array,
+  #             items: { type: :string }
+  #           }
+  #         },
+  #         required: [ 'errors' ]
+
+  #       run_test!
+  #     end
+
+  #     response(422, 'unprocessable entity') do
+  #       schema type: :object,
+  #         properties: {
+  #           errors: {
+  #             type: :array,
+  #             items: { type: :string }
+  #           }
+  #         },
+  #         required: [ 'errors' ]
+
+  #       let(:search) { ' ' }
+
+  #       run_test!
+  #     end
+  #   end
+  # end
+
   path '/api/v1/landing_page/product_items_filter' do
     get('list and filter product items') do
       tags 'Landing Page'
       produces 'application/json'
       security [bearerAuth: []]
+  
       parameter name: :category_id, in: :query, type: :integer, description: 'ID of the Category', required: true
-      parameter name: :subcategory_id, in: :query, type: :integer, description: 'ID of the subcategory'
-      parameter name: :product_id, in: :query, type: :integer, description: 'ID of the product'
-      parameter name: :brand, in: :query, type: :string, description: 'Brand of the product item'
-      parameter name: :size, in: :query, type: :string, description: 'Size of the product item'
-      parameter name: :color, in: :query, type: :string, description: 'Color of the product item'
-      parameter name: :min_price, in: :query, type: :number, format: :float, description: 'Minimum price of the product item'
-      parameter name: :max_price, in: :query, type: :number, format: :float, description: 'Maximum price of the product item'
+      parameter name: :subcategory_ids, in: :query, type: :array, items: { type: :integer }, description: 'IDs of the subcategories'
+      parameter name: :product_ids, in: :query, type: :array, items: { type: :integer }, description: 'IDs of the products'
+      parameter name: :brands, in: :query, type: :array, items: { type: :string }, description: 'Brands of the product items'
+      parameter name: :sizes, in: :query, type: :array, items: { type: :string }, description: 'Sizes of the product items'
+      parameter name: :colors, in: :query, type: :array, items: { type: :string }, description: 'Colors of the product items'
+      parameter name: :price_ranges, in: :query, type: :array, items: { type: :string }, description: 'Price ranges in the format "min-max"'
       parameter name: :search, in: :query, type: :string, description: 'Search term for the product item name, brand, color, or material'
-
+  
       response(200, 'successful') do
         schema type: :object,
-          properties: {
-            data: {
-              type: :array,
-              items: {
-                type: :object,
-                properties: {
-                  id: { type: :integer },
-                  name: { type: :string },
-                  brand: { type: :string },
-                  product_id: { type: :integer },
-                  price_of_variant: { type: :number, format: :float },
-                  id_of_first_variant: { type: :integer },
-                  one_image_of_variant: { type: :string },
-                  rating_and_review: { type: :string, nullable: true }
-                }
-              }
-            }
-          },
-          required: [ 'data' ]
-
-        let(:category_id) { nil }  
-        let(:subcategory_id) { nil }
-        let(:product_id) { nil }
-        let(:brand) { nil }
-        let(:size) { nil }
-        let(:color) { nil }
-        let(:min_price) { nil }
-        let(:max_price) { nil }
-        let(:search) { nil }
-
+               properties: {
+                 data: {
+                   type: :array,
+                   items: {
+                     type: :object,
+                     properties: {
+                       id: { type: :integer },
+                       name: { type: :string },
+                       brand: { type: :string },
+                       product_id: { type: :integer },
+                       price_of_variant: { type: :number, format: :float },
+                       id_of_first_variant: { type: :integer },
+                       one_image_of_variant: { type: :string },
+                       rating_and_review: { type: :string, nullable: true }
+                     }
+                   }
+                 }
+               },
+               required: ['data']
+  
+        let(:category_id) { 1 }
+        let(:subcategory_ids) { [1, 2] }
+        let(:product_ids) { [1, 2, 3] }
+        let(:brands) { ['Brand1', 'Brand2'] }
+        let(:sizes) { ['M', 'L'] }
+        let(:colors) { ['red', 'blue'] }
+        let(:price_ranges) { ['0-50', '51-100'] }
+        let(:search) { 'shirt' }
+  
         run_test!
       end
-
+  
       response(404, 'not found') do
         schema type: :object,
-          properties: {
-            errors: {
-              type: :array,
-              items: { type: :string }
-            }
-          },
-          required: [ 'errors' ]
-
+               properties: {
+                 errors: {
+                   type: :array,
+                   items: { type: :string }
+                 }
+               },
+               required: ['errors']
+  
         run_test!
       end
-
+  
       response(422, 'unprocessable entity') do
         schema type: :object,
-          properties: {
-            errors: {
-              type: :array,
-              items: { type: :string }
-            }
-          },
-          required: [ 'errors' ]
-
+               properties: {
+                 errors: {
+                   type: :array,
+                   items: { type: :string }
+                 }
+               },
+               required: ['errors']
+  
         let(:search) { ' ' }
-
+  
         run_test!
       end
     end
-  end
+  end  
 
   path '/api/v1/landing_page/new_arrivals' do
     get('new arrivals') do
