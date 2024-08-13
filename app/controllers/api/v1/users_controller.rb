@@ -70,9 +70,7 @@ class Api::V1::UsersController < ApplicationController
   end
 
   def user_details
-    render json: {
-      data: ActiveModelSerializers::SerializableResource.new(@user, each_serializer: UserDetailSerializer)
-  }
+    render json: @user, serializer: UserDetailSerializer
   end
 
   def update_password
@@ -87,8 +85,19 @@ class Api::V1::UsersController < ApplicationController
     end
   end
 
+  def update_personal_details
+    if @current_user.update(personal_details_params)
+      render json: { user: @current_user }, status: :ok
+    else
+      render json: { errors: @current_user.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
 
   private
+
+  def personal_details_params
+    params.permit(:name, :email, :phone_number)
+  end
 
   def password_params
     params.permit(:password, :password_confirmation)

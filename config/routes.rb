@@ -29,6 +29,7 @@ Rails.application.routes.draw do
         collection do
           get :user_details
           patch :update_password
+          patch :update_personal_details
         end
         member do
           patch :update_image

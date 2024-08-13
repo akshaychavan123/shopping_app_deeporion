@@ -15,6 +15,17 @@ components:
       bearerFormat: JWT
 paths:
   "/api/v1/addresses":
+    get:
+      summary: Retrieves all Addresses
+      tags:
+      - Addresses
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: addresses retrieved
+        '401':
+          description: unauthorized
     post:
       summary: Creates an Address
       tags:
@@ -72,6 +83,85 @@ paths:
               - address
               - city
               - address_type
+  "/api/v1/addresses/{id}":
+    parameters:
+    - name: id
+      in: path
+      description: Address ID
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Retrieves a specific Address
+      tags:
+      - Addresses
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: address found
+        '404':
+          description: address not found
+        '401':
+          description: unauthorized
+    put:
+      summary: Updates an Address
+      tags:
+      - Addresses
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '200':
+          description: address updated
+        '404':
+          description: address not found
+        '401':
+          description: unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                last_name:
+                  type: string
+                phone_number:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                country:
+                  type: string
+                pincode:
+                  type: string
+                area:
+                  type: string
+                state:
+                  type: string
+                address:
+                  type: string
+                city:
+                  type: string
+                address_type:
+                  type: string
+                default:
+                  type: boolean
+    delete:
+      summary: Deletes an Address
+      tags:
+      - Addresses
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: address deleted
+        '404':
+          description: address not found
+        '401':
+          description: unauthorized
   "/api/v1/card_details":
     get:
       summary: Retrieves Card Detail
@@ -2788,6 +2878,35 @@ paths:
               - current_password
               - password
               - password_confirmation
+  "/api/v1/users/update_personal_details":
+    patch:
+      summary: Update user personal details
+      tags:
+      - Users
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '200':
+          description: Personal details updated successfully
+        '422':
+          description: Validation errors
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                phone_number:
+                  type: string
+              required:
+              - name
+              - email
+              - phone_number
   "/api/v1/wishlists/{wishlist_id}/wishlist_items":
     post:
       summary: Creates a wishlist item

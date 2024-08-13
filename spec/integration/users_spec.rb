@@ -236,4 +236,31 @@ RSpec.describe 'api/v1/users', type: :request do
       end
     end
   end
+
+  path '/api/v1/users/update_personal_details' do
+    patch 'Update user personal details' do
+      tags 'Users'
+      security [bearerAuth: []]
+      consumes 'application/json'
+      parameter name: :user, in: :body, schema: {
+        type: :object,
+        properties: {
+          name: { type: :string },
+          email: { type: :string },
+          phone_number: { type: :string }
+        },
+        required: ['name', 'email', 'phone_number']
+      }
+  
+      response '200', 'Personal details updated successfully' do
+        let(:user) { { name: 'New Name', email: 'newemail@example.com', phone_number: '1234567890' } }
+        run_test!
+      end
+  
+      response '422', 'Validation errors' do
+        let(:user) { { name: '', email: 'invalidemail', phone_number: '123' } }
+        run_test!
+      end
+    end
+  end  
 end
