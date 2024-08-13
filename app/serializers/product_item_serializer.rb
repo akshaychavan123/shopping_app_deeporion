@@ -1,7 +1,10 @@
 class ProductItemSerializer < ActiveModel::Serializer
   attributes :id, :name, :brand, :price, :description, :material, :care, :product_code, :product_id, :is_favorite, :image, :photos, :product_item_variants, :reviews
   has_many :product_item_variants, serializer: ProductItemVariantSerializer
-  has_many :reviews, serializer: ReviewSerializer
+
+  def reviews
+    ActiveModelSerializers::SerializableResource.new(object.reviews, each_serializer: ReviewSerializer)
+  end
 
 
   def image

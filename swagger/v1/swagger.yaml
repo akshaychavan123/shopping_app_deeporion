@@ -900,6 +900,8 @@ paths:
       summary: List Reviews
       tags:
       - Reviews
+      security:
+      - bearerAuth: []
       parameters:
       - name: product_item_id
         in: query

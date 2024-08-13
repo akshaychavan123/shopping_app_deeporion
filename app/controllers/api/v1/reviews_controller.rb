@@ -1,5 +1,7 @@
 class Api::V1::ReviewsController < ApplicationController
   before_action :authorize_request, only: :create
+  before_action :set_current_user, only: [:index]
+
   before_action :set_product_item, only: [:create, :index]
 
   def create
@@ -25,7 +27,7 @@ class Api::V1::ReviewsController < ApplicationController
     @reviews = @product_item.reviews.includes(:review_votes)
     review_summary = calculate_review_summary(@product_item.id)
     render json: {
-      reviews: ActiveModelSerializers::SerializableResource.new(@reviews, each_serializer: Review2Serializer),
+      reviews: ActiveModelSerializers::SerializableResource.new(@reviews, each_serializer: Review2Serializer, current_user: @current_user),
       summary: review_summary
     }
   end
