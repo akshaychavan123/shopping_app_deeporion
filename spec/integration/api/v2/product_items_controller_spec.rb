@@ -32,14 +32,24 @@ RSpec.describe 'Api::V2::ProductItems', type: :request do
             name: { type: :string },
             brand: { type: :string },
             price: { type: :number },
-            description: { type: :string },
+            discounted_price:{ type: :decimal },
+            description: { type: :text },
             material: { type: :string },
             care: { type: :string },
             product_code: { type: :string },
+            care_instructions: { type: :text },
+            fabric: { type: :string },
+            hemline: { type: :string },
+            neck: { type: :string },
+            texttile_thread: { type: :string },
+            size_and_fit: { type: :text },
+            main_trend: { type: :string },
+            knite_or_woven: { type: :string },
+            length: { type: :string },
+            occasion: { type: :string }
           },
           required: ['image','photos','name', 'brand', 'description', 'product_code', 'product_id']
-        }
-    
+        }    
         response(201, 'created') do
           let(:product_item) do
             {

@@ -45,6 +45,7 @@ RSpec.describe 'Api::V1::Reviews', type: :request do
     get('List Reviews') do
       tags 'Reviews'
       produces 'application/json'
+      security [bearerAuth: []]
       parameter name: :product_item_id, in: :query, type: :integer, description: 'Product Item ID', required: false
 
       response '200', 'successful' do
