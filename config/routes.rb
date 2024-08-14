@@ -88,6 +88,7 @@ Rails.application.routes.draw do
       resources :categories, only: [:index, :show, :create, :update, :destroy]
       resources :terms_and_conditions, only: [:index, :show, :create, :update, :destroy]
       resources :about_us, only: [:index, :show, :create, :update, :destroy]
+      resources :privacy_policies, only: [:index, :show, :create, :update, :destroy]
       resources :exchange_return_policies, only: [:index, :show, :create, :update, :destroy]
       resources :shipping_policies, only: [:index, :show, :create, :update, :destroy]
       resources :video_libraries, only: [:index, :show, :create, :update, :destroy]
