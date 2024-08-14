@@ -1545,13 +1545,35 @@ paths:
                   type: string
                 price:
                   type: number
+                discounted_price:
+                  type: decimal
                 description:
-                  type: string
+                  type: text
                 material:
                   type: string
                 care:
                   type: string
                 product_code:
+                  type: string
+                care_instructions:
+                  type: text
+                fabric:
+                  type: string
+                hemline:
+                  type: string
+                neck:
+                  type: string
+                texttile_thread:
+                  type: string
+                size_and_fit:
+                  type: text
+                main_trend:
+                  type: string
+                knite_or_woven:
+                  type: string
+                length:
+                  type: string
+                occasion:
                   type: string
               required:
               - image
