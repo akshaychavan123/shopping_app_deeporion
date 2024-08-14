@@ -1,39 +1,22 @@
 class CartItemSerializer < ActiveModel::Serializer
-  attributes :id, :quantity, :size#, :product_item :quantity#, :product_item_id#, :product_item_name, :product_item_brand, :price_of_product, :rating_and_review, :image
+  attributes :id, :quantity, :size, :total_price, :expected_delivery, :return_availablity
   belongs_to :product_item, serializer: ProductItem3Serializer
   # belongs_to :product_item_variant
 
   def size
     object.product_item_variant&.size
   end
-  
-  def product_item_name
-    object.product_item.name
+
+  def expected_delivery
+    start_date = Date.today
+    end_date = start_date + 7.days
+    "Get it by #{end_date.strftime('%A, %B %d, %Y')}"
   end
 
-  def product_item_brand
-    object.product_item.brand
-  end
-
-  def price_of_product
-    object.product_item.price
-  end
-
-  def image
-    if object.product_item.image.attached?
-      "#{base_url}#{Rails.application.routes.url_helpers.rails_blob_path(object.product_item.image, only_path: true)}"
-    else
-      nil
-    end
-  end  
-
-  def rating_and_review
-    nil
-  end
-
-  private
-
-  def base_url
-    ENV['BASE_URL'] || 'http://localhost:3000'
+  def return_availablity 
+    start_date = Date.today
+    end_date = start_date + 14.days
+    days_remaining = (end_date - start_date).to_i
+    "#{days_remaining} days return available"
   end
 end

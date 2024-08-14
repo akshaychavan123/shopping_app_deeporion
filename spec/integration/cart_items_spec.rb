@@ -153,17 +153,17 @@ RSpec.describe 'Api::V1::CartItems', type: :request do
           type: :object,
           properties: {
             product_item_id: { type: :integer },
+            product_item_variant_id:{type: :integer }
             # quantity: { type: :integer }
           },
-          required: ['product_item_id']
+          required: ['product_item_id', 'product_item_variant_id']
         }
   
         response '200', 'item added to cart' do
-          let(:product_item_id) { create(:product_item_id).id }
-          let(:quantity) { 1 }
-  
-          let(:cart_item) { { product_item_id: product_item_id} }
-  
+          let(:product_item) { create(:product_item) }
+          let(:product_item_variant) { create(:product_item_variant, product_item: product_item) }
+          let(:cart_item) { { product_item_id: product_item.id, product_item_variant_id: product_item_variant.id } }
+        
           run_test!
         end
   
@@ -230,67 +230,6 @@ RSpec.describe 'Api::V1::CartItems', type: :request do
   
           run_test!
         end
-      end
-    end
-  end
-
-  path '/api/v1/cart/cart_items/{id}/size_list' do
-    get 'Retrieves size list for a product item' do
-      tags 'Cart Items'
-      security [bearerAuth: []]
-      produces 'application/json'
-      parameter name: :id, in: :path, type: :integer, description: 'ID of the product item'
-
-      response '200', 'sizes retrieved successfully' do
-        schema type: :array,
-          items: {
-            type: :object,
-            properties: {
-              id: { type: :integer },
-              size: { type: :string }
-            },
-            required: [:id, :size]
-          }
-
-        let(:product_item) { create(:product_item) }
-        let!(:product_item_variants) do
-          create_list(:product_item_variant, 3, product_item: product_item)
-        end
-
-        let(:id) { product_item.id }
-        before do
-          get "/api/v1/cart/cart_items/#{id}/size_list", headers: { 'Authorization' => "Bearer #{token}" }
-        end
-
-        run_test! do |response|
-          data = JSON.parse(response.body)
-          expect(data).to be_an(Array)
-          expect(data.first).to have_key('id')
-          expect(data.first).to have_key('size')
-        end
-      end
-
-      response '404', 'product item not found' do
-        let(:id) { 'invalid' }
-
-        before do
-          get "/api/v1/cart/cart_items/#{id}/size_list", headers: { 'Authorization' => "Bearer #{token}" }
-        end
-
-        run_test! do |response|
-          data = JSON.parse(response.body)
-          expect(data['error']).to eq('Product Item not found')
-        end
-      end
-
-      response '401', 'unauthorized' do
-        let(:id) { create(:product_item).id }
-
-        before do
-          get "/api/v1/cart/cart_items/#{id}/size_list", headers: { 'Authorization' => nil }
-        end
-
-        run_test!
       end
     end
   end

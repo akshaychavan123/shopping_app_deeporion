@@ -2187,8 +2187,11 @@ paths:
               properties:
                 product_item_id:
                   type: integer
+                product_item_variant_id:
+                  type: integer
               required:
               - product_item_id
+              - product_item_variant_id
   "/api/v1/cart/cart_items/remove_or_move_to_wishlist":
     delete:
       summary: Removes or moves an item to wishlist
@@ -2222,41 +2225,6 @@ paths:
               required:
               - product_item_id
               - action_type
-  "/api/v1/cart/cart_items/{id}/size_list":
-    get:
-      summary: Retrieves size list for a product item
-      tags:
-      - Cart Items
-      security:
-      - bearerAuth: []
-      parameters:
-      - name: id
-        in: path
-        description: ID of the product item
-        required: true
-        schema:
-          type: integer
-      responses:
-        '200':
-          description: sizes retrieved successfully
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                    size:
-                      type: string
-                  required:
-                  - id
-                  - size
-        '404':
-          description: product item not found
-        '401':
-          description: unauthorized
   "/api/v1/cart":
     get:
       summary: Retrieves the user's cart

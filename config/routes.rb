@@ -75,9 +75,6 @@ Rails.application.routes.draw do
             post 'add_item'
             delete 'remove_or_move_to_wishlist'
           end
-          member do
-            get 'size_list'
-          end
         end
       end
     end
