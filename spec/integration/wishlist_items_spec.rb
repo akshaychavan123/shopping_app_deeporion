@@ -68,6 +68,47 @@ RSpec.describe 'Api::V1::WishlistItems', type: :request do
     end
   end
 
+  # path '/api/v1/wishlists/:wishlist_id/wishlist_items/add_to_cart' do
+  #   post 'Moves an item from wishlist to cart' do
+  #     tags 'Wishlist Items'
+  #     security [bearerAuth: []]
+  #     consumes 'application/json'
+  #     parameter name: :wishlist_item, in: :body, schema: {
+  #       type: :object,
+  #       properties: {
+  #         product_item_id: { type: :integer }
+  #       },
+  #       required: ['product_item_id']
+  #     }
+
+  #     response '200', 'item added to cart' do
+  #       let(:wishlist_id) { create(:wishlist, user: user).id }
+  #       let(:wishlist_item) { create(:wishlist_item, wishlist: Wishlist.find(wishlist_id)) }
+  #       let(:product_item_id) { wishlist_item.product_item_id.id }
+  #       let(:wishlist_item_params) { { product_item_id: product_item_id } }
+
+  #       run_test!
+  #     end
+
+  #     response '401', 'unauthorized' do
+  #       let(:Authorization) { nil }
+  #       let(:wishlist_id) { create(:wishlist).id }
+  #       let(:product_item_id) { create(:product_item_id).id }
+  #       let(:wishlist_item_params) { { product_item_id: product_item_id } }
+
+  #       run_test!
+  #     end
+
+  #     response '404', 'item not found in wishlist' do
+  #       let(:wishlist_id) { create(:wishlist, user: user).id }
+  #       let(:product_item_id) { 'invalid' }
+  #       let(:wishlist_item_params) { { product_item_id: product_item_id } }
+
+  #       run_test!
+  #     end
+  #   end
+  # end
+
   path '/api/v1/wishlists/:wishlist_id/wishlist_items/add_to_cart' do
     post 'Moves an item from wishlist to cart' do
       tags 'Wishlist Items'
@@ -76,36 +117,41 @@ RSpec.describe 'Api::V1::WishlistItems', type: :request do
       parameter name: :wishlist_item, in: :body, schema: {
         type: :object,
         properties: {
-          product_item_id: { type: :integer }
+          product_item_id: { type: :integer },
+          product_item_variant_id: { type: :integer, nullable: true }
         },
         required: ['product_item_id']
       }
-
+  
       response '200', 'item added to cart' do
+        let(:user) { create(:user) }
         let(:wishlist_id) { create(:wishlist, user: user).id }
-        let(:wishlist_item) { create(:wishlist_item, wishlist: Wishlist.find(wishlist_id)) }
-        let(:product_item_id) { wishlist_item.product_item_id.id }
-        let(:wishlist_item_params) { { product_item_id: product_item_id } }
-
+        let(:product_item) { create(:product_item) }
+        let(:product_item_variant) { create(:product_item_variant, product_item: product_item) }
+        let(:wishlist_item) { create(:wishlist_item, wishlist: Wishlist.find(wishlist_id), product_item: product_item) }
+        let(:Authorization) { "Bearer #{user.jwt}" }
+        let(:wishlist_item_params) { { product_item_id: product_item.id, product_item_variant_id: product_item_variant.id } }
+  
         run_test!
       end
-
+  
       response '401', 'unauthorized' do
         let(:Authorization) { nil }
         let(:wishlist_id) { create(:wishlist).id }
-        let(:product_item_id) { create(:product_item_id).id }
-        let(:wishlist_item_params) { { product_item_id: product_item_id } }
-
+        let(:product_item) { create(:product_item) }
+        let(:wishlist_item_params) { { product_item_id: product_item.id } }
+  
         run_test!
       end
-
+  
       response '404', 'item not found in wishlist' do
+        let(:user) { create(:user) }
         let(:wishlist_id) { create(:wishlist, user: user).id }
-        let(:product_item_id) { 'invalid' }
-        let(:wishlist_item_params) { { product_item_id: product_item_id } }
-
+        let(:Authorization) { "Bearer #{user.jwt}" }
+        let(:wishlist_item_params) { { product_item_id: 'invalid' } }
+  
         run_test!
       end
     end
-  end
+  end  
 end

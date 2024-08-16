@@ -441,6 +441,16 @@ paths:
       required: true
       schema:
         type: integer
+    - name: page
+      in: query
+      description: Page number for pagination
+      schema:
+        type: integer
+    - name: per_page
+      in: query
+      description: Number of items per page
+      schema:
+        type: integer
     get:
       summary: retrieve product_item
       tags:
@@ -3060,6 +3070,9 @@ paths:
               properties:
                 product_item_id:
                   type: integer
+                product_item_variant_id:
+                  type: integer
+                  nullable: true
               required:
               - product_item_id
   "/api/v1/wishlists/show_wishlistitems":

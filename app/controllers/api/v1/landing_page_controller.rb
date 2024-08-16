@@ -80,9 +80,21 @@ class Api::V1::LandingPageController < ApplicationController
 
   def product_items_of_product
     @product = Product.find_by(id: params[:id])
-    @product_items = @product.product_items
-    render json: { data: ActiveModelSerializers::SerializableResource.new(@product_items, each_serializer: ProductItem2Serializer, current_user: @current_user)}
+    
+    if @product
+      @product_items = @product.product_items
+                               .page(params[:page])
+                               .per(params[:per_page])
+      
+      render json: {
+        data: ActiveModelSerializers::SerializableResource.new(@product_items, each_serializer: ProductItem2Serializer, current_user: @current_user),
+        meta: pagination_meta(@product_items)
+      }
+    else
+      render json: { error: 'Product not found' }, status: :not_found
+    end
   end
+  
 
   def product_items_show
     @product_item = ProductItem.includes(:product_item_variants).find_by(id: params[:id])

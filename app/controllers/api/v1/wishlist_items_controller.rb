@@ -24,15 +24,42 @@ class Api::V1::WishlistItemsController < ApplicationController
     end
   end
 
+  # def add_to_cart
+  #   wishlist_item = @wishlist.wishlist_items.find_by(product_item_id: params[:product_item_id])
+  #   if wishlist_item
+  #     cart = Cart.find_or_create_by(user: @wishlist.user)
+  #     cart_item = cart.cart_items.find_or_initialize_by(product_item_id: wishlist_item.product_item_id)
+  #     cart_item.quantity = cart_item.new_record? ? 1 : cart_item.quantity + 1
+  #     if cart_item.save
+  #       wishlist_item.destroy
+  #       render json: { message: 'Item added in cart' }, status: :ok
+  #       # render json: cart, include: { cart_items: { include: { product_item_variant: { include: :product_item } } } }
+  #     else
+  #       render json: cart_item.errors, status: :unprocessable_entity
+  #     end
+  #   else
+  #     render json: { error: 'Item not found in wishlist' }, status: :not_found
+  #   end
+  # end
+
   def add_to_cart
     wishlist_item = @wishlist.wishlist_items.find_by(product_item_id: params[:product_item_id])
+    
     if wishlist_item
       cart = Cart.find_or_create_by(user: @wishlist.user)
-      cart_item = cart.cart_items.find_or_initialize_by(product_item_id: wishlist_item.product_item_id)
+      product_item_variant_id = params[:product_item_variant_id] || wishlist_item.product_item_variant_id
+  
+      cart_item = cart.cart_items.find_or_initialize_by(
+        product_item_id: wishlist_item.product_item_id,
+        product_item_variant_id: product_item_variant_id
+      )
+  
       cart_item.quantity = cart_item.new_record? ? 1 : cart_item.quantity + 1
+      update_total_price(cart_item)
+  
       if cart_item.save
         wishlist_item.destroy
-        render json: { message: 'Item added in cart' }, status: :ok
+        render json: { message: 'Item added to cart' }, status: :ok
         # render json: cart, include: { cart_items: { include: { product_item_variant: { include: :product_item } } } }
       else
         render json: cart_item.errors, status: :unprocessable_entity
@@ -41,10 +68,15 @@ class Api::V1::WishlistItemsController < ApplicationController
       render json: { error: 'Item not found in wishlist' }, status: :not_found
     end
   end
-
+  
   private
 
   def set_wishlist
     @wishlist = Wishlist.find_by(user: @current_user)
+  end
+
+  def update_total_price(cart_item)
+    item_price = cart_item.product_item_variant&.price || cart_item.product_item.price
+    cart_item.total_price = item_price * cart_item.quantity
   end
 end

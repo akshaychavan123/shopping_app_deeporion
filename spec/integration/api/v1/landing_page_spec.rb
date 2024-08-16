@@ -113,6 +113,8 @@ RSpec.describe 'Api::V1::LandingPage', type: :request do
 
   path '/api/v1/landing_page/product_items_of_product/{id}' do
     parameter name: :id, in: :path, type: :integer, description: 'ID of the product'
+    parameter name: :page, in: :query, type: :integer, description: 'Page number for pagination'
+    parameter name: :per_page, in: :query, type: :integer, description: 'Number of items per page'  
 
     get('retrieve product_item') do
       tags 'Landing Page'
