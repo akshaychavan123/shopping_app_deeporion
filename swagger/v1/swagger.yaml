@@ -1739,6 +1739,8 @@ paths:
                   type: string
                 occasion:
                   type: string
+                color:
+                  type: string
               required:
               - image
               - photos
@@ -1747,6 +1749,7 @@ paths:
               - description
               - product_code
               - product_id
+              - color
   "/api/v2/product_items/{id}":
     parameters:
     - name: id
