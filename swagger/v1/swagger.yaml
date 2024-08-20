@@ -280,6 +280,52 @@ paths:
           description: card detail deleted
         '401':
           description: unauthorized
+  "/api/v1/card_orders":
+    post:
+      summary: Creates a new card order
+      tags:
+      - Card Orders
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '201':
+          description: card order created
+        '404':
+          description: gift card not found
+        '422':
+          description: unprocessable entity
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                card_order:
+                  type: object
+                  properties:
+                    gift_card_id:
+                      type: integer
+                    recipient_name:
+                      type: string
+                    recipient_email:
+                      type: string
+                      format: email
+                    dob:
+                      type: string
+                      format: date
+                    sender_email:
+                      type: string
+                      format: email
+                    message:
+                      type: string
+                  required:
+                  - gift_card_id
+                  - recipient_name
+                  - recipient_email
+                  - sender_email
+              required:
+              - card_order
   "/api/v1/contact_us":
     post:
       summary: Creates a Contact Us record

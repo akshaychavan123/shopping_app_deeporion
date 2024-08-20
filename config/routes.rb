@@ -13,6 +13,8 @@ Rails.application.routes.draw do
       resources :review_votes, only: [:create]
       resources :addresses
       resource :card_details, only: [:index, :show, :create, :update, :destroy]
+      resources :card_orders, only: [:create]
+
 
       root to: 'home#index'
       resources :home, only: [:index]
