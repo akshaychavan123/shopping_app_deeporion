@@ -5,7 +5,7 @@ class User < ApplicationRecord
   validates :password, format: { with: /\A(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}\z/,
   message: "must contain at least one uppercase letter, one lowercase letter, and one digit" }, if: :password_digest_changed?
   validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }, unless: -> { phone_number.present? }
-  validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }
+  validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }, unless: -> { phone_number.present? } 
   # validates :password, presence: true, length: { minimum: 6 }, unless: -> { phone_number.present? } 
   # validates :phone_number, presence: true, uniqueness: true, if: -> { phone_number.present? }
   # validates :full_phone_number, uniqueness: true, if: -> { full_phone_number.present? }
@@ -26,7 +26,7 @@ class User < ApplicationRecord
 
   def phone_verification_code_expired?
     return true if phone_verification_code_sent_at.nil?
-    phone_verification_code_sent_at < 1.minutes.ago
+    phone_verification_code_sent_at < 5.minutes.ago
   end
 
   def generate_password_token!

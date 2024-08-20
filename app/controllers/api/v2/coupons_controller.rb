@@ -33,6 +33,39 @@ class Api::V2::CouponsController < ApplicationController
     end
   end
 
+  def show_product
+    coupon = Coupon.find(params[:id])
+    product = coupon.couponable
+
+    if product.is_a?(Product)
+      render json: product, status: :ok
+    else
+      render json: { errors: ["No associated product found"] }, status: :not_found
+    end
+  end
+
+  def product_list
+    coupon = Coupon.find(params[:id])
+    
+    case coupon.couponable
+    when ProductItem
+      @product_items = [coupon.couponable]
+    when Product
+      @product_items = coupon.couponable.product_items
+    when Subcategory
+      @product_items = ProductItem.joins(:product).where(products: { subcategory_id: coupon.couponable.id })
+    when Category
+      @product_items = ProductItem.joins(product: :subcategory).where(subcategories: { category_id: coupon.couponable.id })
+    else
+      @product_items = []
+    end
+    
+    render json: {
+      data: ActiveModelSerializers::SerializableResource.new(@product_items, each_serializer: ProductItem2Serializer, current_user: @current_user)    }, status: :ok
+  end
+  
+
+
   private
 
   def coupon_params

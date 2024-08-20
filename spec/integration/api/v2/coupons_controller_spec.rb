@@ -92,4 +92,39 @@ RSpec.describe 'Api::V2::Coupons', type: :request do
       end
     end
   end
+
+  path '/api/v2/coupons/{id}/products' do
+    parameter name: :id, in: :path, type: :integer, description: 'ID of the coupon'
+  
+    get('list associated products') do
+      tags 'Coupons'
+      security [bearerAuth2: []]
+      consumes 'application/json'
+  
+      response(200, 'successful') do
+        schema type: :object,
+               properties: {
+                 data: {
+                   type: :array,
+                 },
+                 meta: {
+                   type: :object,
+                   properties: {
+                     current_page: { type: :integer },
+                     next_page: { type: :integer },
+                     prev_page: { type: :integer },
+                     total_pages: { type: :integer },
+                     total_count: { type: :integer }
+                   }
+                 }
+               }
+        run_test!
+      end
+  
+      response(404, 'not found') do
+        let(:id) { 'invalid' }
+        run_test!
+      end
+    end
+  end  
 end

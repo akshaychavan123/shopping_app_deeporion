@@ -72,7 +72,9 @@ Rails.application.routes.draw do
       end
 
        resource :cart, only: [:show] do
-        resources :cart_items, only: [:index, :update] do
+         get 'coupon_list', on: :collection
+         get 'product_item_list_by_coupon/:id', to: 'carts#product_item_list_by_coupon', as: :product_item_list_by_coupon
+         resources :cart_items, only: [:index, :update] do
           collection do
             post 'add_item'
             delete 'remove_or_move_to_wishlist'
@@ -100,7 +102,11 @@ Rails.application.routes.draw do
       end
       resources :gift_card_categories, only: [:index, :show, :create, :destroy]
       resources :gift_cards
-      resources :coupons, only: [:index, :show, :create]
+      resources :coupons, only: [:index, :show, :create] do
+        member do
+          get :product_list
+        end
+      end
     end
   end
 end
