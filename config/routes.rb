@@ -13,6 +13,8 @@ Rails.application.routes.draw do
       resources :review_votes, only: [:create]
       resources :addresses
       resource :card_details, only: [:index, :show, :create, :update, :destroy]
+      resources :card_orders, only: [:create]
+
 
       root to: 'home#index'
       resources :home, only: [:index]
@@ -70,13 +72,12 @@ Rails.application.routes.draw do
       end
 
        resource :cart, only: [:show] do
-        resources :cart_items, only: [:index, :update] do
+         get 'coupon_list', on: :collection
+         get 'product_item_list_by_coupon/:id', to: 'carts#product_item_list_by_coupon', as: :product_item_list_by_coupon
+         resources :cart_items, only: [:index, :update] do
           collection do
             post 'add_item'
             delete 'remove_or_move_to_wishlist'
-          end
-          member do
-            get 'size_list'
           end
         end
       end
@@ -88,6 +89,7 @@ Rails.application.routes.draw do
       resources :categories, only: [:index, :show, :create, :update, :destroy]
       resources :terms_and_conditions, only: [:index, :show, :create, :update, :destroy]
       resources :about_us, only: [:index, :show, :create, :update, :destroy]
+      resources :privacy_policies, only: [:index, :show, :create, :update, :destroy]
       resources :exchange_return_policies, only: [:index, :show, :create, :update, :destroy]
       resources :shipping_policies, only: [:index, :show, :create, :update, :destroy]
       resources :video_libraries, only: [:index, :show, :create, :update, :destroy]
@@ -100,7 +102,11 @@ Rails.application.routes.draw do
       end
       resources :gift_card_categories, only: [:index, :show, :create, :destroy]
       resources :gift_cards
-      resources :coupons, only: [:index, :show, :create]
+      resources :coupons, only: [:index, :show, :create] do
+        member do
+          get :product_list
+        end
+      end
     end
   end
 end

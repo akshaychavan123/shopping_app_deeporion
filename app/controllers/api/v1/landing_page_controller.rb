@@ -80,9 +80,21 @@ class Api::V1::LandingPageController < ApplicationController
 
   def product_items_of_product
     @product = Product.find_by(id: params[:id])
-    @product_items = @product.product_items
-    render json: { data: ActiveModelSerializers::SerializableResource.new(@product_items, each_serializer: ProductItem2Serializer, current_user: @current_user)}
+    
+    if @product
+      @product_items = @product.product_items
+                               .page(params[:page])
+                               .per(params[:per_page])
+      
+      render json: {
+        data: ActiveModelSerializers::SerializableResource.new(@product_items, each_serializer: ProductItem2Serializer, current_user: @current_user),
+        meta: pagination_meta(@product_items)
+      }
+    else
+      render json: { error: 'Product not found' }, status: :not_found
+    end
   end
+  
 
   def product_items_show
     @product_item = ProductItem.includes(:product_item_variants).find_by(id: params[:id])
@@ -106,40 +118,44 @@ class Api::V1::LandingPageController < ApplicationController
       @product_items = @product_items.where(categories: { id: params[:category_id] })
     end
 
-    if params[:subcategory_ids].present?
-      @product_items = @product_items.where(products: { subcategory_id: params[:subcategory_ids] })
+    subcategory_ids = params[:subcategory_ids]&.split(',') || []
+    if subcategory_ids.any?
+      @product_items = @product_items.where(products: { subcategory_id: subcategory_ids })
     end
 
     if params[:product_ids].present?
-      @product_items = @product_items.where(product_id: params[:product_ids])
+      product_ids = params[:product_ids].split(',')
+      @product_items = @product_items.where(product_id: product_ids)
     end
 
     if params[:brands].present?
-      brands = params[:brands].map(&:downcase)
+      brands = params[:brands].split(',').map(&:downcase)
       @product_items = @product_items.where('LOWER(product_items.brand) IN (?)', brands)
     end
 
     if params[:sizes].present?
-      sizes = params[:sizes].map(&:downcase)
-      @product_items = @product_items.joins(:product_item_variants).where('LOWER(product_item_variants.size) IN (?)', sizes)
-    end
+      sizes = params[:sizes].split(',').map(&:downcase)
+      @product_items = @product_items.joins(:product_item_variants)
+                                     .where('LOWER(product_item_variants.size) IN (?)', sizes)
+                                     .distinct
+    end    
 
     if params[:colors].present?
-      colors = params[:colors].map(&:downcase)
-      @product_items = @product_items.joins(:product_item_variants).where('LOWER(product_item_variants.color) IN (?)', colors)
+      colors = params[:colors].split(',').map(&:downcase)
+      @product_items = @product_items.joins(:product_item_variants).where('LOWER(product_item_variants.color) IN (?)', colors).distinct
     end
-  
-    # if params[:min_price].present? && params[:max_price].present?
-    #   @product_items = @product_items.where(price: params[:min_price]..params[:max_price])
-    # end
 
     if params[:price_ranges].present?
-      price_conditions = params[:price_ranges].map do |range|
+      price_ranges = params[:price_ranges].split(',')
+    
+      price_conditions = price_ranges.map do |range|
         min_price, max_price = range.split('-').map(&:to_f)
         "(product_items.price BETWEEN #{min_price} AND #{max_price})"
       end
+    
       @product_items = @product_items.where(price_conditions.join(' OR '))
     end
+    
     
     if params[:search].present?
       search_term = "%#{params[:search].downcase}%"

@@ -55,4 +55,41 @@ RSpec.describe 'Api::V1::Carts', type: :request do
       end
     end
   end
+
+  path '/api/v1/cart/product_item_list_by_coupon/{id}' do
+    parameter name: :id, in: :path, type: :integer, description: 'ID of the coupon'
+  
+    get('list associated products') do
+      tags 'Carts'
+      security [bearerAuth: []]
+      consumes 'application/json'
+  
+      response(200, 'successful') do
+        schema type: :object,
+               properties: {
+                 data: {
+                   type: :array
+                 }
+               }
+        run_test!
+      end
+  
+      response(404, 'not found') do
+        let(:id) { 'invalid' }
+        run_test!
+      end
+    end
+  end
+  
+  path '/api/v1/cart/coupon_list' do
+    get('list coupons') do
+      tags 'Carts'
+      security [bearerAuth: []]
+      consumes 'application/json'
+
+      response(200, 'successful') do
+        run_test!
+      end
+    end
+  end
 end

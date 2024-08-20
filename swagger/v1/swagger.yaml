@@ -280,6 +280,52 @@ paths:
           description: card detail deleted
         '401':
           description: unauthorized
+  "/api/v1/card_orders":
+    post:
+      summary: Creates a new card order
+      tags:
+      - Card Orders
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '201':
+          description: card order created
+        '404':
+          description: gift card not found
+        '422':
+          description: unprocessable entity
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                card_order:
+                  type: object
+                  properties:
+                    gift_card_id:
+                      type: integer
+                    recipient_name:
+                      type: string
+                    recipient_email:
+                      type: string
+                      format: email
+                    dob:
+                      type: string
+                      format: date
+                    sender_email:
+                      type: string
+                      format: email
+                    message:
+                      type: string
+                  required:
+                  - gift_card_id
+                  - recipient_name
+                  - recipient_email
+                  - sender_email
+              required:
+              - card_order
   "/api/v1/contact_us":
     post:
       summary: Creates a Contact Us record
@@ -439,6 +485,16 @@ paths:
       in: path
       description: ID of the product
       required: true
+      schema:
+        type: integer
+    - name: page
+      in: query
+      description: Page number for pagination
+      schema:
+        type: integer
+    - name: per_page
+      in: query
+      description: Number of items per page
       schema:
         type: integer
     get:
@@ -1276,6 +1332,25 @@ paths:
           description: successful
         '404':
           description: not found
+  "/api/v2/coupons/{id}/products":
+    parameters:
+    - name: id
+      in: path
+      description: ID of the coupon
+      required: true
+      schema:
+        type: integer
+    get:
+      summary: list associated products
+      tags:
+      - Coupons
+      security:
+      - bearerAuth2: []
+      responses:
+        '200':
+          description: successful
+        '404':
+          description: not found
   "/api/v2/exchange_return_policies":
     get:
       summary: Retrieves all Exchange & Return Policies
@@ -1456,6 +1531,95 @@ paths:
       summary: delete gift_card
       tags:
       - GiftCards
+      security:
+      - bearerAuth2: []
+      responses:
+        '204':
+          description: no content
+        '404':
+          description: not found
+  "/api/v2/privacy_policies":
+    get:
+      summary: list privacy policies
+      tags:
+      - Privacy Policies
+      responses:
+        '200':
+          description: successful
+    post:
+      summary: create privacy policy
+      tags:
+      - Privacy Policies
+      security:
+      - bearerAuth2: []
+      parameters: []
+      responses:
+        '201':
+          description: created
+        '422':
+          description: unprocessable entity
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                privacy_policy:
+                  type: object
+                  properties:
+                    heading:
+                      type: string
+                    description:
+                      type: string
+                  required:
+                  - heading
+                  - description
+  "/api/v2/privacy_policies/{id}":
+    parameters:
+    - name: id
+      in: path
+      description: ID of the privacy policy
+      required: true
+      schema:
+        type: string
+    get:
+      summary: show privacy policy
+      tags:
+      - Privacy Policies
+      responses:
+        '200':
+          description: successful
+        '404':
+          description: not found
+    patch:
+      summary: update privacy policy
+      tags:
+      - Privacy Policies
+      security:
+      - bearerAuth2: []
+      parameters: []
+      responses:
+        '200':
+          description: updated
+        '422':
+          description: unprocessable entity
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                privacy_policy:
+                  type: object
+                  properties:
+                    heading:
+                      type: string
+                    description:
+                      type: string
+    delete:
+      summary: delete privacy policy
+      tags:
+      - Privacy Policies
       security:
       - bearerAuth2: []
       responses:
@@ -2098,8 +2262,11 @@ paths:
               properties:
                 product_item_id:
                   type: integer
+                product_item_variant_id:
+                  type: integer
               required:
               - product_item_id
+              - product_item_variant_id
   "/api/v1/cart/cart_items/remove_or_move_to_wishlist":
     delete:
       summary: Removes or moves an item to wishlist
@@ -2133,41 +2300,6 @@ paths:
               required:
               - product_item_id
               - action_type
-  "/api/v1/cart/cart_items/{id}/size_list":
-    get:
-      summary: Retrieves size list for a product item
-      tags:
-      - Cart Items
-      security:
-      - bearerAuth: []
-      parameters:
-      - name: id
-        in: path
-        description: ID of the product item
-        required: true
-        schema:
-          type: integer
-      responses:
-        '200':
-          description: sizes retrieved successfully
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: integer
-                    size:
-                      type: string
-                  required:
-                  - id
-                  - size
-        '404':
-          description: product item not found
-        '401':
-          description: unauthorized
   "/api/v1/cart":
     get:
       summary: Retrieves the user's cart
@@ -2225,6 +2357,35 @@ paths:
                 - cart_items
         '401':
           description: unauthorized
+  "/api/v1/cart/product_item_list_by_coupon/{id}":
+    parameters:
+    - name: id
+      in: path
+      description: ID of the coupon
+      required: true
+      schema:
+        type: integer
+    get:
+      summary: list associated products
+      tags:
+      - Carts
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: successful
+        '404':
+          description: not found
+  "/api/v1/cart/coupon_list":
+    get:
+      summary: list coupons
+      tags:
+      - Carts
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: successful
   "/api/v2/categories":
     get:
       summary: list categories
@@ -3003,6 +3164,9 @@ paths:
               properties:
                 product_item_id:
                   type: integer
+                product_item_variant_id:
+                  type: integer
+                  nullable: true
               required:
               - product_item_id
   "/api/v1/wishlists/show_wishlistitems":

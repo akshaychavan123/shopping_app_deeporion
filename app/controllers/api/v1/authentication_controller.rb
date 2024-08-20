@@ -15,7 +15,6 @@ class Api::V1::AuthenticationController < ApplicationController
 
   def create
     @user = User.find_by(full_phone_number: Phonelib.parse(user_params[:full_phone_number]).sanitized)
-
     if @user
       send_verification_code(@user)
       render json: { message: 'Verification code sent', user_id: @user.id }, status: :ok

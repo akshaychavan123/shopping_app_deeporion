@@ -15,10 +15,15 @@ class Api::V1::CartItemsController < ApplicationController
 
   def update
     @cart_item = @cart.cart_items.find(params[:id])
+
     if @cart_item.update(cart_item_update_params)
-      render json: { cart_item: @cart_item }, status: :ok and return
+      update_total_price(@cart_item)
+      render json: {
+        message: 'Cart item updated',
+        cart_item: CartItemSerializer.new(@cart_item).as_json
+      }, status: :ok
     else
-      render json: @cart_item.errors, status: :unprocessable_entity and return
+      render json: @cart_item.errors, status: :unprocessable_entity
     end
   end
 
@@ -29,7 +34,9 @@ class Api::V1::CartItemsController < ApplicationController
     if cart_item.present?
       render json: { message: 'Item is already in the cart' }, status: :unprocessable_entity
     else
-      cart_item = @cart.cart_items.build(product_item: product_item)
+      cart_item = @cart.cart_items.build(product_item: product_item, product_item_variant_id: params[:product_item_variant_id], quantity: 1)
+      update_total_price(cart_item)
+
       if cart_item.save
         render json: { message: 'Item added to cart' }
       else
@@ -58,20 +65,7 @@ class Api::V1::CartItemsController < ApplicationController
     else
       render json: { error: 'Item not found in cart' }, status: :not_found
     end
-  end
-
- 
-  def size_list
-    @product_item = ProductItem.find_by(id: params[:id])
-
-    if @product_item
-      variants = @product_item.product_item_variants.select(:id, :size)
-      render json: variants.as_json(only: [:id, :size]), status: :ok
-    else
-      render json: { error: 'Product Item not found' }, status: :not_found
-    end
-  end
-  
+  end  
 
   private
 
@@ -82,4 +76,9 @@ class Api::V1::CartItemsController < ApplicationController
   def cart_item_update_params
     params.require(:cart_item).permit(:quantity, :product_item_variant_id)
   end  
+
+  def update_total_price(cart_item)
+    item_price = cart_item.product_item_variant&.price || cart_item.product_item.price
+    cart_item.total_price = item_price * cart_item.quantity
+  end
 end
