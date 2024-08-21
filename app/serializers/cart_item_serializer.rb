@@ -1,7 +1,6 @@
 class CartItemSerializer < ActiveModel::Serializer
   attributes :id, :quantity, :size, :total_price, :expected_delivery, :return_availablity
   belongs_to :product_item, serializer: ProductItem3Serializer
-  # belongs_to :product_item_variant
 
   def size
     object.product_item_variant&.size
