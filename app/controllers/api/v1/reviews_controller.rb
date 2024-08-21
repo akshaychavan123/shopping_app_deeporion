@@ -14,14 +14,6 @@ class Api::V1::ReviewsController < ApplicationController
       render json: @review.errors, status: :unprocessable_entity
     end
   end
-
-  
-  # def index
-  #   @reviews = @product_item.reviews.includes(:review_votes)
-  #   render json: {
-  #   data: ActiveModelSerializers::SerializableResource.new(@reviews, each_serializer: Review2Serializer)
-  # }
-  # end
   
   def index
     @reviews = @product_item.reviews.includes(:review_votes)

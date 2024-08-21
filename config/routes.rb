@@ -14,7 +14,7 @@ Rails.application.routes.draw do
       resources :addresses
       resource :card_details, only: [:index, :show, :create, :update, :destroy]
       resources :card_orders, only: [:create]
-
+      resources :client_reviews, only: [:index, :create]
 
       root to: 'home#index'
       resources :home, only: [:index]

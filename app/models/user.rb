@@ -19,6 +19,7 @@ class User < ApplicationRecord
   has_one_attached :image
   has_many :addresses, dependent: :destroy
   has_one :card_detail, dependent: :destroy
+  has_many :client_reviews
 
   before_validation :parse_full_phone_number, if: -> { full_phone_number.present? }
   after_create :create_wishlist

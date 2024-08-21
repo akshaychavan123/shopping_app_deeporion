@@ -170,7 +170,7 @@ class Api::V1::LandingPageController < ApplicationController
         meta: pagination_meta(@product_items)
       }, status: :ok
     else
-      render json: { errors: ['No product items found'] }, status: :not_found
+      render json: { message: "" }, status: :ok
     end
   end
   

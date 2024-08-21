@@ -326,6 +326,50 @@ paths:
                   - sender_email
               required:
               - card_order
+  "/api/v1/client_reviews":
+    get:
+      summary: List all client reviews
+      tags:
+      - ClientReviews
+      parameters:
+      - name: page
+        in: query
+        description: Page number
+        schema:
+          type: integer
+      - name: per_page
+        in: query
+        description: Number of items per page
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Client reviews found
+    post:
+      summary: Create a client review
+      tags:
+      - ClientReviews
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '201':
+          description: Client review created
+        '422':
+          description: Invalid request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                star:
+                  type: integer
+                review:
+                  type: string
+              required:
+              - star
+              - review
   "/api/v1/contact_us":
     post:
       summary: Creates a Contact Us record
