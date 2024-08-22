@@ -108,6 +108,7 @@ class Api::V1::LandingPageController < ApplicationController
   end
   
   def product_items_filter
+  
     if params[:search].present? && params[:search].strip.empty?
       return render json: { errors: ['Search term cannot be blank'] }, status: :unprocessable_entity
     end
@@ -153,7 +154,7 @@ class Api::V1::LandingPageController < ApplicationController
         "(product_items.price BETWEEN #{min_price} AND #{max_price})"
       end
     
-      @product_items = @product_items.where(price_conditions.join(' OR '))
+      @product_items = @product_items#.where(price_conditions.join(' OR '))
     end
     
     
@@ -162,12 +163,44 @@ class Api::V1::LandingPageController < ApplicationController
       @product_items = @product_items.where('LOWER(product_items.name) LIKE :search_term OR LOWER(product_items.brand) LIKE :search_term OR LOWER(product_items.material) LIKE :search_term', search_term: search_term)
     end
   
+    case params[:sort_by]
+    when 'newest'
+      @product_items = @product_items.order(created_at: :desc).limit(1)
+    when 'recommended'
+      @product_items = @product_items.order(created_at: :desc).limit(2)
+    when 'rating'
+      max_rating = @product_items
+      .joins("LEFT JOIN reviews ON reviews.product_item_id = product_items.id")
+      .group("product_items.id")
+      .having("COUNT(reviews.id) > 0")
+      .average("reviews.star")
+      .values
+      .map(&:to_f)
+      .max
+
+      @product_items = @product_items
+      .joins("LEFT JOIN reviews ON reviews.product_item_id = product_items.id")
+      .group("product_items.id")
+      .having("AVG(reviews.star) = ?", max_rating)
+      .order("AVG(reviews.star) DESC")
+    when 'discount'
+      @product_items = @product_items
+      .left_joins(:coupons)
+      .select("product_items.*, MAX(coupons.amount_off) AS max_discount")
+      .group("product_items.id")
+      .order("max_discount DESC")
+    when 'price_asc'
+      @product_items = @product_items.order(price: :asc)
+    when 'price_desc'
+      @product_items = @product_items.order(price: :desc)
+    end
+
     @product_items = @product_items.page(params[:page]).per(params[:per_page])
   
     if @product_items.any?
       render json: {
         data: ActiveModelSerializers::SerializableResource.new(@product_items, each_serializer: ProductItem2Serializer, current_user: @current_user),
-        meta: pagination_meta(@product_items)
+       meta: pagination_meta(@product_items)
       }, status: :ok
     else
       render json: { message: "" }, status: :ok

@@ -247,6 +247,7 @@ RSpec.describe 'Api::V1::LandingPage', type: :request do
       parameter name: :colors, in: :query, type: :array, items: { type: :string }, description: 'Colors of the product items'
       parameter name: :price_ranges, in: :query, type: :array, items: { type: :string }, description: 'Price ranges in the format "min-max"'
       parameter name: :search, in: :query, type: :string, description: 'Search term for the product item name, brand, color, or material'
+      parameter name: :sort_by, in: :query, type: :string, description: 'Sort for the product item Recommended, What New, Popularity, Better Discount, Price:High to Low, Price: Low to High, Customer Rating'
   
       response(200, 'successful') do
         schema type: :object,

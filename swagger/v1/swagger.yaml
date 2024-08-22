@@ -632,6 +632,12 @@ paths:
         description: Search term for the product item name, brand, color, or material
         schema:
           type: string
+      - name: sort_by
+        in: query
+        description: 'Sort for the product item Recommended, What New, Popularity,
+          Better Discount, Price:High to Low, Price: Low to High, Customer Rating'
+        schema:
+          type: string
       responses:
         '200':
           description: successful
