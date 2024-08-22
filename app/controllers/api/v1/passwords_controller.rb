@@ -21,6 +21,7 @@ class Api::V1::PasswordsController < ApplicationController
     end
 
     payload = User.decode_password_token(token)
+    puts "----------------------------------------------->>>>>   payload - #{payload}"
     @user = User.find_by(id: payload[:user_id]) if payload
 
     if @user.present?

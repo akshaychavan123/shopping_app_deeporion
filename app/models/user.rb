@@ -35,12 +35,22 @@ class User < ApplicationRecord
     JWT.encode(payload, Rails.application.secrets.secret_key_base, 'HS256')
   end
 
+  # def self.decode_password_token(token)
+  #   body = JWT.decode(token, Rails.application.secrets.secret_key_base, true, algorithm: 'HS256')[0]
+  #   key_base = Rails.application.secrets.secret_key_base || ENV['SECRET_KEY_BASE']
+  #   HashWithIndifferentAccess.new body
+  # rescue
+  #   nil
+  # end
+
   def self.decode_password_token(token)
-    body = JWT.decode(token, Rails.application.secrets.secret_key_base, true, algorithm: 'HS256')[0]
-    HashWithIndifferentAccess.new body
-  rescue
+    key_base = Rails.application.secrets.secret_key_base || ENV['SECRET_KEY_BASE']
+    body = JWT.decode(token, key_base, true, algorithm: 'HS256')[0]
+    HashWithIndifferentAccess.new(body)
+  rescue JWT::DecodeError
     nil
   end
+  
 
   def self.create_user_for_google(data)
     where(uid: data["email"]).first_or_initialize.tap do |user|
