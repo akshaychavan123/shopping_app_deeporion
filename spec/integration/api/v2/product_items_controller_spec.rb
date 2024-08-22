@@ -44,11 +44,12 @@ RSpec.describe 'Api::V2::ProductItems', type: :request do
             texttile_thread: { type: :string },
             size_and_fit: { type: :text },
             main_trend: { type: :string },
-            knite_or_woven: { type: :string },
+            knite_or_woven: { type: :string },  
             length: { type: :string },
-            occasion: { type: :string }
+            occasion: { type: :string },
+            color:{type: :string}
           },
-          required: ['image','photos','name', 'brand', 'description', 'product_code', 'product_id']
+          required: ['image','photos','name', 'brand', 'description', 'product_code', 'product_id', 'color']
         }    
         response(201, 'created') do
           let(:product_item) do
@@ -61,6 +62,7 @@ RSpec.describe 'Api::V2::ProductItems', type: :request do
               material: 'Cotton',
               care: 'Machine wash',
               product_code: 'Code123',
+              color: 'color',
               image: Rack::Test::UploadedFile.new(Rails.root.join('spec/fixtures/test_image.jpg'), 'image/jpeg'),
               photos: Rack::Test::UploadedFile.new(Rails.root.join('spec/fixtures/test_image.jpg'), 'image/jpeg')
             }

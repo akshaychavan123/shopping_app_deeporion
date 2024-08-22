@@ -326,6 +326,50 @@ paths:
                   - sender_email
               required:
               - card_order
+  "/api/v1/client_reviews":
+    get:
+      summary: List all client reviews
+      tags:
+      - ClientReviews
+      parameters:
+      - name: page
+        in: query
+        description: Page number
+        schema:
+          type: integer
+      - name: per_page
+        in: query
+        description: Number of items per page
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Client reviews found
+    post:
+      summary: Create a client review
+      tags:
+      - ClientReviews
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '201':
+          description: Client review created
+        '422':
+          description: Invalid request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                star:
+                  type: integer
+                review:
+                  type: string
+              required:
+              - star
+              - review
   "/api/v1/contact_us":
     post:
       summary: Creates a Contact Us record
@@ -586,6 +630,12 @@ paths:
       - name: search
         in: query
         description: Search term for the product item name, brand, color, or material
+        schema:
+          type: string
+      - name: sort_by
+        in: query
+        description: 'Sort for the product item Recommended, What New, Popularity,
+          Better Discount, Price:High to Low, Price: Low to High, Customer Rating'
         schema:
           type: string
       responses:
@@ -1739,6 +1789,8 @@ paths:
                   type: string
                 occasion:
                   type: string
+                color:
+                  type: string
               required:
               - image
               - photos
@@ -1747,6 +1799,7 @@ paths:
               - description
               - product_code
               - product_id
+              - color
   "/api/v2/product_items/{id}":
     parameters:
     - name: id

@@ -56,7 +56,7 @@ class Api::V2::ProductItemsController < ApplicationController
   private
 
   def product_items_params
-    params.permit(:name, :brand, :price, :discounted_price, :description, :material, :care, :product_code, :care_instructions, :fabric, :hemline, :neck, :texttile_thread, :size_and_fit, :main_trend, :knite_or_woven, :length, :occasion)
+    params.permit(:name, :brand, :price, :discounted_price, :description, :material, :care, :product_code, :care_instructions, :fabric, :hemline, :neck, :texttile_thread, :size_and_fit, :main_trend, :knite_or_woven, :length, :occasion, :color)
   end  
 
   def set_product_items

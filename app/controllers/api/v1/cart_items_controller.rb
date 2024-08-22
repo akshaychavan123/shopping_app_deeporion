@@ -18,6 +18,7 @@ class Api::V1::CartItemsController < ApplicationController
 
     if @cart_item.update(cart_item_update_params)
       update_total_price(@cart_item)
+      @cart_item.save
       render json: {
         message: 'Cart item updated',
         cart_item: CartItemSerializer.new(@cart_item).as_json
@@ -78,7 +79,7 @@ class Api::V1::CartItemsController < ApplicationController
   end  
 
   def update_total_price(cart_item)
-    item_price = cart_item.product_item_variant&.price || cart_item.product_item.price
+    item_price = cart_item.product_item_variant&.price #|| cart_item.product_item.price
     cart_item.total_price = item_price * cart_item.quantity
   end
 end
