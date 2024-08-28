@@ -2,26 +2,42 @@ class Api::V1::OrdersController < ApplicationController
   before_action :authorize_request
 
   def create
-    # @order = current_user.orders.new(order_params)
-    @order = Order.new(order_params)
+    ActiveRecord::Base.transaction do
+      total_amount = (order_params[:total_price].to_f * 100).to_i
+      
+      razorpay_order = Razorpay::Order.create(
+        amount: total_amount,
+        currency: 'INR',
+        receipt: "order_#{SecureRandom.hex(8)}"
+      )
 
+      @order = current_user.orders.new(order_params)
+      @order.razorpay_order_id = razorpay_order.id
+      @order.total_price = total_amount / 100.0
+      @order.payment_status = 'created'
 
-    if @order.save
-      render json: @order, status: :created
-    else
-      render json: @order.errors, status: :unprocessable_entity
+      cart_items = current_user.cart.cart_items
+
+      cart_items.each do |cart_item|
+        @order.order_items.build(
+          cart_item_id: cart_item.id
+        )
+      end
+
+      if @order.save
+        cart_items.destroy_all # Clear the cart
+        render json: { order: @order, razorpay_order_id: razorpay_order.id }, status: :created
+      else
+        render json: @order.errors, status: :unprocessable_entity
+      end
     end
+  rescue ActiveRecord::RecordInvalid
+    render json: { error: 'Failed to create order. Please try again.' }, status: :unprocessable_entity
   end
 
   private
 
   def order_params
-    params.require(:order).permit(
-      :user_id, :first_name, :last_name, :phone_number, :email, :country,
-      :pincode, :area, :city, :state, :address, :total_price,
-      :address_type, :payment_status, :placed_at,
-      order_items_attributes: [:product_item_id, :quantity]
-    )
+    params.require(:order).permit(:total_price, :address_id, :payment_status)
   end
-
 end

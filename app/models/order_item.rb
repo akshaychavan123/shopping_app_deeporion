@@ -1,12 +1,12 @@
 class OrderItem < ApplicationRecord
   belongs_to :order
-  belongs_to :product_item
+  # belongs_to :product_item
 
-  before_save :set_sub_total
+  # before_save :set_sub_total
 
-  private
+  # private
 
-  def set_sub_total
-    self.sub_total = product_item.price * quantity
-  end
+  # def set_sub_total
+  #   self.sub_total = product_item.price * quantity
+  # end
 end
