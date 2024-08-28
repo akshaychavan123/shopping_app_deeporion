@@ -3,7 +3,16 @@ class ReviewSerializer < ActiveModel::Serializer
 
   def user_image
     user = object.user
-    user.image.attached? ? "#{base_url}#{Rails.application.routes.url_helpers.rails_blob_path(user.image, only_path: true)}" : nil
+    host = base_url
+    if user.image.attached?
+      if Rails.env.development? || Rails.env.test?
+        host + Rails.application.routes.url_helpers.rails_blob_path(user.image, only_path: true)
+      else
+        user.image.service.send(:object_for, user.image.key).public_url
+      end
+    else
+      nil
+    end
   end
 
   def user_name

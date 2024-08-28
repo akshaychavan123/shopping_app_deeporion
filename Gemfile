@@ -86,3 +86,5 @@ gem 'rack-cors'
 gem 'active_model_serializers', '~> 0.10.0'
 gem 'kaminari', '~> 1.2.1'
 gem 'httparty'
+gem 'razorpay'
+gem "aws-sdk-s3"
