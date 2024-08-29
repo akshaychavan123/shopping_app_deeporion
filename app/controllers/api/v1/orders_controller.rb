@@ -11,21 +11,24 @@ class Api::V1::OrdersController < ApplicationController
         receipt: "order_#{SecureRandom.hex(8)}"
       )
 
-      @order = current_user.orders.new(order_params)
+      @order = @current_user.orders.new(order_params)
       @order.razorpay_order_id = razorpay_order.id
       @order.total_price = total_amount / 100.0
       @order.payment_status = 'created'
 
-      cart_items = current_user.cart.cart_items
+      cart_items = @current_user.cart.cart_items
 
       cart_items.each do |cart_item|
         @order.order_items.build(
-          cart_item_id: cart_item.id
+          product_item_id: cart_item.product_item_id,
+          product_item_variant_id: cart_item.product_item_variant_id,
+          quantity: cart_item.quantity,
+          total_price: cart_item.total_price
         )
       end
 
       if @order.save
-        cart_items.destroy_all # Clear the cart
+        cart_items.destroy_all
         render json: { order: @order, razorpay_order_id: razorpay_order.id }, status: :created
       else
         render json: @order.errors, status: :unprocessable_entity

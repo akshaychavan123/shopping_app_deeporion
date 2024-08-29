@@ -2,7 +2,6 @@ class Order < ApplicationRecord
   belongs_to :user
   belongs_to :address
   has_many :order_items
-  has_many :product_items, through: :order_items
 
   accepts_nested_attributes_for :order_items
   validates :user_id, presence: true
