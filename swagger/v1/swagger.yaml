@@ -1167,6 +1167,101 @@ paths:
           description: about us deleted
         '404':
           description: about us not found
+  "/api/v2/banners":
+    get:
+      summary: list banners
+      tags:
+      - Banners
+      responses:
+        '200':
+          description: successful
+    post:
+      summary: create banner
+      tags:
+      - Banners
+      security:
+      - bearerAuth2: []
+      parameters: []
+      responses:
+        '201':
+          description: created
+        '422':
+          description: unprocessable entity
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                heading:
+                  type: string
+                description:
+                  type: string
+                banner_type:
+                  type: string
+                images:
+                  type: array
+                  items:
+                    type: file
+              required:
+              - heading
+              - description
+              - banner_type
+  "/api/v2/banners/{id}":
+    parameters:
+    - name: id
+      in: path
+      banner_type: string
+      description: id
+      required: true
+    get:
+      summary: show banner
+      tags:
+      - Banners
+      responses:
+        '200':
+          description: successful
+        '404':
+          description: not found
+    patch:
+      summary: update banner
+      tags:
+      - Banners
+      security:
+      - bearerAuth2: []
+      parameters: []
+      responses:
+        '200':
+          description: successful
+        '422':
+          description: unprocessable entity
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                heading:
+                  type: string
+                description:
+                  type: string
+                banner_type:
+                  type: string
+                images:
+                  type: array
+                  items:
+                    type: file
+    delete:
+      summary: delete banner
+      tags:
+      - Banners
+      security:
+      - bearerAuth2: []
+      responses:
+        '200':
+          description: banner destroyed successfully
+        '404':
+          description: not found
   "/api/v2/careers":
     get:
       summary: Retrieves all Careers

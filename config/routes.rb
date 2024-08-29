@@ -96,6 +96,7 @@ Rails.application.routes.draw do
       resources :shipping_policies, only: [:index, :show, :create, :update, :destroy]
       resources :video_libraries, only: [:index, :show, :create, :update, :destroy]
       resources :careers, only: [:index, :show, :create, :update, :destroy]
+      resources :banners
       resources :products, only: [:index, :show, :create, :update, :destroy] do
         # resources :product_items, only: [:index, :show, :create, :update, :destroy] 
       end
