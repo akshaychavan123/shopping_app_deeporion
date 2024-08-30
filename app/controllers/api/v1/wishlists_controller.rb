@@ -7,7 +7,7 @@ class Api::V1::WishlistsController < ApplicationController
     if @wishlist_items.any?
       render json: { data: ActiveModelSerializers::SerializableResource.new(@wishlist_items, each_serializer: WishlistItemSerializer) }
     else
-      render json: { errors: ['Wishlist not found'] }, status: :not_found
+      render json: { message: "" }, status: :ok
     end
   end
 end

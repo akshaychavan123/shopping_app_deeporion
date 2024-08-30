@@ -1,12 +1,8 @@
 class OrderItem < ApplicationRecord
   belongs_to :order
-  belongs_to :product_item
 
-  before_save :set_sub_total
-
-  private
-
-  def set_sub_total
-    self.sub_total = product_item.price * quantity
-  end
+  validates :product_item_id, presence: true
+  validates :product_item_variant_id, presence: true
+  validates :quantity, presence: true, numericality: { greater_than_or_equal_to: 1 }
+  validates :total_price, presence: true, numericality: { greater_than_or_equal_to: 0 }
 end

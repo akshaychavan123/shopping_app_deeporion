@@ -19,11 +19,13 @@ class WishlistItemSerializer < ActiveModel::Serializer
 
   def image
     if object.product_item.image.attached?
-      "#{base_url}#{Rails.application.routes.url_helpers.rails_blob_path(object.product_item.image, only_path: true)}"
-    else
-      nil
+      if Rails.env.development? || Rails.env.test?
+        "#{base_url}#{Rails.application.routes.url_helpers.rails_blob_path(object.product_item.image, only_path: true)}"
+      else
+        object.product_item.image.service.send(:object_for, object.product_item.image.key).public_url
+      end
     end
-  end  
+  end
 
   def rating_and_review
     reviews = Review.where(product_item_id: object.product_item.id)

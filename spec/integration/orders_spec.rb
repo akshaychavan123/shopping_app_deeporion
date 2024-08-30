@@ -10,16 +10,6 @@ RSpec.describe 'api/v1/orders', type: :request do
         type: :object,
         properties: {
           user_id: { type: :integer },
-          first_name: { type: :string },
-          last_name: { type: :string },
-          phone_number: { type: :string },
-          email: { type: :string },
-          country: { type: :string },
-          pincode: { type: :string },
-          area: { type: :string },
-          city: { type: :string },
-          state: { type: :string },
-          address: { type: :string },
           total_price: { type: :number },
           address_type: { type: :string },
           payment_status: { type: :string },
@@ -36,7 +26,7 @@ RSpec.describe 'api/v1/orders', type: :request do
             }
           }
         },
-        required: ['first_name', 'last_name', 'phone_number', 'email', 'country', 'pincode', 'area', 'city', 'state', 'address', 'total_price', 'address_type', 'payment_status', 'placed_at', 'order_items_attributes']
+        required: ['total_price', 'address_type', 'payment_status', 'placed_at', 'order_items_attributes']
       }
 
       response '201', 'order created' do

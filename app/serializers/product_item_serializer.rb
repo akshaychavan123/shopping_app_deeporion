@@ -11,7 +11,7 @@ class ProductItemSerializer < ActiveModel::Serializer
 
   def productdetails
     {
-      care_instructions: object.care_instructions,
+      material_and_care: object.care_instructions,
       size_and_fit: object.size_and_fit,
       description: object.description
     }
@@ -37,12 +37,20 @@ class ProductItemSerializer < ActiveModel::Serializer
   end
 
   def image
-    object.image.attached? ? "#{base_url}#{Rails.application.routes.url_helpers.rails_blob_path(object.image, only_path: true)}" : nil
+    if object.image.attached?
+      host = base_url
+      Rails.env.development? || Rails.env.test? ?
+        "#{host}#{Rails.application.routes.url_helpers.rails_blob_path(object.image, only_path: true)}" :
+        object.image.service.send(:object_for, object.image.key).public_url
+    end
   end
 
   def photos
+    host = base_url
     object.photos.map do |photo|
-      "#{base_url}#{Rails.application.routes.url_helpers.rails_blob_path(photo, only_path: true)}"
+      Rails.env.development? || Rails.env.test? ?
+        "#{host}#{Rails.application.routes.url_helpers.rails_blob_path(photo, only_path: true)}" :
+        photo.service.send(:object_for, photo.key).public_url
     end
   end
 

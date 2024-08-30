@@ -61,7 +61,9 @@ Rails.application.routes.draw do
       get '/landing_page/top_category', to: 'landing_page#top_category'      
       get '/landing_page/index_of_product_by_category/:id', to: 'landing_page#index_of_product_by_category'     
       
-      resources :orders, only: [:create]
+      resources :orders, only: [:create] do
+        post 'payment_callback', on: :collection
+      end
       resources :contact_us, only: [:create]
 
       resources :wishlists, only: [] do
@@ -94,6 +96,7 @@ Rails.application.routes.draw do
       resources :shipping_policies, only: [:index, :show, :create, :update, :destroy]
       resources :video_libraries, only: [:index, :show, :create, :update, :destroy]
       resources :careers, only: [:index, :show, :create, :update, :destroy]
+      resources :banners
       resources :products, only: [:index, :show, :create, :update, :destroy] do
         # resources :product_items, only: [:index, :show, :create, :update, :destroy] 
       end

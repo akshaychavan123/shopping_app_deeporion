@@ -3,8 +3,18 @@ class CouponSerializer < ActiveModel::Serializer
 							:max_uses_per_client, :max_uses_per_promo, :couponable_type, :couponable_id, :image
 
 	# belongs_to :couponable, polymorphic: true
-	def image
-    object.image.attached? ? "#{base_url}#{Rails.application.routes.url_helpers.rails_blob_path(object.image, only_path: true)}" : nil
+
+  def image
+    host = base_url
+    if object.image.attached?
+      if Rails.env.development? || Rails.env.test?
+        host + Rails.application.routes.url_helpers.rails_blob_path(object.image, only_path: true)
+      else
+        object.image.service.send(:object_for, object.image.key).public_url
+      end
+    else
+      nil
+    end
   end
 
   private

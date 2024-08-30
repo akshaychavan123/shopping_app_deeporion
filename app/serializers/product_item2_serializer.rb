@@ -3,8 +3,13 @@ class ProductItem2Serializer < ActiveModel::Serializer
     # has_many :product_item_variants, serializer: ProductItemVariantSerializer
 
     def image
-      object.image.attached? ? "#{base_url}#{Rails.application.routes.url_helpers.rails_blob_path(object.image, only_path: true)}" : nil
-    end
+      if object.image.attached?
+        host = base_url
+        Rails.env.development? || Rails.env.test? ?
+          "#{host}#{Rails.application.routes.url_helpers.rails_blob_path(object.image, only_path: true)}" :
+          object.image.service.send(:object_for, object.image.key).public_url
+      end
+    end  
 
     def rating_and_review
       reviews = Review.where(product_item_id: object.id)

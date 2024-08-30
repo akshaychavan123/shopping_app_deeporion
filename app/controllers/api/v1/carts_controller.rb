@@ -3,8 +3,19 @@ class Api::V1::CartsController < ApplicationController
   before_action :set_cart, only: [:show]
 
   def show
-    @cart_items = @cart.cart_items.includes(:product_item)
-    render json: { data: ActiveModelSerializers::SerializableResource.new(@cart_items, each_serializer: CartItemSerializer) }
+    @cart_items = @cart.cart_items.includes(:product_item).order(:created_at)
+    calculate_order_summary
+
+    render json: {
+      data: ActiveModelSerializers::SerializableResource.new(@cart_items, each_serializer: CartItemSerializer),
+      order_summary: {
+        subtotal: @subtotal,
+        taxes: @taxes,
+        delivery_charge: @delivery_charge,
+        total: @total
+      },
+      cart_quantity: @cart_items.count
+    }, status: :ok
   end
 
   def product_item_list_by_coupon
@@ -45,5 +56,28 @@ class Api::V1::CartsController < ApplicationController
 
   def set_cart
     @cart = Cart.find_or_create_by(user: @current_user)
+  end
+
+  def calculate_order_summary
+    @subtotal = @cart.cart_items.sum { |item| item.product_item_variant.price * item.quantity }
+    @taxes = @cart_items.sum { |item| calculate_gst(item.product_item_variant.price) * item.quantity }
+    @delivery_charge = calculate_delivery_charge(@subtotal)
+    @total = @subtotal + @taxes + @delivery_charge
+  end
+
+  def calculate_gst(price)
+    if price <= 1000
+      (price * 0.05).round(2)
+    else
+      (price * 0.12).round(2)
+    end
+  end
+
+  def calculate_delivery_charge(subtotal)
+    if subtotal < 499
+      49.0
+    else
+      0.0
+    end
   end
 end

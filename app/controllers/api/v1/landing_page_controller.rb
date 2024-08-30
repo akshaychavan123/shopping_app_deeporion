@@ -154,7 +154,7 @@ class Api::V1::LandingPageController < ApplicationController
         "(product_items.price BETWEEN #{min_price} AND #{max_price})"
       end
     
-      @product_items = @product_items#.where(price_conditions.join(' OR '))
+      @product_items = @product_items
     end
     
     

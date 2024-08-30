@@ -7,7 +7,7 @@ class Api::V1::PasswordsController < ApplicationController
     @user = User.find_by(email: params[:email])
     if @user.present?
       UserForgotPasswordMailer.forgot_password(@user).deliver_now
-      render json: { status: 'ok' }, status: :ok
+      render json: { status: 'Link sent to your email' }, status: :ok
     else
       render json: { error: 'Email address not found. Please check and try again.' }, status: :not_found
     end
@@ -21,12 +21,11 @@ class Api::V1::PasswordsController < ApplicationController
     end
 
     payload = User.decode_password_token(token)
-    puts "----------------------------------------------->>>>>   payload - #{payload}"
     @user = User.find_by(id: payload[:user_id]) if payload
 
     if @user.present?
       if @user.update(password_params)
-        render json: { status: 'ok' }, status: :ok
+        render json: { status: 'Password changed successfully' }, status: :ok
       else
         render json: { error: @user.errors.full_messages }, status: :unprocessable_entity
       end

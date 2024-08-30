@@ -36,19 +36,15 @@ class User < ApplicationRecord
   end
 
   # def self.decode_password_token(token)
-  #   body = JWT.decode(token, Rails.application.secrets.secret_key_base, true, algorithm: 'HS256')[0]
   #   key_base = Rails.application.secrets.secret_key_base || ENV['SECRET_KEY_BASE']
-  #   HashWithIndifferentAccess.new body
-  # rescue
+  #   body = JWT.decode(token, key_base, true, algorithm: 'HS256')[0]
+  #   HashWithIndifferentAccess.new(body)
+  # rescue JWT::DecodeError
   #   nil
   # end
 
   def self.decode_password_token(token)
-    key_base = Rails.application.secrets.secret_key_base || ENV['SECRET_KEY_BASE']
-    body = JWT.decode(token, key_base, true, algorithm: 'HS256')[0]
-    HashWithIndifferentAccess.new(body)
-  rescue JWT::DecodeError
-    nil
+    JsonWebToken.decode(token)
   end
   
 

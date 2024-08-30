@@ -1,6 +1,6 @@
-class GiftCardSerializer < ActiveModel::Serializer
-  attributes :id, :price, :images
-
+class BannerSerializer < ActiveModel::Serializer
+  attributes :id, :heading, :description, :banner_type, :images
+  
   def images
     host = base_url
     object.images.map do |image|
