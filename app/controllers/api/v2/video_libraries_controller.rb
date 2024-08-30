@@ -4,9 +4,9 @@ class Api::V2::VideoLibrariesController < ApplicationController
   before_action :set_video_library, only: [:show, :update, :destroy]
 
   def index
-    @video_libraries = VideoLibrary.all
+    @video_libraries = VideoLibrary.order(created_at: :desc)
     render json: @video_libraries, each_serializer: VideoLibrarySerializer
-  end
+  end  
 
   def show
     render json: @video_library, serializer: VideoLibrarySerializer
@@ -18,7 +18,7 @@ class Api::V2::VideoLibrariesController < ApplicationController
     if @video_library.save
       render json: @video_library, serializer: VideoLibrarySerializer, status: :created
     else
-      render json: @video_library.errors, status: :unprocessable_entity
+			render json: { message: 'Something went wrong' }, status: :unprocessable_entity
     end
   end
 
@@ -26,7 +26,7 @@ class Api::V2::VideoLibrariesController < ApplicationController
     if @video_library.update(video_library_params)
       render json: @video_library, serializer: VideoLibrarySerializer
     else
-      render json: @video_library.errors, status: :unprocessable_entity
+			render json: { message: 'Something went wrong' }, status: :unprocessable_entity
     end
   end
 
@@ -43,7 +43,7 @@ class Api::V2::VideoLibrariesController < ApplicationController
   end
 
   def video_library_params
-    params.permit(:description, :video_link)
+    params.require(:video_library).permit(:video_link, :video_description_id)
   end
 
   def check_user
