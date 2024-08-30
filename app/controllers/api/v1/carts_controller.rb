@@ -3,7 +3,7 @@ class Api::V1::CartsController < ApplicationController
   before_action :set_cart, only: [:show]
 
   def show
-    @cart_items = @cart.cart_items.includes(:product_item)
+    @cart_items = @cart.cart_items.includes(:product_item).order(:created_at)
     calculate_order_summary
 
     render json: {

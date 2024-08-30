@@ -3,7 +3,7 @@ class Api::V1::CartItemsController < ApplicationController
   before_action :set_cart, only: [:index, :update, :add_item, :remove_or_move_to_wishlist]
 
   def index
-    @cart_items = @cart.cart_items.includes(:product_item, :product_item_variant)
+    @cart_items = @cart.cart_items.includes(:product_item, :product_item_variant).order(:created_at)
     render json: {
       data: ActiveModelSerializers::SerializableResource.new(
         @cart_items,
