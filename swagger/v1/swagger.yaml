@@ -2076,13 +2076,10 @@ paths:
             schema:
               type: object
               properties:
-                content:
+                description:
                   type: string
-                version:
-                  type: integer
               required:
-              - content
-              - version
+              - description
   "/api/v2/terms_and_conditions/{id}":
     get:
       summary: Retrieves a terms and condition
@@ -2126,13 +2123,10 @@ paths:
             schema:
               type: object
               properties:
-                content:
+                description:
                   type: string
-                version:
-                  type: integer
               required:
-              - content
-              - version
+              - description
     delete:
       summary: Deletes a terms and condition
       tags:

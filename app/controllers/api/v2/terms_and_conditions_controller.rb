@@ -45,7 +45,7 @@ class Api::V2::TermsAndConditionsController < ApplicationController
   end
 
   def terms_and_condition_params
-    params.require(:terms_and_condition).permit(:content, :version)
+    params.require(:terms_and_condition).permit(:description)
   end
 
 	def check_user
