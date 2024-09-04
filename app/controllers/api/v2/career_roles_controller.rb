@@ -4,40 +4,40 @@ class Api::V2::CareerRolesController < ApplicationController
     before_action :set_career, only: [:show, :update, :destroy]
   
     def index
-      @careers = CareerRole.all
-      render json: @careers, each_serializer: CareerRoleSerializer
+      @career_roles = CareerRole.all
+      render json: @career_roles, each_serializer: CareerRoleSerializer
     end
   
     def show
-      render json: @career, serializer: CareerRoleSerializer
+      render json: @career_role, serializer: CareerRoleSerializer
     end
   
     def create
-      @career = CareerRole.new(careerrole_params)
+      @career_role = CareerRole.new(careerrole_params)
   
-      if @career.save
-        render json: @career, serializer: CareerRoleSerializer, status: :created
+      if @career_role.save
+        render json: @career_role, serializer: CareerRoleSerializer, status: :created
       else
-        render json: @career.errors, status: :unprocessable_entity
+        render json: @career_role.errors, status: :unprocessable_entity
       end
     end
   
     def update
-      if @career.update(careerrole_params)
-        render json: @career, serializer: CareerRoleSerializer
+      if @career_role.update(careerrole_params)
+        render json: @career_role, serializer: CareerRoleSerializer
       else
-        render json: @career.errors, status: :unprocessable_entity
+        render json: @career_role.errors, status: :unprocessable_entity
       end
     end
   
     def destroy
-      if @career.destroy
+      if @career_role.destroy
         head :no_content
       else
-        render json: { errors: @career.errors.full_messages }, status: :unprocessable_entity
+        render json: { errors: @career_role.errors.full_messages }, status: :unprocessable_entity
       end
     rescue ActiveRecord::RecordNotFound
-      render json: { errors: ['Career not found'] }, status: :not_found
+      render json: { errors: ['career role not found'] }, status: :not_found
     rescue StandardError => e
       render json: { errors: [e.message] }, status: :internal_server_error
     end
@@ -45,7 +45,7 @@ class Api::V2::CareerRolesController < ApplicationController
     private
   
     def set_career
-      @career = CareerRole.find(params[:id])
+      @career_role = CareerRole.find(params[:id])
     end
 
     def careerrole_params

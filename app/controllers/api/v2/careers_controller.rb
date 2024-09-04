@@ -22,7 +22,6 @@ class Api::V2::CareersController < ApplicationController
     end
   end
 
-
   def update
     if @career.update(career_params)
       render json: @career, serializer: CareerSerializer
@@ -51,10 +50,6 @@ class Api::V2::CareersController < ApplicationController
 
   def career_params
     params.require(:career).permit(:id ,:header)
-  end
-
-  def careerrole_params
-    params.require(:career).permit(:id, :role_name, :role_type, :location, :role_overview, :key_responsibility, :requirements, :email_id, :_destroy)
   end
 
   def check_user
