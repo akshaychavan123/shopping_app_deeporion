@@ -1262,6 +1262,127 @@ paths:
           description: banner destroyed successfully
         '404':
           description: not found
+  "/api/v2/career_roles":
+    get:
+      summary: Retrieves all Career roles
+      tags:
+      - Career Roles
+      responses:
+        '200':
+          description: career roles found
+    post:
+      summary: Creates a Career role
+      tags:
+      - Career Roles
+      security:
+      - bearerAuth2: []
+      parameters: []
+      responses:
+        '201':
+          description: career created
+        '422':
+          description: invalid request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                career_id:
+                  type: string
+                role_name:
+                  type: string
+                role_type:
+                  type: string
+                location:
+                  type: string
+                role_overview:
+                  type: string
+                key_responsibility:
+                  type: string
+                requirements:
+                  type: string
+                email_id:
+                  type: string
+              required:
+              - career_id
+              - role_name
+              - role_type
+              - location
+              - role_overview
+              - key_responsibility
+              - requirements
+              - email_id
+  "/api/v2/career_roles/{id}":
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Retrieves a specific Career role
+      tags:
+      - Career Roles
+      responses:
+        '200':
+          description: career found
+        '404':
+          description: career not found
+    put:
+      summary: Updates a specific Career role
+      tags:
+      - Career Roles
+      security:
+      - bearerAuth2: []
+      parameters: []
+      responses:
+        '200':
+          description: career updated
+        '404':
+          description: career not found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                career_id:
+                  type: string
+                role_name:
+                  type: string
+                role_type:
+                  type: string
+                location:
+                  type: string
+                role_overview:
+                  type: string
+                key_responsibility:
+                  type: string
+                requirements:
+                  type: string
+                email_id:
+                  type: string
+              required:
+              - career_id
+              - role_name
+              - role_type
+              - location
+              - role_overview
+              - key_responsibility
+              - requirements
+              - email_id
+    delete:
+      summary: Deletes a specific Career role
+      tags:
+      - Career Roles
+      security:
+      - bearerAuth2: []
+      responses:
+        '204':
+          description: career deleted
+        '404':
+          description: career not found
   "/api/v2/careers":
     get:
       summary: Retrieves all Careers
