@@ -6,7 +6,6 @@ class Api::V2::AboutUsController < ApplicationController
 
   def index
     @about_uss = AboutUs.all
-    # render json: @about_us, each_serializer: AboutUsSerializer
     render json: { data: ActiveModelSerializers::SerializableResource.new(@about_uss, each_serializer: AboutUsSerializer)}
   end
 
@@ -31,6 +30,7 @@ class Api::V2::AboutUsController < ApplicationController
 
   def update
     if @about_us.update(about_us_params)
+      attach_images if params[:images].present?
       render json: @about_us, serializer: AboutUsSerializer
     else
       render json: @about_us.errors, status: :unprocessable_entity
@@ -56,6 +56,13 @@ class Api::V2::AboutUsController < ApplicationController
   def check_user
     unless @current_user.type == "Admin"
       render json: { errors: ['Unauthorized access'] }, status: :forbidden
+    end
+  end
+
+  def attach_images
+    @about_us.images.purge
+    Array(params[:images]).each do |photo|
+      @about_us.images.attach(photo)
     end
   end
 end

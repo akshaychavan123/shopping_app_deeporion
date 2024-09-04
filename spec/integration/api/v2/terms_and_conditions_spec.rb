@@ -17,25 +17,24 @@ RSpec.describe 'api/v2/terms_and_conditions', type: :request do
       parameter name: :terms_and_condition, in: :body, schema: {
         type: :object,
         properties: {
-          content: { type: :string },
-          version: { type: :integer }
+          description: { type: :string }
         },
-        required: ['content', 'version']
+        required: ['description']
       }
 
       response '201', 'terms and condition created' do
-        let(:terms_and_condition) { { content: 'These are the terms...', version: 1 } }
+        let(:terms_and_condition) { { description: 'These are the terms...' } }
         run_test!
       end
 
       response '422', 'invalid request' do
-        let(:terms_and_condition) { { content: '' } }
+        let(:terms_and_condition) { { description: '' } }
         run_test!
       end
 
       response '403', 'Unauthorized access' do
         let(:Authorization) { 'Bearer invalid_token' }
-        let(:terms_and_condition) { { content: 'These are the terms...', version: 1 } }
+        let(:terms_and_condition) { { description: 'These are the terms...' } }
         run_test!
       end
     end
@@ -48,7 +47,7 @@ RSpec.describe 'api/v2/terms_and_conditions', type: :request do
       parameter name: :id, in: :path, type: :integer
 
       response '200', 'terms and condition found' do
-        let(:id) { TermsAndCondition.create(content: 'These are the terms...', version: 1).id }
+        let(:id) { TermsAndCondition.create(description: 'These are the terms...').id }
         run_test!
       end
 
@@ -66,34 +65,33 @@ RSpec.describe 'api/v2/terms_and_conditions', type: :request do
       parameter name: :terms_and_condition, in: :body, schema: {
         type: :object,
         properties: {
-          content: { type: :string },
-          version: { type: :integer }
+          description: { type: :string }
         },
-        required: ['content', 'version']
+        required: ['description']
       }
 
       response '200', 'terms and condition updated' do
-        let(:id) { TermsAndCondition.create(content: 'These are the terms...', version: 1).id }
-        let(:terms_and_condition) { { content: 'Updated terms', version: 2 } }
+        let(:id) { TermsAndCondition.create(description: 'These are the terms...').id }
+        let(:terms_and_condition) { { description: 'Updated terms'} }
         run_test!
       end
 
       response '404', 'terms and condition not found' do
         let(:id) { 'invalid' }
-        let(:terms_and_condition) { { content: 'Updated terms', version: 2 } }
+        let(:terms_and_condition) { { description: 'Updated terms'} }
         run_test!
       end
 
       response '422', 'invalid request' do
-        let(:id) { TermsAndCondition.create(content: 'These are the terms...', version: 1).id }
-        let(:terms_and_condition) { { content: '' } }
+        let(:id) { TermsAndCondition.create(description: 'These are the terms...').id }
+        let(:terms_and_condition) { { description: '' } }
         run_test!
       end
 
       response '403', 'Unauthorized access' do
         let(:Authorization) { 'Bearer invalid_token' }
-        let(:id) { TermsAndCondition.create(content: 'These are the terms...', version: 1).id }
-        let(:terms_and_condition) { { content: 'Updated terms', version: 2 } }
+        let(:id) { TermsAndCondition.create(description: 'These are the terms...').id }
+        let(:terms_and_condition) { { description: 'Updated terms'} }
         run_test!
       end
     end
@@ -104,7 +102,7 @@ RSpec.describe 'api/v2/terms_and_conditions', type: :request do
       parameter name: :id, in: :path, type: :integer
 
       response '204', 'terms and condition deleted' do
-        let(:id) { TermsAndCondition.create(content: 'These are the terms...', version: 1).id }
+        let(:id) { TermsAndCondition.create(description: 'These are the terms...').id }
         run_test!
       end
 
@@ -115,7 +113,7 @@ RSpec.describe 'api/v2/terms_and_conditions', type: :request do
 
       response '403', 'Unauthorized access' do
         let(:Authorization) { 'Bearer invalid_token' }
-        let(:id) { TermsAndCondition.create(content: 'These are the terms...', version: 1).id }
+        let(:id) { TermsAndCondition.create(description: 'These are the terms...').id }
         run_test!
       end
     end

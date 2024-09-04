@@ -5,6 +5,7 @@ RSpec.describe 'Api::V2::VideoLibrariesController', type: :request do
     get 'Retrieves all Video Libraries' do
       tags 'Video Libraries'
       produces 'application/json'
+      
       response '200', 'video_library found' do
         run_test!
       end
@@ -14,21 +15,23 @@ RSpec.describe 'Api::V2::VideoLibrariesController', type: :request do
       tags 'Video Libraries'
       consumes 'application/json'
       security [bearerAuth2: []]
+      
       parameter name: :video_library, in: :body, schema: {
         type: :object,
         properties: {
-          description: { type: :string },
-          video_link: { type: :string }
+          video_link: { type: :string },
+          video_description_id: { type: :integer }
         },
-        required: ['description', 'video_link']
+        required: ['video_link', 'video_description_id']
       }
+
       response '201', 'video_library created' do
-        let(:video_library) { { description: 'Sample Video', video_link: 'http://example.com/video.mp4' } }
+        let(:video_library) { { video_link: 'http://example.com/video.mp4', video_description_id: 1 } }
         run_test!
       end
 
       response '422', 'invalid request' do
-        let(:video_library) { { description: nil, video_link: 'http://example.com/video.mp4' } }
+        let(:video_library) { { video_link: 'invalid', video_description_id: nil } }
         run_test!
       end
     end
@@ -40,8 +43,9 @@ RSpec.describe 'Api::V2::VideoLibrariesController', type: :request do
     get 'Retrieves a specific Video Library' do
       tags 'Video Libraries'
       produces 'application/json'
+      
       response '200', 'video_library found' do
-        let(:id) { VideoLibrary.create(description: 'Sample Video', video_link: 'http://example.com/video.mp4').id }
+        let(:id) { VideoLibrary.create(video_link: 'http://example.com/video.mp4', video_description_id: 1).id }
         run_test!
       end
 
@@ -55,23 +59,25 @@ RSpec.describe 'Api::V2::VideoLibrariesController', type: :request do
       tags 'Video Libraries'
       consumes 'application/json'
       security [bearerAuth2: []]
+      
       parameter name: :video_library, in: :body, schema: {
         type: :object,
         properties: {
-          description: { type: :string },
-          video_link: { type: :string }
+          video_link: { type: :string },
+          video_description_id: { type: :integer }
         },
-        required: ['description', 'video_link']
+        required: ['video_link', 'video_description_id']
       }
+
       response '200', 'video_library updated' do
-        let(:id) { VideoLibrary.create(description: 'Sample Video', video_link: 'http://example.com/video.mp4').id }
-        let(:video_library) { { description: 'Updated Video', video_link: 'http://example.com/updated_video.mp4' } }
+        let(:id) { VideoLibrary.create(video_link: 'http://example.com/video.mp4', video_description_id: 1).id }
+        let(:video_library) { { video_link: 'http://example.com/updated_video.mp4', video_description_id: 1 } }
         run_test!
       end
 
       response '422', 'invalid request' do
-        let(:id) { VideoLibrary.create(description: 'Sample Video', video_link: 'http://example.com/video.mp4').id }
-        let(:video_library) { { description: nil } }
+        let(:id) { VideoLibrary.create(video_link: 'http://example.com/video.mp4', video_description_id: 1).id }
+        let(:video_library) { { video_link: 'invalid', video_description_id: nil } }
         run_test!
       end
     end
@@ -79,8 +85,9 @@ RSpec.describe 'Api::V2::VideoLibrariesController', type: :request do
     delete 'Deletes a specific Video Library' do
       tags 'Video Libraries'
       security [bearerAuth2: []]
-      response '204', 'video_library deleted' do
-        let(:id) { VideoLibrary.create(description: 'Sample Video', video_link: 'http://example.com/video.mp4').id }
+      
+      response '200', 'video_library deleted' do
+        let(:id) { VideoLibrary.create(video_link: 'http://example.com/video.mp4', video_description_id: 1).id }
         run_test!
       end
 
@@ -90,7 +97,7 @@ RSpec.describe 'Api::V2::VideoLibrariesController', type: :request do
       end
 
       response '422', 'cannot delete video_library' do
-        let(:video_library) { VideoLibrary.create(description: 'Sample Video', video_link: 'http://example.com/video.mp4') }
+        let(:video_library) { VideoLibrary.create(video_link: 'http://example.com/video.mp4', video_description_id: 1) }
         let(:id) { video_library.id }
         before do
           allow_any_instance_of(VideoLibrary).to receive(:destroy).and_return(false)
