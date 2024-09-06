@@ -17,7 +17,6 @@ class Api::V2::ProductItemsController < ApplicationController
     end
   end
 
-
   def show
     render json: { data: ActiveModelSerializers::SerializableResource.new(@product_item, each_serializer: ProductItemSerializer)}
   end
@@ -27,7 +26,6 @@ class Api::V2::ProductItemsController < ApplicationController
     @product = Product.find_by(id: params[:product_id])
     @product_item = @product.product_items.new(product_items_params)
     @product_item.product_code = generate_product_code
-    byebug
     if @product_item.save
       if params[:image].present?
         @product_item.image.attach(params[:image])
@@ -43,8 +41,7 @@ class Api::V2::ProductItemsController < ApplicationController
     else
       render json: { error: 'Something went to wrong' }, status: :unprocessable_entity
     end
-  end
-  
+  end  
 
   def update
     if @product_item.update(product_items_params)
