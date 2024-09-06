@@ -104,9 +104,9 @@ Rails.application.routes.draw do
       resources :categories do
         resources :subcategories, only: [:index, :show, :create, :update, :destroy]
       end
-      resources :gift_card_categories, only: [:index, :show, :create, :destroy]
+      resources :gift_card_categories, only: [:index, :show, :create, :update, :destroy]
       resources :gift_cards
-      resources :coupons, only: [:index, :show, :create] do
+      resources :coupons, only: [:index, :show, :create, :update, :destroy] do
         member do
           get :product_list
         end

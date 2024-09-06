@@ -1437,6 +1437,9 @@ paths:
                   format: date
                 promo_type:
                   type: string
+                  enum:
+                  - discount on product
+                  - discount on amount
                 amount_off:
                   type: number
                   format: float
@@ -1444,10 +1447,10 @@ paths:
                   type: integer
                 max_uses_per_promo:
                   type: integer
-                couponable_id:
-                  type: integer
-                couponable_type:
-                  type: string
+                product_ids:
+                  type: array
+                  items:
+                    type: integer
                 image:
                   type: string
                   format: binary
@@ -1477,7 +1480,72 @@ paths:
           description: successful
         '404':
           description: not found
-  "/api/v2/coupons/{id}/products":
+    put:
+      summary: update coupon
+      tags:
+      - Coupons
+      security:
+      - bearerAuth2: []
+      parameters: []
+      responses:
+        '200':
+          description: successful
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                promo_code_name:
+                  type: string
+                promo_code:
+                  type: string
+                start_date:
+                  type: string
+                  format: date
+                end_date:
+                  type: string
+                  format: date
+                promo_type:
+                  type: string
+                  enum:
+                  - discount on product
+                  - discount on amount
+                amount_off:
+                  type: number
+                  format: float
+                max_uses_per_client:
+                  type: integer
+                max_uses_per_promo:
+                  type: integer
+                product_ids:
+                  type: array
+                  items:
+                    type: integer
+                image:
+                  type: string
+                  format: binary
+              required:
+              - promo_code_name
+              - promo_code
+              - start_date
+              - end_date
+              - promo_type
+              - amount_off
+    delete:
+      summary: delete coupon
+      tags:
+      - Coupons
+      security:
+      - bearerAuth2: []
+      responses:
+        '200':
+          description: successful
+        '404':
+          description: not found
+        '401':
+          description: unauthorized
+  "/api/v2/coupons/{id}/product_list":
     parameters:
     - name: id
       in: path
