@@ -17,7 +17,7 @@ class Api::V2::ProductItemVariantsController < ApplicationController
 
   def product_item_variant_params
     params.permit(
-      :color, :size, :price, :product_item_id, :quantity
+      :color, :size, :price, :product_item_id, :quantity, :in_stock
     )
   end
 
