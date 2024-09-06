@@ -97,6 +97,7 @@ Rails.application.routes.draw do
       resources :video_libraries, only: [:index, :show, :create, :update, :destroy]
       resources :careers, only: [:index, :show, :create, :update, :destroy]
       resources :banners
+      resources :career_roles
       resources :video_descriptions
       resources :products, only: [:index, :show, :create, :update, :destroy] do
         # resources :product_items, only: [:index, :show, :create, :update, :destroy] 

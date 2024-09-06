@@ -49,7 +49,7 @@ class Api::V2::CareersController < ApplicationController
   end
 
   def career_params
-    params.require(:career).permit(:header, career_roles_attributes: [:id, :role_name, :role_type, :location, :role_overview, :key_responsibility, :requirements, :email_id, :_destroy])
+    params.require(:career).permit(:id ,:header)
   end
 
   def check_user
