@@ -86,6 +86,7 @@ Rails.application.routes.draw do
     end
 
     namespace :v2 do
+      get 'product_items/admin_product_list/:product_id', to: 'product_items#admin_product_list'
       resources :product_item_variants, only: [:create]
       resources :product_items, only: [:index, :show, :create, :update, :destroy] 
       resources :categories, only: [:index, :show, :create, :update, :destroy]

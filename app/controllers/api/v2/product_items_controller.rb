@@ -8,6 +8,14 @@ class Api::V2::ProductItemsController < ApplicationController
     render json: { data: ActiveModelSerializers::SerializableResource.new(@product_items, each_serializer: ProductItemSerializer)}
   end
 
+  def admin_product_list
+    @product_items = ProductItem.where(product_id: params[:product_id])
+    if @product_items.present?
+      render json: { data: ActiveModelSerializers::SerializableResource.new(@product_items, each_serializer: ProductItemSerializer)}
+    else
+      render json: { message: 'Not found' }, status: :unprocessable_entity
+    end
+  end
 
   def show
     render json: { data: ActiveModelSerializers::SerializableResource.new(@product_item, each_serializer: ProductItemSerializer)}
@@ -17,7 +25,7 @@ class Api::V2::ProductItemsController < ApplicationController
   def create
     @product = Product.find_by(id: params[:product_id])
     @product_item = @product.product_items.new(product_items_params)
-
+    @product_item.product_code = generate_product_code
     if @product_item.save
       if params[:image].present?
         @product_item.image.attach(params[:image])
@@ -33,8 +41,7 @@ class Api::V2::ProductItemsController < ApplicationController
     else
       render json: { error: 'Something went to wrong' }, status: :unprocessable_entity
     end
-  end
-  
+  end  
 
   def update
     if @product_item.update(product_items_params)
@@ -56,7 +63,7 @@ class Api::V2::ProductItemsController < ApplicationController
   private
 
   def product_items_params
-    params.permit(:name, :brand, :price, :discounted_price, :description, :material, :care, :product_code, :care_instructions, :fabric, :hemline, :neck, :texttile_thread, :size_and_fit, :main_trend, :knite_or_woven, :length, :occasion, :color)
+    params.permit(:name, :brand, :price, :discounted_price, :description, :material, :care, :product_code, :care_instructions, :fabric, :hemline, :neck, :texttile_thread, :size_and_fit, :main_trend, :knite_or_woven, :length ,:height, :occasion, :color)
   end  
 
   def set_product_items
@@ -68,4 +75,16 @@ class Api::V2::ProductItemsController < ApplicationController
       render json: { errors: ['Unauthorized access'] }, status: :forbidden
     end
   end
+
+  def generate_product_code
+    category_code = 'ITEM'
+    date_str = Date.today.strftime('%Y%m%d')
+    serial_number = loop do
+      random_number = SecureRandom.hex(4).upcase 
+      break random_number unless ProductItem.where(product_code: "#{category_code}-#{date_str}-#{random_number}").exists?
+    end
+    product_code = "#{category_code}-#{date_str}-#{serial_number}"
+    return product_code
+  end
+
 end

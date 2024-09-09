@@ -13,13 +13,13 @@ RSpec.describe 'Api::V2::ProductItemVariants', type: :request do
       parameter name: :product_item_variants, in: :formData, schema: {
         type: :object,
         properties: {
-          color: { type: :string },
           price: { type: :number },
           size: { type: :string },
           quantity: { type: :number },
           product_item_id: { type: :integer },
+          in_stock: { type: :boolean },
         },
-        required: ['size','quantity','product_item_id', 'color', 'price']
+        required: ['size','quantity','product_item_id', 'price']
       }
 
       response(201, 'created') do

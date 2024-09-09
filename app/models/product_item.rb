@@ -16,11 +16,8 @@ class ProductItem < ApplicationRecord
   has_many_attached :photos
 
   validates :name, presence: true
-  validates :brand, presence: true
   validates :description, presence: true
-  validates :material, presence: true
-  validates :care, presence: true
-  validates :product_code, presence: true, uniqueness: true
+  validates :product_code, uniqueness: true
 
   scope :new_arrivals, -> { order(created_at: :desc).limit(10) }
 end

@@ -9,9 +9,33 @@ RSpec.describe 'Api::V2::ProductItems', type: :request do
       tags 'Product Items'
       security [bearerAuth2: []]
       produces 'application/json'
-
       response(200, 'successful') do
         run_test!
+      end
+    end
+
+    path '/api/v2/product_items/admin_product_list/{product_id}' do
+      parameter name: :product_id, in: :path, type: :integer, description: 'ID of the product'
+    
+      get('list filtered products items') do
+        tags 'Product Items'
+        security [bearerAuth: []]
+        consumes 'application/json'
+    
+        response(200, 'successful') do
+          schema type: :object,
+                 properties: {
+                   data: {
+                     type: :array
+                   }
+                 }
+          run_test!
+        end
+    
+        response(404, 'not found') do
+          let(:id) { 'invalid' }
+          run_test!
+        end
       end
     end
 
@@ -43,13 +67,14 @@ RSpec.describe 'Api::V2::ProductItems', type: :request do
             neck: { type: :string },
             texttile_thread: { type: :string },
             size_and_fit: { type: :text },
+            height: { type: :text },
             main_trend: { type: :string },
             knite_or_woven: { type: :string },  
             length: { type: :string },
             occasion: { type: :string },
             color:{type: :string}
           },
-          required: ['image','photos','name', 'brand', 'description', 'product_code', 'product_id', 'color']
+          required: ['image','photos','name', 'description', 'product_id', 'color']
         }    
         response(201, 'created') do
           let(:product_item) do

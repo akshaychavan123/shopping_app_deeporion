@@ -1,6 +1,6 @@
 class ProductItemSerializer < ActiveModel::Serializer
-  attributes :id, :name, :brand, :price, :discounted_price, :discount_percent, :is_tax_inclusive, :image, :photos, 
-             :expected_delivery, :product_code, :payment_method, :is_favorite, :product_id, :productdetails, :specification
+  attributes :id, :name, :brand, :price, :discounted_price, :discount_percent, :is_tax_inclusive, :image, :photos, :height,
+             :expected_delivery, :product_code, :payment_method, :is_favorite, :product_id, :productdetails, :specification,:created_at
 
   has_many :product_item_variants, serializer: ProductItemVariantSerializer
 
@@ -12,7 +12,7 @@ class ProductItemSerializer < ActiveModel::Serializer
   def productdetails
     {
       material_and_care: object.care_instructions,
-      size_and_fit: object.size_and_fit,
+      size_and_fit: object.size_and_fit + " " + object.height,
       description: object.description
     }
   end
