@@ -67,6 +67,7 @@ RSpec.describe 'Api::V2::ProductItems', type: :request do
             neck: { type: :string },
             texttile_thread: { type: :string },
             size_and_fit: { type: :text },
+            height: { type: :text },
             main_trend: { type: :string },
             knite_or_woven: { type: :string },  
             length: { type: :string },

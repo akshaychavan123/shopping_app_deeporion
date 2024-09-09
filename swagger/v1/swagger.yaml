@@ -1793,8 +1793,6 @@ paths:
             schema:
               type: object
               properties:
-                color:
-                  type: string
                 price:
                   type: number
                 size:
@@ -1809,7 +1807,6 @@ paths:
               - size
               - quantity
               - product_item_id
-              - color
               - price
   "/api/v2/product_items":
     get:
@@ -1877,6 +1874,8 @@ paths:
                 texttile_thread:
                   type: string
                 size_and_fit:
+                  type: text
+                height:
                   type: text
                 main_trend:
                   type: string
