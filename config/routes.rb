@@ -74,7 +74,8 @@ Rails.application.routes.draw do
       end
 
        resource :cart, only: [:show] do
-         get 'coupon_list', on: :collection
+         get 'discount_on_amount_coupons', on: :collection
+         post 'apply_coupon', to: 'carts#apply_coupon'
          get 'product_item_list_by_coupon/:id', to: 'carts#product_item_list_by_coupon', as: :product_item_list_by_coupon
          resources :cart_items, only: [:index, :update] do
           collection do

@@ -2645,35 +2645,89 @@ paths:
                 - cart_items
         '401':
           description: unauthorized
-  "/api/v1/cart/product_item_list_by_coupon/{id}":
-    parameters:
-    - name: id
-      in: path
-      description: ID of the coupon
-      required: true
-      schema:
-        type: integer
+  "/api/v1/cart/discount_on_amount_coupons":
     get:
-      summary: list associated products
+      summary: List coupons with optional search by coupon code
       tags:
       - Carts
       security:
       - bearerAuth: []
+      parameters:
+      - name: coupon_code
+        in: query
+        description: Search by coupon code
+        schema:
+          type: string
       responses:
         '200':
           description: successful
+  "/api/v1/cart/apply_coupon":
+    post:
+      summary: Applies a coupon to the cart
+      tags:
+      - Carts
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: promo_code
+        in: query
+        description: Coupon promo code
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Coupon applied successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  order_summary:
+                    type: object
+                    properties:
+                      subtotal:
+                        type: number
+                      discount:
+                        type: number
+                      taxes:
+                        type: number
+                      delivery_charge:
+                        type: number
+                      total:
+                        type: number
+                    required:
+                    - subtotal
+                    - discount
+                    - taxes
+                    - delivery_charge
+                    - total
+                required:
+                - message
+                - order_summary
+        '422':
+          description: Coupon is invalid or expired
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                required:
+                - error
         '404':
-          description: not found
-  "/api/v1/cart/coupon_list":
-    get:
-      summary: list coupons
-      tags:
-      - Carts
-      security:
-      - bearerAuth: []
-      responses:
-        '200':
-          description: successful
+          description: Coupon not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                required:
+                - error
   "/api/v2/categories":
     get:
       summary: list categories

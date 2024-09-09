@@ -1,5 +1,6 @@
 class Coupon < ApplicationRecord
   has_one_attached :image
+  has_many :coupon_usages, dependent: :destroy
   
   validates :promo_code_name, :promo_code, presence: true
   validates :promo_code, uniqueness: true

@@ -8,7 +8,7 @@ RSpec.describe 'Api::V1::Carts', type: :request do
   path '/api/v1/cart' do
     get 'Retrieves the user\'s cart' do
       tags 'Carts'
-      security [bearerAuth: []]  # Adjusted to match your security definition
+      security [bearerAuth: []]
 
       produces 'application/json'
 
@@ -55,39 +55,76 @@ RSpec.describe 'Api::V1::Carts', type: :request do
       end
     end
   end
-
-  path '/api/v1/cart/product_item_list_by_coupon/{id}' do
-    parameter name: :id, in: :path, type: :integer, description: 'ID of the coupon'
   
-    get('list associated products') do
+  path '/api/v1/cart/discount_on_amount_coupons' do
+    get 'List coupons with optional search by coupon code' do
       tags 'Carts'
       security [bearerAuth: []]
-      consumes 'application/json'
+      produces 'application/json'
+      parameter name: :coupon_code, in: :query, type: :string, description: 'Search by coupon code'
   
-      response(200, 'successful') do
-        schema type: :object,
-               properties: {
-                 data: {
-                   type: :array
-                 }
-               }
-        run_test!
-      end
-  
-      response(404, 'not found') do
-        let(:id) { 'invalid' }
+      response '200', 'successful' do
         run_test!
       end
     end
   end
   
-  path '/api/v1/cart/coupon_list' do
-    get('list coupons') do
+  path '/api/v1/cart/apply_coupon' do
+    post 'Applies a coupon to the cart' do
       tags 'Carts'
       security [bearerAuth: []]
       consumes 'application/json'
+      produces 'application/json'
+      parameter name: :promo_code, in: :query, type: :string, description: 'Coupon promo code'
 
-      response(200, 'successful') do
+      response '200', 'Coupon applied successfully' do
+        let(:coupon) { create(:coupon, promo_code: 'DISCOUNT2024', promo_type: 'discount on amount', amount_off: 50) }
+        let(:promo_code) { coupon.promo_code }
+        let(:Authorization) { "Bearer #{token}" }
+
+        schema type: :object,
+          properties: {
+            message: { type: :string },
+            order_summary: {
+              type: :object,
+              properties: {
+                subtotal: { type: :number },
+                discount: { type: :number },
+                taxes: { type: :number },
+                delivery_charge: { type: :number },
+                total: { type: :number }
+              },
+              required: %w[subtotal discount taxes delivery_charge total]
+            }
+          },
+          required: %w[message order_summary]
+
+        run_test!
+      end
+
+      response '422', 'Coupon is invalid or expired' do
+        let(:promo_code) { 'INVALID2024' }
+        let(:Authorization) { "Bearer #{token}" }
+
+        schema type: :object,
+          properties: {
+            error: { type: :string }
+          },
+          required: ['error']
+
+        run_test!
+      end
+
+      response '404', 'Coupon not found' do
+        let(:promo_code) { 'NOTFOUND2024' }
+        let(:Authorization) { "Bearer #{token}" }
+
+        schema type: :object,
+          properties: {
+            error: { type: :string }
+          },
+          required: ['error']
+
         run_test!
       end
     end

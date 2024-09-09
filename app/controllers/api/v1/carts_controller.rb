@@ -1,9 +1,9 @@
 class Api::V1::CartsController < ApplicationController
   before_action :authorize_request
-  before_action :set_cart, only: [:show]
+  before_action :set_cart, only: [:show, :discount_on_amount_coupons, :apply_coupon]
 
   def show
-    @cart_items = @cart.cart_items.includes(:product_item).order(:created_at)
+    @cart_items = @cart.cart_items.includes(:product_item, :product_item_variant).order(:created_at)
     calculate_order_summary
 
     render json: {
@@ -18,41 +18,72 @@ class Api::V1::CartsController < ApplicationController
     }, status: :ok
   end
 
-  def product_item_list_by_coupon
-    coupon = Coupon.find(params[:id])
-    
-    case coupon.couponable
-    when ProductItem
-      @product_items = [coupon.couponable]
-    when Product
-      @product_items = coupon.couponable.product_items
-    when Subcategory
-      @product_items = ProductItem.joins(:product).where(products: { subcategory_id: coupon.couponable.id })
-    when Category
-      @product_items = ProductItem.joins(product: :subcategory).where(subcategories: { category_id: coupon.couponable.id })
+  def discount_on_amount_coupons
+    if params[:coupon_code].present?
+      @coupons = Coupon.where(promo_type: 'discount on amount', promo_code: params[:coupon_code])
     else
-      @product_items = []
+      @coupons = Coupon.where(promo_type: 'discount on amount')
     end
-    
+  
+    subtotal = @cart.cart_items.sum { |item| item.product_item_variant.price * item.quantity }
+  
     render json: {
-      data: ActiveModelSerializers::SerializableResource.new(@product_items, each_serializer: ProductItem2Serializer, current_user: @current_user)    }, status: :ok
+      data: ActiveModelSerializers::SerializableResource.new(@coupons, each_serializer: CouponForCartSerializer, subtotal: subtotal)
+    }, status: :ok
   end
+  
+  
 
-  def coupon_list
-    @coupons = Coupon.all
-
-    @coupons.each do |coupon|
-      if coupon.couponable.nil?
-        Rails.logger.error "Nil couponable found for coupon ID #{coupon.id}!"
+  def apply_coupon
+    coupon = Coupon.find_by(promo_code: params[:promo_code])
+  
+    if coupon.present?
+      if coupon_valid?(coupon)
+        apply_coupon_to_cart(coupon)
+  
+        render json: {
+          message: 'Coupon applied successfully',
+          order_summary: {
+            subtotal: @subtotal,
+            discount: @discount,
+            taxes: @taxes,
+            delivery_charge: @delivery_charge,
+            total: @total
+          }
+        }, status: :ok
       else
-        Rails.logger.info "Couponable for coupon ID #{coupon.id}: #{coupon.couponable.inspect}"
+        render json: { error: 'Coupon is invalid or expired' }, status: :unprocessable_entity
       end
+    else
+      render json: { error: 'Coupon not found' }, status: :not_found
     end
-
-    render json: @coupons
   end
 
   private
+
+  def coupon_valid?(coupon)
+    
+    return false if coupon.start_date > Date.today || coupon.end_date < Date.today
+    
+    total_uses = CouponUsage.where(coupon_id: coupon.id).count
+    return false if coupon.max_uses_per_promo && total_uses >= coupon.max_uses_per_promo
+
+    user_uses = CouponUsage.where(coupon_id: coupon.id, user_id: @current_user.id).count
+    return false if coupon.max_uses_per_client && user_uses >= coupon.max_uses_per_client
+
+    true
+  end
+
+  def apply_coupon_to_cart(coupon)
+    calculate_order_summary
+
+    if coupon.promo_type == 'discount on amount'
+      @discount = coupon.amount_off
+      @subtotal -= @discount
+    end
+    @total = @subtotal + @taxes + @delivery_charge
+    CouponUsage.create(user_id: @current_user.id, coupon_id: coupon.id)
+  end
 
   def set_cart
     @cart = Cart.find_or_create_by(user: @current_user)
@@ -60,7 +91,7 @@ class Api::V1::CartsController < ApplicationController
 
   def calculate_order_summary
     @subtotal = @cart.cart_items.sum { |item| item.product_item_variant.price * item.quantity }
-    @taxes = @cart_items.sum { |item| calculate_gst(item.product_item_variant.price) * item.quantity }
+    @taxes = (@cart_items || []).sum { |item| calculate_gst(item.product_item_variant.price) * item.quantity }
     @delivery_charge = calculate_delivery_charge(@subtotal)
     @total = @subtotal + @taxes + @delivery_charge
   end

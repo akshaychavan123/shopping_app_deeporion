@@ -1,7 +1,7 @@
 class Api::V2::CouponsController < ApplicationController
   before_action :authorize_request, only: [:create, :update, :destroy]
-  before_action :check_user, only: [:create, :update, :destroy]
   before_action :set_coupon, only: [:show, :update, :destroy]
+  before_action :check_user, only: [:create, :update, :destroy]
 
   def index
     @coupons = Coupon.all
@@ -61,12 +61,14 @@ class Api::V2::CouponsController < ApplicationController
     params.permit(
       :promo_code_name, :promo_code, :start_date, :end_date, 
       :max_uses_per_client, :max_uses_per_promo, :promo_type, 
-      :amount_off, :image, product_ids: []
+      :amount_off, product_ids: []
     )
   end
 
   def check_user
-    render json: { errors: ['Unauthorized access'] }, status: :forbidden unless @current_user.type == "Admin"
+    unless @current_user.type == "Admin"
+      render json: { errors: ['Unauthorized access'] }, status: :forbidden
+    end
   end
 
   def attach_image
