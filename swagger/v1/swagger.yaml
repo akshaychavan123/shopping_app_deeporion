@@ -890,6 +890,47 @@ paths:
                     type: array
                     items:
                       type: string
+  "/api/v1/notification/{id}":
+    parameters:
+    - name: id
+      in: path
+      description: Notification ID
+      required: true
+      schema:
+        type: string
+    patch:
+      summary: Updates Notification Settings
+      tags:
+      - Notifications
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '200':
+          description: Notification settings updated successfully
+        '422':
+          description: Invalid request
+        '401':
+          description: Unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                app:
+                  type: boolean
+                email:
+                  type: boolean
+                sms:
+                  type: boolean
+                whatsapp:
+                  type: boolean
+              required:
+              - app
+              - email
+              - sms
+              - whatsapp
   "/api/v1/passwords/forgot":
     post:
       summary: Forgot password

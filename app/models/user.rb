@@ -20,10 +20,12 @@ class User < ApplicationRecord
   has_many :addresses, dependent: :destroy
   has_one :card_detail, dependent: :destroy
   has_many :client_reviews
+  has_one :notification, dependent: :destroy
 
   before_validation :parse_full_phone_number, if: -> { full_phone_number.present? }
   after_create :create_wishlist
   after_create :create_cart
+  after_create :create_notification
 
   def phone_verification_code_expired?
     return true if phone_verification_code_sent_at.nil?
@@ -34,14 +36,6 @@ class User < ApplicationRecord
     payload = { user_id: self.id, exp: 24.hours.from_now.to_i }
     JWT.encode(payload, Rails.application.secrets.secret_key_base, 'HS256')
   end
-
-  # def self.decode_password_token(token)
-  #   key_base = Rails.application.secrets.secret_key_base || ENV['SECRET_KEY_BASE']
-  #   body = JWT.decode(token, key_base, true, algorithm: 'HS256')[0]
-  #   HashWithIndifferentAccess.new(body)
-  # rescue JWT::DecodeError
-  #   nil
-  # end
 
   def self.decode_password_token(token)
     JsonWebToken.decode(token)
@@ -100,5 +94,15 @@ class User < ApplicationRecord
 
   def downcase_email
     self.email = email.downcase if email.present?
+  end
+
+  def create_notification
+    Notification.create(
+      user: self,
+      app: true,    
+      email: email.present?, 
+      sms: phone_number.present?,
+      whatsapp: phone_number.present?  
+    )
   end
 end
