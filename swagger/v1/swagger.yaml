@@ -890,6 +890,36 @@ paths:
                     type: array
                     items:
                       type: string
+  "/api/v1/notification/show_notification":
+    get:
+      summary: Retrieves Notification Settings
+      tags:
+      - Notifications
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Notification settings retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  notification:
+                    type: object
+                    properties:
+                      app:
+                        type: boolean
+                      email:
+                        type: boolean
+                      sms:
+                        type: boolean
+                      whatsapp:
+                        type: boolean
+        '404':
+          description: Notification settings not found
+        '401':
+          description: Unauthorized
   "/api/v1/notification/{id}":
     parameters:
     - name: id

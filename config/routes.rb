@@ -4,7 +4,11 @@ Rails.application.routes.draw do
   
   namespace :api do
     namespace :v1 do
-      resources :notification, only: [:update]
+      resources :notification, only: [:update] do 
+        collection do
+            get 'show_notification'
+        end
+      end
       resources :reviews, only: [:create, :index] do
         collection do
           get :show_all_review
