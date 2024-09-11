@@ -15,7 +15,6 @@ class Api::V2::VideoDescriptionsController < ApplicationController
   def create
     @video_description = VideoDescription.new(video_description_params)
     if @video_description.save
-      byebug
       render json: @video_description, serializer: VideoDescriptionSerializer, status: :created
     else
       render json: { message: 'Something went wrong' }, status: :unprocessable_entity
