@@ -890,6 +890,77 @@ paths:
                     type: array
                     items:
                       type: string
+  "/api/v1/notification/show_notification":
+    get:
+      summary: Retrieves Notification Settings
+      tags:
+      - Notifications
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Notification settings retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  notification:
+                    type: object
+                    properties:
+                      app:
+                        type: boolean
+                      email:
+                        type: boolean
+                      sms:
+                        type: boolean
+                      whatsapp:
+                        type: boolean
+        '404':
+          description: Notification settings not found
+        '401':
+          description: Unauthorized
+  "/api/v1/notification/{id}":
+    parameters:
+    - name: id
+      in: path
+      description: Notification ID
+      required: true
+      schema:
+        type: string
+    patch:
+      summary: Updates Notification Settings
+      tags:
+      - Notifications
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '200':
+          description: Notification settings updated successfully
+        '422':
+          description: Invalid request
+        '401':
+          description: Unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                app:
+                  type: boolean
+                email:
+                  type: boolean
+                sms:
+                  type: boolean
+                whatsapp:
+                  type: boolean
+              required:
+              - app
+              - email
+              - sms
+              - whatsapp
   "/api/v1/passwords/forgot":
     post:
       summary: Forgot password
@@ -1558,6 +1629,9 @@ paths:
                   format: date
                 promo_type:
                   type: string
+                  enum:
+                  - discount on product
+                  - discount on amount
                 amount_off:
                   type: number
                   format: float
@@ -1565,10 +1639,10 @@ paths:
                   type: integer
                 max_uses_per_promo:
                   type: integer
-                couponable_id:
-                  type: integer
-                couponable_type:
-                  type: string
+                product_ids:
+                  type: array
+                  items:
+                    type: integer
                 image:
                   type: string
                   format: binary
@@ -1598,7 +1672,72 @@ paths:
           description: successful
         '404':
           description: not found
-  "/api/v2/coupons/{id}/products":
+    put:
+      summary: update coupon
+      tags:
+      - Coupons
+      security:
+      - bearerAuth2: []
+      parameters: []
+      responses:
+        '200':
+          description: successful
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                promo_code_name:
+                  type: string
+                promo_code:
+                  type: string
+                start_date:
+                  type: string
+                  format: date
+                end_date:
+                  type: string
+                  format: date
+                promo_type:
+                  type: string
+                  enum:
+                  - discount on product
+                  - discount on amount
+                amount_off:
+                  type: number
+                  format: float
+                max_uses_per_client:
+                  type: integer
+                max_uses_per_promo:
+                  type: integer
+                product_ids:
+                  type: array
+                  items:
+                    type: integer
+                image:
+                  type: string
+                  format: binary
+              required:
+              - promo_code_name
+              - promo_code
+              - start_date
+              - end_date
+              - promo_type
+              - amount_off
+    delete:
+      summary: delete coupon
+      tags:
+      - Coupons
+      security:
+      - bearerAuth2: []
+      responses:
+        '200':
+          description: successful
+        '404':
+          description: not found
+        '401':
+          description: unauthorized
+  "/api/v2/coupons/{id}/product_list":
     parameters:
     - name: id
       in: path
@@ -2716,35 +2855,89 @@ paths:
                 - cart_items
         '401':
           description: unauthorized
-  "/api/v1/cart/product_item_list_by_coupon/{id}":
-    parameters:
-    - name: id
-      in: path
-      description: ID of the coupon
-      required: true
-      schema:
-        type: integer
+  "/api/v1/cart/discount_on_amount_coupons":
     get:
-      summary: list associated products
+      summary: List coupons with optional search by coupon code
       tags:
       - Carts
       security:
       - bearerAuth: []
+      parameters:
+      - name: coupon_code
+        in: query
+        description: Search by coupon code
+        schema:
+          type: string
       responses:
         '200':
           description: successful
+  "/api/v1/cart/apply_coupon":
+    post:
+      summary: Applies a coupon to the cart
+      tags:
+      - Carts
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: promo_code
+        in: query
+        description: Coupon promo code
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Coupon applied successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  order_summary:
+                    type: object
+                    properties:
+                      subtotal:
+                        type: number
+                      discount:
+                        type: number
+                      taxes:
+                        type: number
+                      delivery_charge:
+                        type: number
+                      total:
+                        type: number
+                    required:
+                    - subtotal
+                    - discount
+                    - taxes
+                    - delivery_charge
+                    - total
+                required:
+                - message
+                - order_summary
+        '422':
+          description: Coupon is invalid or expired
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                required:
+                - error
         '404':
-          description: not found
-  "/api/v1/cart/coupon_list":
-    get:
-      summary: list coupons
-      tags:
-      - Carts
-      security:
-      - bearerAuth: []
-      responses:
-        '200':
-          description: successful
+          description: Coupon not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                required:
+                - error
   "/api/v2/categories":
     get:
       summary: list categories

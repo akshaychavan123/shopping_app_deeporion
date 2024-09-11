@@ -4,6 +4,11 @@ Rails.application.routes.draw do
   
   namespace :api do
     namespace :v1 do
+      resources :notification, only: [:update] do 
+        collection do
+            get 'show_notification'
+        end
+      end
       resources :reviews, only: [:create, :index] do
         collection do
           get :show_all_review
@@ -74,7 +79,8 @@ Rails.application.routes.draw do
       end
 
        resource :cart, only: [:show] do
-         get 'coupon_list', on: :collection
+         get 'discount_on_amount_coupons', on: :collection
+         post 'apply_coupon', to: 'carts#apply_coupon'
          get 'product_item_list_by_coupon/:id', to: 'carts#product_item_list_by_coupon', as: :product_item_list_by_coupon
          resources :cart_items, only: [:index, :update] do
           collection do
@@ -106,9 +112,9 @@ Rails.application.routes.draw do
       resources :categories do
         resources :subcategories, only: [:index, :show, :create, :update, :destroy]
       end
-      resources :gift_card_categories, only: [:index, :show, :create, :destroy]
+      resources :gift_card_categories, only: [:index, :show, :create, :update, :destroy]
       resources :gift_cards
-      resources :coupons, only: [:index, :show, :create] do
+      resources :coupons, only: [:index, :show, :create, :update, :destroy] do
         member do
           get :product_list
         end

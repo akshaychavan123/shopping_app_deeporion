@@ -36,8 +36,8 @@ class Api::V2::ProductItemsController < ApplicationController
           @product_item.photos.attach(photo)
         end
       end
-
       render json: { data: ActiveModelSerializers::SerializableResource.new(@product_item, each_serializer: ProductItemSerializer)}
+      ::ProductItemNotificationService.new(@product_item).call
     else
       render json: { error: 'Something went to wrong' }, status: :unprocessable_entity
     end
