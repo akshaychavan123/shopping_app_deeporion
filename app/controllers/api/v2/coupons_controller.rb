@@ -22,6 +22,7 @@ class Api::V2::CouponsController < ApplicationController
     if @coupon.save
       attach_image
       render json: { data: ActiveModelSerializers::SerializableResource.new(@coupon, serializer: CouponSerializer) }, status: :created
+      ::CouponNotificationService.new(@coupon).call
     else
       render json: { errors: @coupon.errors.full_messages }, status: :unprocessable_entity
     end
