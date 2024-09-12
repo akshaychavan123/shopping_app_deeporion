@@ -14,9 +14,9 @@ class ProductItemNotificationService
       if user.notification&.email
         ProductItemMailer.new_product_item_email(user, @product_item).deliver_later
       end
-      if user.notification&.sms
-        # ::SendSmsNotificationService.new(@product_item).call
-      end
+      # if user.notification&.sms
+      #   # ::ProductItemSmsNotificationService.new(@product_item).call
+      # end
     end
   end
 end
