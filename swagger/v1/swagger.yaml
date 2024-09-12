@@ -3156,6 +3156,56 @@ paths:
               - payment_status
               - placed_at
               - order_items_attributes
+  "/api/v1/orders/save_order_data":
+    post:
+      summary: Saves an order data
+      tags:
+      - Orders
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '201':
+          description: order created
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+                total_price:
+                  type: number
+                address_id:
+                  type: integer
+                email:
+                  type: string
+                payment_status:
+                  type: string
+                razorpay_payment_id:
+                  type: string
+                razorpay_order_id:
+                  type: string
+                order_items_attributes:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      product_item_id:
+                        type: integer
+                      quantity:
+                        type: integer
+                      product_item_variant_id:
+                        type: number
+                      total_price:
+                        type: number
+                required:
+                - total_price
+                - address_id
+                - payment_status
+                - user_id
+                - order_items_attributes
   "/api/v2/products":
     get:
       summary: list products

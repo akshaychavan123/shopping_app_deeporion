@@ -17,6 +17,7 @@ class ProductItemSerializer < ActiveModel::Serializer
     }
   end
 
+  
   def specification
     {
       material: object.material,
