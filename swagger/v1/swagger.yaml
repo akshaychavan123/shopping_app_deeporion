@@ -3097,6 +3097,16 @@ paths:
           description: no content
         '404':
           description: not found
+  "/api/v1/order_items":
+    get:
+      summary: list order items
+      tags:
+      - Order Items
+      security:
+      - bearerAuth2: []
+      responses:
+        '200':
+          description: successful
   "/api/v1/orders":
     post:
       summary: Creates an order

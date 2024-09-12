@@ -37,7 +37,7 @@ class Api::V1::OrdersController < ApplicationController
   rescue ActiveRecord::RecordInvalid
     render json: { error: 'Failed to create order. Please try again.' }, status: :unprocessable_entity
   end
-
+  
   private
 
   def order_params
