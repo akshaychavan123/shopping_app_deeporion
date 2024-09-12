@@ -66,10 +66,6 @@ class Api::V1::OrdersController < ApplicationController
     )
   end
 
-  # def order_items_params
-  #   params.require(:order_items).permit(:order_id, :product_item_id, :product_item_variant_id, :quantity , :price)
-  # end
-
   def generate_custom_order_number
     last_order = Order.order(:created_at).last
     sequence_number = last_order.nil? ? 1 : last_order.order_number.split('-').last.to_i + 1
