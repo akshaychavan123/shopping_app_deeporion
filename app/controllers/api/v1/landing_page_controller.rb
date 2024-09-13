@@ -12,12 +12,14 @@ class Api::V1::LandingPageController < ApplicationController
   end
   
   def product_items_by_category
-    @category = Category.find(params[:id])
-    @product_items = ProductItem.joins(product: { subcategory: :category })
-                                .where(categories: { id: @category.id })
-                                .page(params[:page])
-                                .per(params[:per_page])
-  
+    @category = Category.find(params[:id])    
+    @product_items = ProductItem.joins(:product_item_variants)
+    .joins(product: { subcategory: :category })
+    .where(categories: { id: @category.id })
+    .distinct
+    .page(params[:page])
+    .per(params[:per_page])
+
     render json: {
       data: ActiveModelSerializers::SerializableResource.new(@product_items, each_serializer: ProductItem2Serializer, current_user: @current_user),
       meta: pagination_meta(@product_items)
@@ -26,11 +28,12 @@ class Api::V1::LandingPageController < ApplicationController
 
   def product_items_by_sub_category
     @subcategory = Subcategory.find(params[:id])
-    @product_items = ProductItem.joins(:product)
-                                .where(products: { subcategory_id: @subcategory.id })
-                                .page(params[:page])
-                                .per(params[:per_page])
-  
+    @product_items = ProductItem.joins(:product_item_variants)
+    .joins(:product)
+    .where(products: { subcategory_id: @subcategory.id })
+    .distinct
+    .page(params[:page])
+    .per(params[:per_page])
     render json: {
       data: ActiveModelSerializers::SerializableResource.new(@product_items, each_serializer: ProductItem2Serializer, current_user: @current_user),
       meta: pagination_meta(@product_items)
@@ -38,7 +41,10 @@ class Api::V1::LandingPageController < ApplicationController
   end
 
   def new_arrivals
-    @new_arrivals = ProductItem.new_arrivals.includes(:product)
+    @new_arrivals = ProductItem.joins(:product_item_variants)
+    .new_arrivals
+    .includes(:product)
+    .distinct
 
     if @new_arrivals.any?
       render json: { data: ActiveModelSerializers::SerializableResource.new(@new_arrivals, each_serializer: ProductItem2Serializer, current_user: @current_user) }, status: :ok
@@ -83,8 +89,10 @@ class Api::V1::LandingPageController < ApplicationController
     
     if @product
       @product_items = @product.product_items
-                               .page(params[:page])
-                               .per(params[:per_page])
+      .joins(:product_item_variants)
+      .distinct
+      .page(params[:page])
+      .per(params[:per_page])
       
       render json: {
         data: ActiveModelSerializers::SerializableResource.new(@product_items, each_serializer: ProductItem2Serializer, current_user: @current_user),
@@ -113,7 +121,9 @@ class Api::V1::LandingPageController < ApplicationController
       return render json: { errors: ['Search term cannot be blank'] }, status: :unprocessable_entity
     end
   
-    @product_items = ProductItem.joins(product: { subcategory: :category })
+    @product_items = ProductItem.joins(:product_item_variants)
+    .joins(product: { subcategory: :category })
+    .distinct
   
     if params[:category_id].present?
       @product_items = @product_items.where(categories: { id: params[:category_id] })
@@ -208,7 +218,7 @@ class Api::V1::LandingPageController < ApplicationController
   end
   
   def product_items_search
-    @product_items = ProductItem.all
+    @product_items = ProductItem.joins(:product_item_variants).distinct
 
     if params[:search].present?
       search_term = "%#{params[:search].downcase}%"

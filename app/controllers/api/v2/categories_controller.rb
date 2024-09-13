@@ -31,7 +31,7 @@ class Api::V2::CategoriesController < ApplicationController
 
   def destroy
     @category.destroy
-    head :no_content
+    render json: { message: 'Category deleted successfully.' }, status: :ok
   end
 
   private

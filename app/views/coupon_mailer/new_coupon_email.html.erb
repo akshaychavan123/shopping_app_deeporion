@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+  </head>
+  <body>
+    <h1>Hello, <%= @user.name %>!</h1>
+    <p>
+      We have a new coupon just for you! Check out the details below:
+    </p>
+
+    <h3><%= @coupon.promo_code_name %></h3>
+    <p>
+      <strong>Promo Code:</strong> <%= @coupon.promo_code %><br>
+      <strong>Discount Type:</strong> <%= @coupon.promo_type %><br>
+      <strong>Amount Off:</strong> <%= @coupon.amount_off %><br>
+      <strong>Start Date:</strong> <%= @coupon.start_date.strftime("%B %d, %Y") %><br>
+      <strong>End Date:</strong> <%= @coupon.end_date.strftime("%B %d, %Y") %><br>
+    </p>
+
+    <p>
+      Hurry up and apply this coupon before it expires! Visit our store now and enjoy your discount.
+    </p>
+
+    <p>
+      Cheers,<br>
+      The Team
+    </p>
+  </body>
+</html>

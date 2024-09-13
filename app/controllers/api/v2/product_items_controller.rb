@@ -86,5 +86,4 @@ class Api::V2::ProductItemsController < ApplicationController
     product_code = "#{category_code}-#{date_str}-#{serial_number}"
     return product_code
   end
-
 end

@@ -30,6 +30,11 @@ class Api::V1::CartItemsController < ApplicationController
 
   def add_item
     product_item = ProductItem.find(params[:product_item_id])
+
+    if params[:product_item_variant_id].blank? || params[:product_item_variant_id].to_i == 0
+      return render json: { message: 'Please select a valid size.' }, status: :ok
+    end
+
     cart_item = @cart.cart_items.find_by(product_item: product_item)
   
     if cart_item.present?
