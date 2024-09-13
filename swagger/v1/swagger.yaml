@@ -3052,21 +3052,21 @@ paths:
           description: created
         '422':
           description: unprocessable entity
+        '401':
+          description: unauthorized
       requestBody:
         content:
-          application/json:
+          multipart/form-data:
             schema:
               type: object
               properties:
-                gift_card_category:
-                  type: object
-                  properties:
-                    title:
-                      type: string
-                  required:
-                  - title
+                title:
+                  type: string
+                image:
+                  type: file
               required:
-              - gift_card_category
+              - title
+              - image
   "/api/v2/gift_card_categories/{id}":
     parameters:
     - name: id

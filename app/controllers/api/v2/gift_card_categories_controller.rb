@@ -5,18 +5,21 @@ class Api::V2::GiftCardCategoriesController < ApplicationController
 
   def index
     @gift_card_categories = GiftCardCategory.all
-    render json: @gift_card_categories
+    render json: { data: ActiveModelSerializers::SerializableResource.new(@gift_card_categories, each_serializer: GiftCardCategorySerializer)}
   end
 
   def show
-    render json: @gift_card_category
+    render json: { data: ActiveModelSerializers::SerializableResource.new(@gift_card_category, each_serializer: GiftCardCategorySerializer)}
   end
 
   def create
     @gift_card_category = GiftCardCategory.new(gift_card_category_params)
 
     if @gift_card_category.save
-      render json: @gift_card_category, status: :created
+      if params[:image].present?
+        @gift_card_category.image.attach(params[:image])
+      end
+      render json: @gift_card_category, serializer: GiftCardCategorySerializer, status: :created
     else
       render json: @gift_card_category.errors, status: :unprocessable_entity
     end
@@ -24,7 +27,7 @@ class Api::V2::GiftCardCategoriesController < ApplicationController
 
   def destroy
     @gift_card_category.destroy
-    head :no_content
+    render json: { message: 'GiftCardCategory successfully deleted' }, status: :ok
   end
 
   private
@@ -34,7 +37,7 @@ class Api::V2::GiftCardCategoriesController < ApplicationController
   end
 
   def gift_card_category_params
-    params.require(:gift_card_category).permit(:title)
+    params.permit(:title)
   end
 
   def check_user

@@ -31,7 +31,7 @@ class Api::V2::PrivacyPoliciesController < ApplicationController
 
   def destroy
     @privacy_policy.destroy
-    head :no_content
+    render json: { message: 'Privacy policy deleted successfully.' }, status: :ok
   end
 
   private

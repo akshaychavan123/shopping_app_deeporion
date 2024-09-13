@@ -15,29 +15,35 @@ RSpec.describe 'Api::V2::GiftCardCategories', type: :request do
 
     post('create gift_card_category') do
       tags 'GiftCardCategories'
-      consumes 'application/json'
-      security [ bearerAuth2: [] ]
-      parameter name: :gift_card_category, in: :body, schema: {
+      security [bearerAuth2: []]
+      consumes 'multipart/form-data'
+      parameter name: :gift_card_category, in: :formData, schema: {
         type: :object,
         properties: {
-          gift_card_category: {
-            type: :object,
-            properties: {
-              title: { type: :string }
-            },
-            required: [ 'title' ]
-          }
+          title: { type: :string },
+          image: { type: :file }
         },
-        required: [ 'gift_card_category' ]
+        required: ['title', 'image']
       }
-
+  
       response(201, 'created') do
-        let(:gift_card_category) { { gift_card_category: { title: 'New Category' } } }
+        let(:gift_card_category) do
+          {
+            title: 'New Category',
+            image: Rack::Test::UploadedFile.new(Rails.root.join('spec/fixtures/test_image.jpg'), 'image/jpeg')
+          }
+        end
         run_test!
       end
-
+  
       response(422, 'unprocessable entity') do
-        let(:gift_card_category) { { gift_card_category: { title: '' } } }
+        let(:gift_card_category) { { title: '' } }
+        run_test!
+      end
+  
+      response(401, 'unauthorized') do
+        let(:Authorization) { 'Bearer invalid_token' }
+        let(:gift_card_category) { { title: 'New Category' } }
         run_test!
       end
     end
