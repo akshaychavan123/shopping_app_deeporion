@@ -12,11 +12,12 @@ class ProductItemSerializer < ActiveModel::Serializer
   def productdetails
     {
       material_and_care: object.care_instructions,
-      size_and_fit: object.size_and_fit + " " + object.height,
+      size_and_fit: object.size_and_fit.to_s + " " + object.height.to_s,
       description: object.description
     }
   end
 
+  
   def specification
     {
       material: object.material,

@@ -69,6 +69,7 @@ Rails.application.routes.draw do
       
       resources :orders, only: [:create] do
         post 'payment_callback', on: :collection
+        post 'save_order_data', on: :collection
       end
       resources :contact_us, only: [:create]
 

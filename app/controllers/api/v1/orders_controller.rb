@@ -1,5 +1,6 @@
 class Api::V1::OrdersController < ApplicationController
   before_action :authorize_request
+  # before_create :generate_custom_order_number
 
   def create
     ActiveRecord::Base.transaction do
@@ -37,10 +38,38 @@ class Api::V1::OrdersController < ApplicationController
   rescue ActiveRecord::RecordInvalid
     render json: { error: 'Failed to create order. Please try again.' }, status: :unprocessable_entity
   end
-  
+
+  def save_order_data
+    @order_data = Order.new(order_data_params)
+    if @order_data.save
+      render json: @order_data, status: :created
+    else
+      render json: { message: 'Something went wrong', errors: @order_data.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def order_params
     params.require(:order).permit(:total_price, :address_id, :payment_status)
   end
+
+  def order_data_params
+    params.permit(
+      :total_price, 
+      :address_id, 
+      :user_id,
+      :payment_status, 
+      :razorpay_order_id, 
+      :razorpay_payment_id, 
+      order_items_attributes: [:order_id, :product_item_id, :product_item_variant_id, :quantity, :total_price]
+    )
+  end
+
+  def generate_custom_order_number
+    last_order = Order.order(:created_at).last
+    sequence_number = last_order.nil? ? 1 : last_order.order_number.split('-').last.to_i + 1
+    self.order_number = "ORD-#{Time.current.strftime('%Y%m%d')}-#{sequence_number.to_s.rjust(6, '0')}"
+  end
+
 end
