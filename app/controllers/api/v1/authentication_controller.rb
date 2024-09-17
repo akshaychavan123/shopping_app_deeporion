@@ -7,6 +7,7 @@ class Api::V1::AuthenticationController < ApplicationController
       render json: { error: "Account doesn't exist" }, status: :not_found
     elsif @user.authenticate(params[:password])
       token = JsonWebToken.encode(user_id: @user.id)
+      register_device_token(@user, params[:device_token], params[:device_type])
       render json: { token: token, user: UserSerializer.new(@user) }, status: :ok
     else
       render json: { error: 'Incorrect password' }, status: :unprocessable_entity
@@ -44,6 +45,12 @@ class Api::V1::AuthenticationController < ApplicationController
   end
 
   private
+
+  def register_device_token(user, device_token, device_type)
+    if device_token.present?
+      user.devices.find_or_create_by(device_token: device_token, device_type: device_type )
+    end
+  end
 
   def login_params
     params.permit(:email, :password)

@@ -23,6 +23,13 @@ class Api::V2::CouponsController < ApplicationController
       attach_image
       render json: { data: ActiveModelSerializers::SerializableResource.new(@coupon, serializer: CouponSerializer) }, status: :created
       ::CouponNotificationService.new(@coupon).call
+      Device.send_push_notification(
+        'new_offer',                # Notification type
+        'New Offer Available!',     # Notification title
+        'Check out our latest offers now.',  # Notification body
+        @offer,                     # The related object (the newly created offer)
+        @offer.user                 # The user who should receive the notification
+      )
     else
       render json: { errors: @coupon.errors.full_messages }, status: :unprocessable_entity
     end
