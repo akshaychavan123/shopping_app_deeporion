@@ -48,7 +48,7 @@ class Api::V1::AuthenticationController < ApplicationController
 
   def register_device_token(user, device_token, device_type)
     if device_token.present?
-      user.devices.find_or_create_by(device_token: device_token, device_type: device_type )
+      user.devices.find_or_create_by(device_token: device_token, device_type: device_type, is_active: true )
     end
   end
 
