@@ -5,7 +5,7 @@ require 'googleauth'
 class FcmNotificationService
   def initialize(coupon)
     @coupon = coupon
-    @project_name = 'pinklay-firebase-console'
+    @project_name = ENV['FIREBASE_PROJECT_ID']
   end
 
   def call
@@ -59,15 +59,26 @@ class FcmNotificationService
   end
   
   def fetch_firebase_access_token
-    key_file_path = Rails.root.join('app/keys/fcm_key.json')
-    key_file = File.read(key_file_path)
-    @project_name = JSON.parse(key_file)['project_id']
+    credentials = {
+      "type" => "service_account",
+      "project_id" => ENV['FIREBASE_PROJECT_ID'],
+      "private_key_id" => ENV['FIREBASE_PRIVATE_KEY_ID'],
+      "private_key" => ENV['FIREBASE_PRIVATE_KEY'].gsub('\\n', "\n"),
+      "client_email" => ENV['FIREBASE_CLIENT_EMAIL'],
+      "client_id" => ENV['FIREBASE_CLIENT_ID'],
+      "auth_uri" => ENV['FIREBASE_AUTH_URI'],
+      "token_uri" => ENV['FIREBASE_TOKEN_URI'],
+      "auth_provider_x509_cert_url" => ENV['FIREBASE_AUTH_PROVIDER_CERT_URL'],
+      "client_x509_cert_url" => ENV['FIREBASE_CLIENT_CERT_URL']
+    }
+  
     scope = ['https://www.googleapis.com/auth/firebase.messaging']
+  
     authorization = Google::Auth::ServiceAccountCredentials.make_creds(
-      json_key_io: StringIO.new(key_file),
+      json_key_io: StringIO.new(credentials.to_json),
       scope: scope
-      )
-      authorization.fetch_access_token!
-      authorization.access_token
+    )
+    authorization.fetch_access_token!
+    authorization.access_token
   end
 end
