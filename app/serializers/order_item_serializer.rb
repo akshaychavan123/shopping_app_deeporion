@@ -10,7 +10,7 @@ class OrderItemSerializer < ActiveModel::Serializer
   end
 
   def user_name
-    User.find_by(id: object.order_id).name
+    Address.find_by(id: object.order.address_id).first_name
   end
 
   def contact_number
