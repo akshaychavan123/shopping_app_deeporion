@@ -62,7 +62,7 @@ class Api::V1::OrdersController < ApplicationController
       :payment_status, 
       :razorpay_order_id, 
       :razorpay_payment_id, 
-      order_items_attributes: [:order_id, :product_item_id, :product_item_variant_id, :quantity, :total_price]
+      order_items_attributes: [:order_id, :product_item_id, :product_item_variant_id, :quantity, :total_price, :status]
     )
   end
 

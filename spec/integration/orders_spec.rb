@@ -97,6 +97,7 @@ RSpec.describe 'api/v1/orders', type: :request do
                 product_item_id: { type: :integer },
                 quantity: { type: :integer },
                 product_item_variant_id: { type: :number },
+                status: { type: :string },
                 total_price: { type: :number },
             }
           }

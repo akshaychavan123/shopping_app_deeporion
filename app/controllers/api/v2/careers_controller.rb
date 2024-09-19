@@ -4,8 +4,8 @@ class Api::V2::CareersController < ApplicationController
   before_action :set_career, only: [:show, :update, :destroy]
 
   def index
-    @careers = Career.all
-    render json: @careers, each_serializer: CareerSerializer
+    @careers = Career.includes(:career_roles).all    
+    render json: @careers, include: :career_roles, each_serializer: CareerSerializer
   end
 
   def show
@@ -45,7 +45,7 @@ class Api::V2::CareersController < ApplicationController
   private
 
   def set_career
-    @career = Career.find(params[:id])
+    @career = Career.includes(:career_roles).find(params[:id])
   end
 
   def career_params
