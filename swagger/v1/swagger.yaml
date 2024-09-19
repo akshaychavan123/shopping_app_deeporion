@@ -2581,6 +2581,10 @@ paths:
                   type: string
                 password:
                   type: string
+                device_token:
+                  type: string
+                device_type:
+                  type: string
               required:
               - email
               - password

@@ -9,7 +9,9 @@ RSpec.describe 'api/v1/auth', type: :request do
         type: :object,
         properties: {
           email: { type: :string },
-          password: { type: :string }
+          password: { type: :string },
+          device_token: { type: :string },
+          device_type: { type: :string },
         },
         required: %w[email password]
       }

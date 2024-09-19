@@ -22,7 +22,7 @@ class Api::V2::CouponsController < ApplicationController
     if @coupon.save
       attach_image
       render json: { data: ActiveModelSerializers::SerializableResource.new(@coupon, serializer: CouponSerializer) }, status: :created
-      ::CouponNotificationService.new(@coupon).call
+      call_notification_service
     else
       render json: { errors: @coupon.errors.full_messages }, status: :unprocessable_entity
     end
@@ -52,6 +52,11 @@ class Api::V2::CouponsController < ApplicationController
   end
 
   private
+
+  def call_notification_service
+    ::CouponNotificationService.new(@coupon).call
+    ::FcmNotificationService.new(@coupon).call
+  end
 
   def set_coupon
     @coupon = Coupon.find_by(id: params[:id])
