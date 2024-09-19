@@ -1547,35 +1547,6 @@ paths:
               properties:
                 header:
                   type: string
-                career_roles_attributes:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      role_name:
-                        type: string
-                      role_type:
-                        type: string
-                      location:
-                        type: string
-                      role_overview:
-                        type: string
-                      key_responsibility:
-                        type: string
-                      requirements:
-                        type: string
-                      email_id:
-                        type: string
-                    required:
-                    - role_name
-                    - role_type
-                    - location
-                    - role_overview
-                    - key_responsibility
-                    - requirements
-                    - email_id
-              required:
-              - header
     delete:
       summary: Deletes a specific Career
       tags:
