@@ -2039,6 +2039,42 @@ paths:
               - quantity
               - product_item_id
               - price
+  "/api/v2/product_item_variants/{id}":
+    parameters:
+    - name: id
+      in: path
+      description: ID of the product item
+      required: true
+      schema:
+        type: integer
+    patch:
+      summary: update product_item_variants
+      tags:
+      - Product Item Variants
+      security:
+      - bearerAuth2: []
+      parameters: []
+      responses:
+        '200':
+          description: successful
+        '422':
+          description: unprocessable entity
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                price:
+                  type: number
+                size:
+                  type: string
+                quantity:
+                  type: number
+                product_item_id:
+                  type: integer
+                in_stock:
+                  type: boolean
   "/api/v2/product_items":
     get:
       summary: list product_items

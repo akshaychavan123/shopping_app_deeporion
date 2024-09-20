@@ -13,6 +13,15 @@ class Api::V2::ProductItemVariantsController < ApplicationController
     end
   end
 
+  def update
+    @product_item_variant = ProductItemVariant.find_by(id: params[:id])
+    if @product_item_variant.update(product_item_variant_params)
+      render json: { data: ActiveModelSerializers::SerializableResource.new(@product_item_variant, each_serializer: ProductItemVariantSerializer)}
+    else
+      render json: @product_item_variant.errors, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def product_item_variant_params
