@@ -42,6 +42,9 @@ class Api::V1::OrdersController < ApplicationController
   def save_order_data
     @order_data = Order.new(order_data_params)
     if @order_data.save
+      cart_items = @current_user.cart.cart_items
+      cart_items.destroy_all
+      OrderMailer.order_confirmation(@order_data).deliver_later
       render json: @order_data, status: :created
     else
       render json: { message: 'Something went wrong', errors: @order_data.errors.full_messages }, status: :unprocessable_entity
