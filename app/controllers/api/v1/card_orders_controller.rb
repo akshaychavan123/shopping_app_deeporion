@@ -22,6 +22,6 @@ class Api::V1::CardOrdersController < ApplicationController
 	private
 
 	def card_order_params
-		params.require(:card_order).permit(:gift_card_id, :recipient_name, :recipient_email, :dob, :sender_email, :message)
+		params.require(:card_order).permit(:gift_card_id, :recipient_name, :recipient_email, :dob, :sender_email, :message, :razorpay_order_id, :razorpay_payment_id, :payment_status, :order_status)
 	end
 end
