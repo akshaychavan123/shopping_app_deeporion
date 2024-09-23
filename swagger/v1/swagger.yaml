@@ -1914,6 +1914,85 @@ paths:
           description: no content
         '404':
           description: not found
+  "/api/v2/image_uploaders/images_by_name":
+    get:
+      summary: Get images by name
+      tags:
+      - Image Uploaders
+      parameters:
+      - name: name
+        in: query
+        description: Image name
+        schema:
+          type: string
+      responses:
+        '200':
+          description: images found
+        '404':
+          description: images not found
+  "/api/v2/image_uploaders/{id}":
+    get:
+      summary: Retrieve an image uploader by ID
+      tags:
+      - Image Uploaders
+      parameters:
+      - name: id
+        in: path
+        description: ImageUploader ID
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: image uploader found
+        '404':
+          description: image uploader not found
+    delete:
+      summary: Delete an image uploader by ID
+      tags:
+      - Image Uploaders
+      security:
+      - bearerAuth2: []
+      parameters:
+      - name: id
+        in: path
+        description: ImageUploader ID
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: image uploader deleted
+        '404':
+          description: image uploader not found
+  "/api/v2/image_uploaders":
+    post:
+      summary: Create an image uploader
+      tags:
+      - Image Uploaders
+      security:
+      - bearerAuth2: []
+      parameters: []
+      responses:
+        '201':
+          description: image uploader created
+        '422':
+          description: unprocessable entity
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                images:
+                  type: array
+                  items:
+                    type: file
+              required:
+              - name
+              - image
   "/api/v2/privacy_policies":
     get:
       summary: list privacy policies
