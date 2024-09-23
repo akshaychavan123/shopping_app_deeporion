@@ -319,6 +319,14 @@ paths:
                       format: email
                     message:
                       type: string
+                    razorpay_order_id:
+                      type: string
+                    razorpay_payment_id:
+                      type: string
+                    payment_status:
+                      type: string
+                    order_status:
+                      type: string
                   required:
                   - gift_card_id
                   - recipient_name

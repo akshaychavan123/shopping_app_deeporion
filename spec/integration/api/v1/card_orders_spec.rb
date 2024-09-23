@@ -18,7 +18,11 @@ RSpec.describe 'api/v1/card_orders', type: :request do
               recipient_email: { type: :string, format: :email },
               dob: { type: :string, format: :date },
               sender_email: { type: :string, format: :email },
-              message: { type: :string }
+              message: { type: :string },
+              razorpay_order_id: { type: :string },
+              razorpay_payment_id: { type: :string },
+              payment_status: { type: :string },
+              order_status: { type: :string }
             },
             required: ['gift_card_id', 'recipient_name', 'recipient_email', 'sender_email']
           }

@@ -6,15 +6,18 @@ class OrderItemSerializer < ActiveModel::Serializer
   end
 
   def product_name
-    ProductItem.find_by(id: object.product_item_id).name
+    @productitem = ProductItem.find_by(id: object.product_item_id)
+    @productitem.name if @productitem.present?
   end
 
   def user_name
-    Address.find_by(id: object.order.address_id).first_name
+    @addressdetail = Address.find_by(id: object.order.address_id)
+    @addressdetail.first_name if @addressdetail.present?
   end
 
   def contact_number
-    Address.find_by(id: object.order.address_id).phone_number
+    @addressdetail = Address.find_by(id: object.order.address_id)
+    @addressdetail.phone_number if @addressdetail.present?
   end
 
   def address
