@@ -1,5 +1,6 @@
 class Api::V2::ImageUploadersController < ApplicationController
   before_action :authorize_request, except: [:images_by_name, :show]
+  before_action :check_user, except: [:images_by_name, :show]
 
   def images_by_name
     @image_uploaders = ImageUploader.where(name: params[:name])
@@ -34,6 +35,12 @@ class Api::V2::ImageUploadersController < ApplicationController
   end
 
   private
+
+  def check_user
+    unless @current_user.type == "Admin"
+      render json: { errors: ['Unauthorized access'] }, status: :forbidden
+    end
+  end
 
   def image_uploader_params
     params.permit(:name)
