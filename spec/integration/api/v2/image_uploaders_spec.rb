@@ -60,26 +60,31 @@ RSpec.describe 'Api::V2::ImageUploaders', type: :request do
     post 'Create an image uploader' do
       tags 'Image Uploaders'
       consumes 'multipart/form-data'
-      security [ bearerAuth2: [] ]
+      produces 'application/json'
+      security [ bearerAuth2: [] ]  
       
       parameter name: :image_uploader, in: :formData, schema: {
         type: :object,
         properties: {
           name: { type: :string },
-          images: { type: :array, items: { type: :file } }
+          images: { type: :array, items: { type: :string, format: :binary } }
         },
-        required: [ 'name', 'image' ]
+        required: [ 'name', 'images' ]
       }
 
       response '201', 'image uploader created' do
-        let(:name) { 'test_image' }
-        let(:images) { fixture_file_upload('spec/fixtures/sample_image.jpg', 'image/jpeg') }
+        let(:image_uploader) do
+          {
+            name: 'test_image',
+            images: [fixture_file_upload('spec/fixtures/sample_image.jpg', 'image/jpeg')]
+          }
+        end
 
         run_test!
       end
 
       response '422', 'unprocessable entity' do
-        let(:name) { '' }
+        let(:image_uploader) { { name: '', images: [] } }
         run_test!
       end
     end
