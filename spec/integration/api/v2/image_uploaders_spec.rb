@@ -1,6 +1,24 @@
 require 'swagger_helper'
 
 RSpec.describe 'Api::V2::ImageUploaders', type: :request do
+  path '/api/v2/image_uploaders' do
+    get 'Get all images' do
+      tags 'Image Uploaders'
+      produces 'application/json'
+      response '200', 'images found' do
+        let!(:image_uploader) { create(:image_uploader, name: 'test_name') }
+        let(:name) { 'test_name' }
+
+        run_test!
+      end
+
+      response '404', 'images not found' do
+        let(:name) { 'unknown_name' }
+        run_test!
+      end
+    end
+  end
+
   path '/api/v2/image_uploaders/images_by_name' do
     get 'Get images by name' do
       tags 'Image Uploaders'

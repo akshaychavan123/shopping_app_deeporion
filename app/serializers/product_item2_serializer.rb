@@ -1,6 +1,5 @@
 class ProductItem2Serializer < ActiveModel::Serializer
     attributes :id, :name, :brand, :price, :price_of_first_variant, :is_favorite, :image, :rating_and_review
-    # has_many :product_item_variants, serializer: ProductItemVariantSerializer
 
     def image
       if object.image.attached?

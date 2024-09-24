@@ -1922,6 +1922,44 @@ paths:
           description: no content
         '404':
           description: not found
+  "/api/v2/image_uploaders":
+    get:
+      summary: Get all images
+      tags:
+      - Image Uploaders
+      responses:
+        '200':
+          description: images found
+        '404':
+          description: images not found
+    post:
+      summary: Create an image uploader
+      tags:
+      - Image Uploaders
+      security:
+      - bearerAuth2: []
+      parameters: []
+      responses:
+        '201':
+          description: image uploader created
+        '422':
+          description: unprocessable entity
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                images:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+              required:
+              - name
+              - images
   "/api/v2/image_uploaders/images_by_name":
     get:
       summary: Get images by name
@@ -1973,35 +2011,6 @@ paths:
           description: image uploader deleted
         '404':
           description: image uploader not found
-  "/api/v2/image_uploaders":
-    post:
-      summary: Create an image uploader
-      tags:
-      - Image Uploaders
-      security:
-      - bearerAuth2: []
-      parameters: []
-      responses:
-        '201':
-          description: image uploader created
-        '422':
-          description: unprocessable entity
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                images:
-                  type: array
-                  items:
-                    type: string
-                    format: binary
-              required:
-              - name
-              - images
   "/api/v2/privacy_policies":
     get:
       summary: list privacy policies
