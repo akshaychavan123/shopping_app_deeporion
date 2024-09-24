@@ -20,6 +20,8 @@ Rails.application.routes.draw do
       resources :order_items do
         collection do
           get 'pending_orders/:status', to: 'order_items#pending_orders'
+          get 'order_count', to: 'order_items#order_count'
+          get 'order_status_graph', to: 'order_items#order_status_graph'
         end
       end
       resource :card_details, only: [:index, :show, :create, :update, :destroy]

@@ -26,4 +26,28 @@ RSpec.describe 'Api::V1::OrderItemsController', type: :request do
       end
     end
 
+    path '/api/v1/order_items/order_count' do
+      get('list order counts') do
+        tags 'Order Items'
+        produces 'application/json'
+        security [ bearerAuth2: [] ]
+  
+        response(200, 'successful') do
+          run_test!
+        end
+      end
+    end
+
+    path '/api/v1/order_items/order_status_graph' do
+      get('order status graph details') do
+        tags 'Order Items'
+        produces 'application/json'
+        security [ bearerAuth2: [] ]
+  
+        response(200, 'successful') do
+          run_test!
+        end
+      end
+    end
+
 end
