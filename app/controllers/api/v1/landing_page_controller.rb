@@ -149,24 +149,22 @@ class Api::V1::LandingPageController < ApplicationController
       @product_items = @product_items.joins(:product_item_variants)
                                      .where('LOWER(product_item_variants.size) IN (?)', sizes)
                                      .distinct
-    end    
+    end
 
     if params[:colors].present?
       colors = params[:colors].split(',').map(&:downcase)
-      @product_items = @product_items.joins(:product_item_variants).where('LOWER(product_item_variants.color) IN (?)', colors).distinct
-    end
+      @product_items = @product_items.where('LOWER(product_items.color) IN (?)', colors).distinct
+    end    
 
     if params[:price_ranges].present?
       price_ranges = params[:price_ranges].split(',')
     
       price_conditions = price_ranges.map do |range|
         min_price, max_price = range.split('-').map(&:to_f)
-        "(product_items.price BETWEEN #{min_price} AND #{max_price})"
+        "(product_item_variants.price BETWEEN #{min_price} AND #{max_price})"
       end
-    
-      @product_items = @product_items
+      @product_items = @product_items.where(price_conditions.join(' OR '))
     end
-    
     
     if params[:search].present?
       search_term = "%#{params[:search].downcase}%"
@@ -200,11 +198,19 @@ class Api::V1::LandingPageController < ApplicationController
       .group("product_items.id")
       .order("max_discount DESC")
     when 'price_asc'
-      @product_items = @product_items.order(price: :asc)
+      @product_items = @product_items
+        .joins(:product_item_variants)
+        .select('product_items.*, MIN(product_item_variants.price) AS variant_price')
+        .group('product_items.id')
+        .order('variant_price ASC')
     when 'price_desc'
-      @product_items = @product_items.order(price: :desc)
+      @product_items = @product_items
+        .joins(:product_item_variants)
+        .select('product_items.*, MIN(product_item_variants.price) AS variant_price')
+        .group('product_items.id')
+        .order('variant_price DESC')
     end
-
+    
     @product_items = @product_items.page(params[:page]).per(params[:per_page])
   
     if @product_items.any?

@@ -127,7 +127,7 @@ Rails.application.routes.draw do
           get :product_list
         end
       end
-      resources :image_uploaders, only: [:show, :create, :destroy] do
+      resources :image_uploaders, only: [:index, :show, :create, :destroy] do
         collection do
           get 'images_by_name'
         end

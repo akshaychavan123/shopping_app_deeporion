@@ -1,6 +1,11 @@
 class Api::V2::ImageUploadersController < ApplicationController
-  before_action :authorize_request, except: [:images_by_name, :show]
-  before_action :check_user, except: [:images_by_name, :show]
+  before_action :authorize_request, except: [:images_by_name, :show, :index]
+  before_action :check_user, except: [:images_by_name, :show, :index]
+
+  def index
+    @image_uploaders = ImageUploader.all
+    render json: { data: ActiveModelSerializers::SerializableResource.new(@image_uploaders, each_serializer: ImageUploaderSerializer)}
+  end
 
   def images_by_name
     @image_uploaders = ImageUploader.where(name: params[:name])
