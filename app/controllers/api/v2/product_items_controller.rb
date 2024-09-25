@@ -45,6 +45,8 @@ class Api::V2::ProductItemsController < ApplicationController
 
   def update
     if @product_item.update(product_items_params)
+      attach_images if params[:image].present?
+      attach_photos if params[:photos].present?
       render json: { data: ActiveModelSerializers::SerializableResource.new(@product_item, each_serializer: ProductItemSerializer)}
     else
       render json: @product_item.errors, status: :unprocessable_entity
@@ -86,4 +88,19 @@ class Api::V2::ProductItemsController < ApplicationController
     product_code = "#{category_code}-#{date_str}-#{serial_number}"
     return product_code
   end
+
+  def attach_images
+    @product_item.image.purge
+    Array(params[:image]).each do |photo|
+      @product_item.image.attach(photo)
+    end
+  end
+
+  def attach_photos
+    @product_item.photos.purge
+    Array(params[:photos]).each do |photo|
+      @product_item.photos.attach(photo)
+    end
+  end
+
 end

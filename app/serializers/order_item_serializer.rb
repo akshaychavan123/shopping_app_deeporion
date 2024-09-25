@@ -1,5 +1,5 @@
 class OrderItemSerializer < ActiveModel::Serializer
-  attributes :id, :product_item_id, :order_id, :product_item_variant_id, :quantity, :total_price, :created_at, :contact_number, :order_placed, :product_name, :user_name, :address
+  attributes :id, :product_item_id, :order_id, :product_item_variant_id, :quantity, :total_price, :status, :created_at, :contact_number, :order_placed, :product_name, :user_name, :address
 
   def order_placed
     object.created_at
