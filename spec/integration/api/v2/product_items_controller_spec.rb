@@ -135,14 +135,33 @@ RSpec.describe 'Api::V2::ProductItems', type: :request do
       parameter name: :product_item, in: :formData, schema: {
         type: :object,
         properties: {
-          name: { type: :string },
-          brand: { type: :string },
-          description: { type: :string },
-          material: { type: :string },
-          care: { type: :string },
-          product_code: { type: :string },
-          product_id: { type: :integer }
-        }
+            image: { type: :file },
+            photos: {
+              type: :array,
+              items: { type: :string, format: :binary }
+            },
+            product_id: { type: :integer },
+            name: { type: :string },
+            brand: { type: :string },
+            price: { type: :number },
+            discounted_price:{ type: :decimal },
+            description: { type: :text },
+            material: { type: :string },
+            care: { type: :string },
+            product_code: { type: :string },
+            care_instructions: { type: :text },
+            fabric: { type: :string },
+            hemline: { type: :string },
+            neck: { type: :string },
+            texttile_thread: { type: :string },
+            size_and_fit: { type: :text },
+            height: { type: :text },
+            main_trend: { type: :string },
+            knite_or_woven: { type: :string },  
+            length: { type: :string },
+            occasion: { type: :string },
+            color:{type: :string}
+          }
       }
 
       response(200, 'successful') do

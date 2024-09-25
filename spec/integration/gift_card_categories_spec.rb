@@ -20,10 +20,9 @@ RSpec.describe 'Api::V2::GiftCardCategories', type: :request do
       parameter name: :gift_card_category, in: :formData, schema: {
         type: :object,
         properties: {
-          title: { type: :string },
-          image: { type: :file }
+          title: { type: :string }
         },
-        required: ['title', 'image']
+        required: ['title']
       }
   
       response(201, 'created') do

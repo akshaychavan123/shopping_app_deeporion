@@ -2316,20 +2316,55 @@ paths:
             schema:
               type: object
               properties:
+                image:
+                  type: file
+                photos:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                product_id:
+                  type: integer
                 name:
                   type: string
                 brand:
                   type: string
+                price:
+                  type: number
+                discounted_price:
+                  type: decimal
                 description:
-                  type: string
+                  type: text
                 material:
                   type: string
                 care:
                   type: string
                 product_code:
                   type: string
-                product_id:
-                  type: integer
+                care_instructions:
+                  type: text
+                fabric:
+                  type: string
+                hemline:
+                  type: string
+                neck:
+                  type: string
+                texttile_thread:
+                  type: string
+                size_and_fit:
+                  type: text
+                height:
+                  type: text
+                main_trend:
+                  type: string
+                knite_or_woven:
+                  type: string
+                length:
+                  type: string
+                occasion:
+                  type: string
+                color:
+                  type: string
     delete:
       summary: delete product_item
       tags:
@@ -3170,11 +3205,8 @@ paths:
               properties:
                 title:
                   type: string
-                image:
-                  type: file
               required:
               - title
-              - image
   "/api/v2/gift_card_categories/{id}":
     parameters:
     - name: id
