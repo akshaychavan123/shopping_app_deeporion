@@ -3283,6 +3283,16 @@ paths:
       responses:
         '200':
           description: successful
+  "/api/v1/order_items/revenue_graph":
+    get:
+      summary: revenue graph details
+      tags:
+      - Order Items
+      security:
+      - bearerAuth2: []
+      responses:
+        '200':
+          description: successful
   "/api/v1/orders":
     post:
       summary: Creates an order
