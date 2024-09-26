@@ -104,12 +104,54 @@ class Api::V1::LandingPageController < ApplicationController
   end
   
 
+  # def product_items_show
+  #   @product_item = ProductItem.includes(:product_item_variants).find_by(id: params[:id])
+
+  #   if @product_item
+  #     review_summary = calculate_review_summary(@product_item.id)
+  #     render json: { data: ActiveModelSerializers::SerializableResource.new(@product_item, serializer: ProductItemSerializer, current_user: @current_user), summary: review_summary }
+  #   else
+  #     render json: { errors: ['Product item not found'] }, status: :not_found
+  #   end
+  # end
+
   def product_items_show
     @product_item = ProductItem.includes(:product_item_variants).find_by(id: params[:id])
-
+  
     if @product_item
       review_summary = calculate_review_summary(@product_item.id)
-      render json: { data: ActiveModelSerializers::SerializableResource.new(@product_item, serializer: ProductItemSerializer, current_user: @current_user), summary: review_summary }
+  
+      today = Date.today
+      applicable_coupons = Coupon.where('end_date >= ?', today).where(promo_type: 'discount on product')
+
+      applicable_coupons.select do |coupon|
+        puts "Coupon Product IDs: #{coupon.product_ids.inspect}"
+        puts "Product Item ID: #{@product_item.id}"
+        coupon.product_ids.include?(@product_item.id)
+      end      
+
+      coupon_details = applicable_coupons.map do |coupon|
+        {
+          promo_code_name: coupon.promo_code_name,
+          promo_code: coupon.promo_code,
+          amount_off: coupon.amount_off,
+          promo_type: coupon.promo_type,
+          max_uses_per_client: coupon.max_uses_per_client,
+          max_uses_per_promo: coupon.max_uses_per_promo
+        }
+      end
+
+      first_applicable_coupon = applicable_coupons.first
+      render json: {
+        data: ActiveModelSerializers::SerializableResource.new(
+          @product_item,
+          serializer: ProductItemSerializer,
+          current_user: @current_user,
+          applicable_coupon: first_applicable_coupon
+        ),
+        summary: review_summary,
+        coupons: coupon_details
+      }
     else
       render json: { errors: ['Product item not found'] }, status: :not_found
     end
