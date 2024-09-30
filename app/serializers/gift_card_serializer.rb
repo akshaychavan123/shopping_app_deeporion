@@ -1,5 +1,5 @@
 class GiftCardSerializer < ActiveModel::Serializer
-  attributes :id, :price, :images
+  attributes :id, :price, :images, :gift_card_category_id
 
   def images
     host = base_url

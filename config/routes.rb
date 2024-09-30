@@ -14,7 +14,7 @@ Rails.application.routes.draw do
           get :show_all_review
         end
       end
-
+      resources :plans
       resources :review_votes, only: [:create]
       resources :addresses
       resources :order_items do

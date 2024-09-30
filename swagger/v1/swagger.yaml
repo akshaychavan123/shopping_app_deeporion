@@ -1019,6 +1019,114 @@ paths:
               - token
               - password
               - password_confirmation
+  "/api/v1/plans":
+    get:
+      summary: Retrieves all Plans
+      tags:
+      - Plans
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: plans retrieved
+        '401':
+          description: unauthorized
+    post:
+      summary: Creates an Plan
+      tags:
+      - Plans
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '201':
+          description: address created
+        '422':
+          description: invalid request
+        '401':
+          description: unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                service:
+                  type: string
+                amount:
+                  type: integer
+                frequency:
+                  type: string
+                discription:
+                  type: string
+              required:
+              - name
+  "/api/v1/plans/{id}":
+    parameters:
+    - name: id
+      in: path
+      description: Plan ID
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Retrieves a specific Plan
+      tags:
+      - Plans
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: plan found
+        '404':
+          description: plan not found
+        '401':
+          description: unauthorized
+    put:
+      summary: Updates an Plan
+      tags:
+      - Plans
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '200':
+          description: plan updated
+        '404':
+          description: plan not found
+        '401':
+          description: unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                service:
+                  type: string
+                amount:
+                  type: integer
+                frequency:
+                  type: string
+                discription:
+                  type: string
+    delete:
+      summary: Deletes an Plan
+      tags:
+      - Plans
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: plan deleted
+        '404':
+          description: plan not found
+        '401':
+          description: unauthorized
   "/api/v1/review_votes":
     post:
       summary: Create Review Vote
