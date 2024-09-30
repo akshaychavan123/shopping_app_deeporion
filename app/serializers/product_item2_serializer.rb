@@ -1,5 +1,5 @@
 class ProductItem2Serializer < ActiveModel::Serializer
-    attributes :id, :name, :brand, :price, :price_of_first_variant, :is_favorite, :image, :rating_and_review
+    attributes :id, :name, :brand, :price, :price_of_first_variant, :discounted_price_of_first_variant, :discount_percent_of_first_variant, :is_favorite, :image, :rating_and_review
 
     def image
       if object.image.attached?
@@ -20,6 +20,14 @@ class ProductItem2Serializer < ActiveModel::Serializer
 
     def price_of_first_variant
       object.product_item_variants&.first&.price
+    end
+
+    def discounted_price_of_first_variant
+      object.product_item_variants&.first&.discounted_price
+    end
+
+    def discount_percent_of_first_variant
+      object.product_item_variants&.first&.discount_percent
     end
 
     def is_favorite

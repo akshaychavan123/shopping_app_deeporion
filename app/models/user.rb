@@ -3,12 +3,9 @@ class User < ApplicationRecord
   before_validation :downcase_email
 
   validates :password, format: { with: /\A(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}\z/,
-  message: "must contain at least one uppercase letter, one lowercase letter, and one digit" }, if: :password_digest_changed?
-  validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }, unless: -> { phone_number.present? }
-  validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }, unless: -> { phone_number.present? } 
-  # validates :password, presence: true, length: { minimum: 6 }, unless: -> { phone_number.present? } 
-  # validates :phone_number, presence: true, uniqueness: true, if: -> { phone_number.present? }
-  # validates :full_phone_number, uniqueness: true, if: -> { full_phone_number.present? }
+  message: "must be at least 8 characters long, include at least one uppercase letter, one lowercase letter, and one number"}, if: :password_digest_changed?
+  validates :email, presence: true, uniqueness: true, format: { with: /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i }, unless: -> { phone_number.present? }
+  validates :email, format: { with: /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i }, unless: -> { phone_number.present? } 
   validates :uid, uniqueness: { scope: :provider }, if: -> { provider.present? }
   validates :terms_and_condition, acceptance: { accept: true }, unless: -> { phone_number.present? }
 

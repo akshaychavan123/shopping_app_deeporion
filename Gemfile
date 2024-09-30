@@ -89,3 +89,6 @@ gem 'httparty'
 gem 'razorpay'
 gem "aws-sdk-s3"
 gem 'fcm'
+gem 'sidekiq'
+gem "sidekiq-scheduler"
+
