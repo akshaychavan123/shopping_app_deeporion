@@ -192,11 +192,14 @@ class Api::V1::LandingPageController < ApplicationController
       .having("AVG(reviews.star) = ?", max_rating)
       .order("AVG(reviews.star) DESC")
     when 'discount'
-      @product_items = @product_items
-      .left_joins(:coupons)
-      .select("product_items.*, MAX(coupons.amount_off) AS max_discount")
-      .group("product_items.id")
-      .order("max_discount DESC")
+      coupon_ids = Coupon.where("end_date > ? AND promo_type = ?", Time.current, 'discount on product').pluck(:id)
+      product_ids = Coupon.where(id: coupon_ids).pluck(:product_ids).flatten.uniq
+        @product_items = @product_items
+        .joins("INNER JOIN coupons ON coupons.product_ids @> ARRAY[product_items.product_id]::integer[]") 
+        .where(product_id: product_ids)
+        .select("product_items.*, COALESCE(MAX(coupons.amount_off), 0) AS max_discount")
+        .group("product_items.id")
+        .order("max_discount DESC")
     when 'price_asc'
       @product_items = @product_items
         .joins(:product_item_variants)
