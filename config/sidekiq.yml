@@ -1,0 +1,5 @@
+:scheduler:
+  :schedule:
+    my_scheduled_job:
+      cron: "29 18 * * *"  # This will run the job every day at 6:29 PM UTC (which is 11:59 PM IST)
+      class: "RemoveExpiredCouponsJob"

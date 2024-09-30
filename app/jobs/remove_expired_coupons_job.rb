@@ -4,7 +4,10 @@ class RemoveExpiredCouponsJob < ApplicationJob
   def perform
     expired_coupons = Coupon.where("end_date <= ?", Time.current)
     expired_coupons.find_each do |coupon|
+      next unless coupon.present? 
+  
       Rails.logger.info "Processing expired coupon: #{coupon.id}"
+  
       Product.where(id: coupon.product_ids).find_each do |product|
         product.product_items.find_each do |product_item|
           product_item.product_item_variants.find_each do |variant|
@@ -13,7 +16,10 @@ class RemoveExpiredCouponsJob < ApplicationJob
         end
       end
     end
+  rescue ActiveRecord::RecordNotFound => e
+    Rails.logger.error "Failed to find Coupon or Product: #{e.message}"
   end
+  
 
   private
 
