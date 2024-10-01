@@ -46,7 +46,7 @@ class Api::V1::PlansController < ApplicationController
     params.require(:plan).permit(:name, :service, :amount, :frequency, :discription)
   end
 
-	def check_user
+  def check_user
     unless @current_user.type == "Admin"
       render json: { errors: ['Unauthorized access'] }, status: :forbidden
     end
