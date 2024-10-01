@@ -39,4 +39,14 @@ class Api::V1::OrderItemsController < ApplicationController
       end    
     end
 
+    def revenue_graph   
+      data = Order.joins(:order_items).where("orders.created_at <= ?", 1.week.ago).group("DATE(orders.created_at)").select("DATE(orders.created_at) as order_date, COUNT(order_items.id) as item_count,SUM(
+        order_items.total_price) as total_price ,COUNT(orders.id) as order_count")
+      if data.present?
+        render json: { data: data}, status: :ok 
+      else
+        render json: { data: [] }, status: :not_found 
+      end    
+    end
+
 end

@@ -1,5 +1,5 @@
 class OrderItemSerializer < ActiveModel::Serializer
-  attributes :id, :product_item_id, :order_id, :product_item_variant_id, :quantity, :total_price, :status, :created_at, :contact_number, :order_placed, :product_name, :user_name, :address
+  attributes :id, :product_item_id, :order_id, :product_item_variant_id, :quantity, :total_price, :status, :created_at, :contact_number, :order_placed, :product_image, :product_name, :user_name, :address
 
   def order_placed
     object.created_at
@@ -23,5 +23,25 @@ class OrderItemSerializer < ActiveModel::Serializer
   def address
     Address.find_by(id: object.order.address_id)
   end
+
+  def product_image
+    host = base_url
+    @productitem = ProductItem.find_by(id: object.product_item_id)
+    if @productitem.image.attached?
+      if Rails.env.development? || Rails.env.test?
+        host + Rails.application.routes.url_helpers.rails_blob_path(@productitem.image, only_path: true)
+      else
+        @productitem.image.service.send(:object_for, @productitem.image.key).public_url
+      end
+    else
+      nil
+    end
+  end
+
+  private
+
+  def base_url
+    ENV['BASE_URL'] || 'http://localhost:3000'
+  end 
 
 end
