@@ -42,13 +42,14 @@ class Api::V1::PlansController < ApplicationController
     render json: { error: 'Plan not found' }, status: :not_found
   end
 
-  def plan_params
-    params.require(:plan).permit(:name, :service, :amount, :frequency, :discription)
-  end
-
   def check_user
     unless @current_user.type == "Admin"
       render json: { errors: ['Unauthorized access'] }, status: :forbidden
     end
   end
+
+  def plan_params
+    params.require(:plan).permit(:name, :service, :amount, :frequency, :discription)
+  end
+  
 end
