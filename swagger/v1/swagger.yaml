@@ -3417,9 +3417,9 @@ paths:
       - bearerAuth: []
       responses:
         '200':
-          description: plan deleted
+          description: order deleted
         '404':
-          description: plan not found
+          description: order item not found
         '401':
           description: unauthorized
   "/api/v1/orders":

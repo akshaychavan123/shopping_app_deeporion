@@ -69,20 +69,20 @@ RSpec.describe 'Api::V1::OrderItemsController', type: :request do
         tags 'Order Items'
         security [bearerAuth: []]
   
-        response '200', 'plan deleted' do
+        response '200', 'order deleted' do
           let(:Authorization) { "Bearer #{JsonWebToken.encode(user_id: create(:user).id)}" }
-          let(:id) { create(:plan, user: @user).id }
+          let(:id) { create(:order_item, user: @user).id }
           run_test!
         end
   
-        response '404', 'plan not found' do
+        response '404', 'order item not found' do
           let(:Authorization) { "Bearer #{JsonWebToken.encode(user_id: create(:user).id)}" }
           let(:id) { 'invalid' }
           run_test!
         end
   
         response '401', 'unauthorized' do
-          let(:id) { create(:plan).id }
+          let(:id) { create(:order_item).id }
           run_test!
         end
       end
