@@ -27,7 +27,7 @@ class Api::V1::PlansController < ApplicationController
     end
   end
 
-	def destroy
+  def destroy
     @plan.destroy
     render json: { message: 'Plan deleted successfully' }, status: :ok
     rescue ActiveRecord::RecordNotDestroyed
