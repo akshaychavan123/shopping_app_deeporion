@@ -30,15 +30,15 @@ class Api::V1::PlansController < ApplicationController
 	def destroy
     @plan.destroy
     render json: { message: 'Plan deleted successfully' }, status: :ok
-  rescue ActiveRecord::RecordNotDestroyed
+    rescue ActiveRecord::RecordNotDestroyed
     render json: { error: 'Failed to delete Plan' }, status: :unprocessable_entity
   end
 
   private
 
   def set_plan
-  @plan = Plan.find(params[:id])
-  rescue ActiveRecord::RecordNotFound
+    @plan = Plan.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
     render json: { error: 'Plan not found' }, status: :not_found
   end
 
