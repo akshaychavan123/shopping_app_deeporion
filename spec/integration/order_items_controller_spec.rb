@@ -62,4 +62,30 @@ RSpec.describe 'Api::V1::OrderItemsController', type: :request do
       end
     end
 
+    path '/api/v1/order_items/{id}' do
+      parameter name: :id, in: :path, type: :string, description: 'order item ID'
+            
+      delete 'Deletes an order item' do
+        tags 'Order Items'
+        security [bearerAuth: []]
+  
+        response '200', 'order deleted' do
+          let(:Authorization) { "Bearer #{JsonWebToken.encode(user_id: create(:user).id)}" }
+          let(:id) { create(:order_item, user: @user).id }
+          run_test!
+        end
+  
+        response '404', 'order item not found' do
+          let(:Authorization) { "Bearer #{JsonWebToken.encode(user_id: create(:user).id)}" }
+          let(:id) { 'invalid' }
+          run_test!
+        end
+  
+        response '401', 'unauthorized' do
+          let(:id) { create(:order_item).id }
+          run_test!
+        end
+      end
+    end
+
 end
