@@ -7,6 +7,14 @@ class Api::V1::OrderItemsController < ApplicationController
       orders: ActiveModelSerializers::SerializableResource.new(order_items, each_serializer: OrderItemSerializer)
     }
     end
+  
+    def destroy
+      @order_item = OrderItem.find(params[:id])
+      @order_item.destroy
+      render json: { message: 'Order Item deleted successfully' }, status: :ok
+      rescue ActiveRecord::RecordNotDestroyed
+      render json: { error: 'Failed to delete Order Item' }, status: :unprocessable_entity
+    end
 
     def pending_orders
       if params[:status] == "pending"
