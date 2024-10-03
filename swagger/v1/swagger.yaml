@@ -3283,6 +3283,51 @@ paths:
       responses:
         '200':
           description: successful
+  "/api/v1/order_items/{id}":
+    parameters:
+    - name: id
+      in: path
+      description: Order Item ID
+      required: true
+      schema:
+        type: string
+    put:
+      summary: update order item
+      tags:
+      - Order Items
+      security:
+      - bearerAuth2: []
+      parameters: []
+      responses:
+        '200':
+          description: successful
+        '404':
+          description: order item not found
+        '422':
+          description: unprocessable entity
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+              required:
+              - status
+    delete:
+      summary: delete order item
+      tags:
+      - Order Items
+      security:
+      - bearerAuth2: []
+      responses:
+        '200':
+          description: order item successfully deleted
+        '404':
+          description: order item not found
+        '422':
+          description: unprocessable entity
   "/api/v1/orders":
     post:
       summary: Creates an order

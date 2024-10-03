@@ -17,7 +17,7 @@ Rails.application.routes.draw do
 
       resources :review_votes, only: [:create]
       resources :addresses
-      resources :order_items do
+      resources :order_items, only: [:index, :update, :destroy] do
         collection do
           get 'pending_orders/:status', to: 'order_items#pending_orders'
           get 'order_count', to: 'order_items#order_count'

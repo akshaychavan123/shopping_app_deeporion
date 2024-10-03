@@ -98,7 +98,7 @@ class User < ApplicationRecord
     Notification.create(
       user: self,
       app: true,    
-      email: email.present?, 
+      email: false, 
       sms: phone_number.present?,
       whatsapp: phone_number.present?  
     )
