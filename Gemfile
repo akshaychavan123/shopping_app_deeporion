@@ -91,4 +91,7 @@ gem "aws-sdk-s3"
 gem 'fcm'
 gem 'sidekiq'
 gem "sidekiq-scheduler"
+gem 'redis', '~> 4.2'
+
+
 
