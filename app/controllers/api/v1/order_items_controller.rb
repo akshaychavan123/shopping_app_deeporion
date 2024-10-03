@@ -7,7 +7,15 @@ class Api::V1::OrderItemsController < ApplicationController
     render json: {
       orders: ActiveModelSerializers::SerializableResource.new(order_items, each_serializer: OrderItemSerializer)
     }
-  end
+    end
+  
+    def destroy
+      @order_item = OrderItem.find(params[:id])
+      @order_item.destroy
+      render json: { message: 'Order Item deleted successfully' }, status: :ok
+      rescue ActiveRecord::RecordNotDestroyed
+      render json: { error: 'Failed to delete Order Item' }, status: :unprocessable_entity
+    end
 
   def pending_orders
     if params[:status] == "pending"
@@ -53,16 +61,14 @@ class Api::V1::OrderItemsController < ApplicationController
     end
   end
 
-  def destroy
-    if @order_item.destroy
-      render json: {
-        message: "Order item successfully deleted"
-      }, status: :ok
+  def revenue_graph   
+    data = Order.joins(:order_items).where("orders.created_at <= ?", 1.week.ago).group("DATE(orders.created_at)").select("DATE(orders.created_at) as order_date, COUNT(order_items.id) as item_count,SUM(
+      order_items.total_price) as total_price ,COUNT(orders.id) as order_count")
+    if data.present?
+      render json: { data: data}, status: :ok 
     else
-      render json: {
-        errors: @order_item.errors.full_messages
-      }, status: :unprocessable_entity
-    end
+      render json: { data: [] }, status: :not_found 
+    end    
   end
 
   private
@@ -74,5 +80,5 @@ class Api::V1::OrderItemsController < ApplicationController
 
   def order_item_params
     params.permit(:status)
-  end  
+  end
 end
