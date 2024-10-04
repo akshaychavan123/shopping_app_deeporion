@@ -74,9 +74,10 @@ Rails.application.routes.draw do
       get '/landing_page/top_category', to: 'landing_page#top_category'      
       get '/landing_page/index_of_product_by_category/:id', to: 'landing_page#index_of_product_by_category'     
       
-      resources :orders, only: [:create] do
+      resources :orders do
         post 'payment_callback', on: :collection
         post 'save_order_data', on: :collection
+        get 'order_history', on: :collection
       end
       resources :contact_us, only: [:create]
 
@@ -115,9 +116,7 @@ Rails.application.routes.draw do
       resources :banners
       resources :career_roles
       resources :video_descriptions
-      resources :products, only: [:index, :show, :create, :update, :destroy] do
-        # resources :product_items, only: [:index, :show, :create, :update, :destroy] 
-      end
+      resources :products, only: [:index, :show, :create, :update, :destroy]
       resources :categories do
         resources :subcategories, only: [:index, :show, :create, :update, :destroy]
       end

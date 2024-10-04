@@ -1,43 +1,5 @@
 class Api::V1::OrdersController < ApplicationController
   before_action :authorize_request
-  # before_create :generate_custom_order_number
-
-  def create
-    ActiveRecord::Base.transaction do
-      total_amount = (order_params[:total_price].to_f * 100).to_i
-      
-      razorpay_order = Razorpay::Order.create(
-        amount: total_amount,
-        currency: 'INR',
-        receipt: "order_#{SecureRandom.hex(8)}"
-      )
-
-      @order = @current_user.orders.new(order_params)
-      @order.razorpay_order_id = razorpay_order.id
-      @order.total_price = total_amount / 100.0
-      @order.payment_status = 'created'
-
-      cart_items = @current_user.cart.cart_items
-
-      cart_items.each do |cart_item|
-        @order.order_items.build(
-          product_item_id: cart_item.product_item_id,
-          product_item_variant_id: cart_item.product_item_variant_id,
-          quantity: cart_item.quantity,
-          total_price: cart_item.total_price
-        )
-      end
-
-      if @order.save
-        cart_items.destroy_all
-        render json: { order: @order, razorpay_order_id: razorpay_order.id }, status: :created
-      else
-        render json: @order.errors, status: :unprocessable_entity
-      end
-    end
-  rescue ActiveRecord::RecordInvalid
-    render json: { error: 'Failed to create order. Please try again.' }, status: :unprocessable_entity
-  end
 
   def save_order_data
     @order_data = Order.new(order_data_params)
@@ -48,6 +10,17 @@ class Api::V1::OrdersController < ApplicationController
       render json: @order_data, status: :created
     else
       render json: { message: 'Something went wrong', errors: @order_data.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
+  def order_history
+    orders = Order.where(user_id: @current_user.id)
+    orders = orders.includes(:order_items).order(created_at: :desc)
+
+    if orders.present?
+      render json: orders, status: :ok, each_serializer: OrderHistorySerializer
+    else
+      render json: { message: 'No orders found' }, status: :not_found
     end
   end
 

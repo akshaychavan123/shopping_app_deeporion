@@ -3428,7 +3428,7 @@ paths:
       tags:
       - Order Items
       security:
-      - bearerAuth: []
+      - bearerAuth2: []
       responses:
         '200':
           description: order deleted
@@ -3446,55 +3446,6 @@ paths:
       responses:
         '200':
           description: successful
-  "/api/v1/orders":
-    post:
-      summary: Creates an order
-      tags:
-      - Orders
-      security:
-      - bearerAuth: []
-      parameters: []
-      responses:
-        '201':
-          description: order created
-        '422':
-          description: invalid request
-        '401':
-          description: unauthorized
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                user_id:
-                  type: integer
-                total_price:
-                  type: number
-                address_type:
-                  type: string
-                payment_status:
-                  type: string
-                placed_at:
-                  type: string
-                  format: date-time
-                order_items_attributes:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      product_item_id:
-                        type: integer
-                      quantity:
-                        type: integer
-                      sub_total:
-                        type: number
-              required:
-              - total_price
-              - address_type
-              - payment_status
-              - placed_at
-              - order_items_attributes
   "/api/v1/orders/save_order_data":
     post:
       summary: Saves an order data
@@ -3547,6 +3498,20 @@ paths:
                 - payment_status
                 - user_id
                 - order_items_attributes
+  "/api/v1/orders/order_history":
+    get:
+      summary: Retrieves the order history for the current user
+      tags:
+      - Orders
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: order history found
+        '404':
+          description: no orders found
+        '401':
+          description: unauthorized
   "/api/v2/products":
     get:
       summary: list products

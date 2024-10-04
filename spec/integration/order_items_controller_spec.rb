@@ -107,7 +107,7 @@ RSpec.describe 'Api::V1::OrderItemsController', type: :request do
           
     delete 'Deletes an order item' do
       tags 'Order Items'
-      security [bearerAuth: []]
+      security [bearerAuth2: []]
 
       response '200', 'order deleted' do
         let(:Authorization) { "Bearer #{JsonWebToken.encode(user_id: create(:user).id)}" }
