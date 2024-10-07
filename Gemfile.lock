@@ -270,6 +270,7 @@ GEM
     rake (13.2.1)
     razorpay (3.2.3)
       httparty (~> 0.14)
+    redis (4.8.1)
     redis-client (0.22.2)
       connection_pool
     rexml (3.3.1)
@@ -405,6 +406,7 @@ DEPENDENCIES
   rack-cors
   rails (~> 7.0.8, >= 7.0.8.4)
   razorpay
+  redis (~> 4.2)
   rspec-rails (~> 3.5)
   rswag
   sass-rails (>= 5)

@@ -90,8 +90,8 @@ class Api::V1::CartsController < ApplicationController
   end
 
   def calculate_order_summary
-    @subtotal = @cart.cart_items.sum { |item| item.product_item_variant.price * item.quantity }
-    @taxes = (@cart_items || []).sum { |item| calculate_gst(item.product_item_variant.price) * item.quantity }
+    @subtotal = @cart.cart_items.sum { |item| item.product_item_variant.discounted_price * item.quantity }
+    @taxes = (@cart_items || []).sum { |item| calculate_gst(item.product_item_variant.discounted_price) * item.quantity }
     @delivery_charge = calculate_delivery_charge(@subtotal)
     @total = @subtotal + @taxes + @delivery_charge
   end

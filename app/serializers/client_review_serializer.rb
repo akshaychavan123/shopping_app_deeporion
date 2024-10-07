@@ -1,5 +1,5 @@
 class ClientReviewSerializer < ActiveModel::Serializer
-  attributes :id, :star, :review, :user_name, :user_image, :created_time
+  attributes :id, :star, :review, :user_name, :user_image, :created_at, :created_time
   include ActionView::Helpers::DateHelper
 
   def user_name
@@ -23,6 +23,11 @@ class ClientReviewSerializer < ActiveModel::Serializer
   def created_time
     time_ago_in_words(object.created_at)
   end
+
+  def created_at
+    object.created_at.in_time_zone('Asia/Kolkata').strftime("%Y-%m-%d %H:%M:%S %Z")
+  end
+  
 
   private
 
