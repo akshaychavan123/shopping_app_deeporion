@@ -12,7 +12,7 @@ class OrderItemSerializer < ActiveModel::Serializer
 
   def product_item_image
     @productitem = ProductItem.find_by(id: object.product_item_id)
-    if @productitem.image.attached?
+    if @productitem&.image&.attached?
       host = base_url
       Rails.env.development? || Rails.env.test? ?
         "#{host}#{Rails.application.routes.url_helpers.rails_blob_path(@productitem.image, only_path: true)}" :
