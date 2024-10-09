@@ -13,6 +13,7 @@ class Api::V1::OrdersController < ApplicationController
 
       @order = @current_user.orders.new(order_params)
       @order.razorpay_order_id = razorpay_order.id
+      @order.order_number = razorpay_order.receipt
       @order.total_price = total_amount / 100.0
       @order.payment_status = 'created'
 
