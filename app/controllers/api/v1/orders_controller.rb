@@ -5,15 +5,11 @@ class Api::V1::OrdersController < ApplicationController
   def create
     ActiveRecord::Base.transaction do
       total_amount = (order_params[:total_price].to_f * 100).to_i
-      byebug
       razorpay_order = Razorpay::Order.create(
         amount: total_amount,
         currency: 'INR',
         receipt: "order_#{SecureRandom.hex(8)}"
       )
-
-      payment = Razorpay::Payment.fetch("PAYMENT_ID")
-      payment.capture!  # Capture the payment here
 
       @order = @current_user.orders.new(order_params)
       @order.razorpay_order_id = razorpay_order.id
@@ -33,13 +29,30 @@ class Api::V1::OrdersController < ApplicationController
 
       if @order.save
         cart_items.destroy_all
-        render json: { order: @order, payment: payment}, status: :created
+        render json: { order: @order }, status: :created
       else
         render json: @order.errors, status: :unprocessable_entity
       end
     end
   rescue ActiveRecord::RecordInvalid
     render json: { error: 'Failed to create order. Please try again.' }, status: :unprocessable_entity
+  end
+
+  def callback
+    begin
+      razorpay_payment = Razorpay::Payment.fetch(params[:razorpay_payment_id])
+      razorpay_order = Razorpay::Order.fetch(params[:razorpay_order_id])
+
+      if razorpay_payment.status == 'captured'
+        order = Order.find(params[:order_id])
+        order.update(status: 'paid')
+        render json: { message: 'Payment successful', order: order }, status: :ok
+      else
+        render json: { message: 'Payment failed', status: razorpay_payment.status }, status: :unprocessable_entity
+      end
+    rescue Razorpay::Error => e
+      render json: { message: "Payment verification failed", error: e.message }, status: :unprocessable_entity
+    end
   end
 
   def save_order_data
@@ -68,7 +81,7 @@ class Api::V1::OrdersController < ApplicationController
   private
 
   def order_params
-    params.permit(:total_price, :address_id, :payment_status)
+    params.permit(:total_price, :address_id)
   end
 
   def order_data_params

@@ -3446,6 +3446,79 @@ paths:
       responses:
         '200':
           description: successful
+  "/api/v1/orders":
+    post:
+      summary: Creates an order and generates Razorpay order
+      tags:
+      - Orders
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '201':
+          description: Order created successfully
+        '422':
+          description: Invalid request
+        '401':
+          description: Unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                total_price:
+                  type: number
+                address_id:
+                  type: integer
+                order_items_attributes:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      product_item_id:
+                        type: integer
+                      product_item_variant_id:
+                        type: integer
+                      quantity:
+                        type: integer
+                      total_price:
+                        type: number
+              required:
+              - total_price
+              - address_id
+              - order_items_attributes
+  "/api/v1/orders/callback":
+    post:
+      summary: Handles Razorpay payment callback
+      tags:
+      - Orders
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '200':
+          description: Payment successful
+        '422':
+          description: Payment verification failed
+        '401':
+          description: Unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                razorpay_payment_id:
+                  type: string
+                razorpay_order_id:
+                  type: string
+                order_id:
+                  type: integer
+              required:
+              - razorpay_payment_id
+              - razorpay_order_id
+              - order_id
   "/api/v1/orders/save_order_data":
     post:
       summary: Saves an order data
