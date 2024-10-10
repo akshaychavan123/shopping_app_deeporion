@@ -13,9 +13,10 @@ class Api::V1::OrdersController < ApplicationController
 
       @order = @current_user.orders.new(order_params)
       @order.razorpay_order_id = razorpay_order.id
-      @order.order_number = razorpay_order.receipt
+      @order.receipt_number = razorpay_order.receipt
       @order.total_price = total_amount / 100.0
       @order.payment_status = 'created'
+      @order.status = 'created'
 
       cart_items = @current_user.cart.cart_items
 
@@ -56,6 +57,19 @@ class Api::V1::OrdersController < ApplicationController
     end
   end
 
+  def cancel
+    @order = @current_user.orders.find(params[:id])
+
+    if @order.payment_status == 'created'
+      @order.update(payment_status: 'canceled', status: 'canceled')
+      render json: { message: 'Order canceled successfully' }, status: :ok
+    elsif @order.payment_status == 'paid' && @order.status != 'delivered'
+      refund_order
+    else
+      render json: { message: 'Order cannot be canceled' }, status: :unprocessable_entity
+    end
+  end   
+
   def save_order_data
     @order_data = Order.new(order_data_params)
     if @order_data.save
@@ -81,8 +95,28 @@ class Api::V1::OrdersController < ApplicationController
 
   private
 
+   def refund_order
+    begin
+      razorpay_payment = Razorpay::Payment.fetch(@order.razorpay_payment_id)
+      refund = razorpay_payment.refund(amount: (order_params[:refund_amount].to_f * 100).to_i, speed: 'instant')
+  
+      @order.update(status: 'refunded')
+  
+      Refund.create!(
+        refund_id: refund.id,
+        amount: refund.amount / 100.0,
+        status: refund.status,
+        order: @order
+      )
+  
+      render json: { message: 'Order refunded successfully', refund: refund }, status: :ok
+    rescue Razorpay::Error => e
+      render json: { message: 'Refund failed', error: e.message }, status: :unprocessable_entity
+    end
+  end
+
   def order_params
-    params.permit(:total_price, :address_id)
+    params.permit(:total_price, :address_id, :coupon_id)
   end
 
   def order_data_params

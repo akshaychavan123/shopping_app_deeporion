@@ -12,18 +12,7 @@ RSpec.describe 'api/v1/orders', type: :request do
         properties: {
           total_price: { type: :number },
           address_id: { type: :integer },
-          order_items_attributes: {
-            type: :array,
-            items: {
-              type: :object,
-              properties: {
-                product_item_id: { type: :integer },
-                product_item_variant_id: { type: :integer },
-                quantity: { type: :integer },
-                total_price: { type: :number },
-              }
-            }
-          }
+          coupon_id: { type: :integer }
         },
         required: ['total_price', 'address_id', 'order_items_attributes']
       }
@@ -34,11 +23,7 @@ RSpec.describe 'api/v1/orders', type: :request do
         let(:order) do
           {
             total_price: 500.0,
-            address_id: 1,
-            order_items_attributes: [
-              { product_item_id: 1, product_item_variant_id: 1, quantity: 2, total_price: 250.0 },
-              { product_item_id: 2, product_item_variant_id: 2, quantity: 1, total_price: 250.0 }
-            ]
+            address_id: 1
           }
         end
         run_test!
