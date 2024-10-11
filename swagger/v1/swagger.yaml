@@ -1246,6 +1246,21 @@ paths:
         required: false
         schema:
           type: integer
+      - name: star
+        in: query
+        description: Filter according star
+        schema:
+          type: integer
+      - name: page
+        in: query
+        description: Page number for pagination
+        schema:
+          type: integer
+      - name: per_page
+        in: query
+        description: Number of items per page
+        schema:
+          type: integer
       responses:
         '200':
           description: successful
@@ -1291,6 +1306,11 @@ paths:
       tags:
       - Reviews
       parameters:
+      - name: star
+        in: query
+        description: Filter according star
+        schema:
+          type: integer
       - name: page
         in: query
         description: Page number for pagination

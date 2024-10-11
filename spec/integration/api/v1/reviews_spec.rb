@@ -47,7 +47,9 @@ RSpec.describe 'Api::V1::Reviews', type: :request do
       produces 'application/json'
       security [bearerAuth: []]
       parameter name: :product_item_id, in: :query, type: :integer, description: 'Product Item ID', required: false
-
+      parameter name: :star, in: :query, type: :integer, description: 'Filter according star'      
+      parameter name: :page, in: :query, type: :integer, description: 'Page number for pagination'
+      parameter name: :per_page, in: :query, type: :integer, description: 'Number of items per page'
       response '200', 'successful' do
         let(:product_item_id) { create(:product_item).id }
         schema type: :array,
@@ -79,6 +81,7 @@ RSpec.describe 'Api::V1::Reviews', type: :request do
     get 'List All Reviews' do
       tags 'Reviews'
       produces 'application/json'
+      parameter name: :star, in: :query, type: :integer, description: 'Filter according star'      
       parameter name: :page, in: :query, type: :integer, description: 'Page number for pagination'
       parameter name: :per_page, in: :query, type: :integer, description: 'Number of items per page'
   
