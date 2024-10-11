@@ -8,7 +8,7 @@ class Order < ApplicationRecord
   validates :address_id, presence: true
   validates :total_price, presence: true, numericality: { greater_than_or_equal_to: 0 }
   # validates :payment_status, presence: true, inclusion: { in: %w(pending paid failed), message: "%{value} is not a valid payment status" }
-  validates :order_number, presence: true, uniqueness: true
+  validates :receipt_number, presence: true, uniqueness: true
 
   enum status: {
     created: 'created',

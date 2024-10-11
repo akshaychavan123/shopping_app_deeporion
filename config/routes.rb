@@ -80,7 +80,6 @@ Rails.application.routes.draw do
         collection do
           post 'payment_callback'
           post 'cancel'
-          post 'save_order_data'
           get 'order_history'
         end
       end

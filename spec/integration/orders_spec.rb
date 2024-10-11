@@ -93,55 +93,42 @@ RSpec.describe 'api/v1/orders', type: :request do
     end
   end
 
-  path '/api/v1/orders/save_order_data' do
-    post 'Saves an order data' do
+  path '/api/v1/orders/cancel' do
+    post('Cancel Order') do
       tags 'Orders'
       consumes 'application/json'
       security [bearerAuth: []]
-      parameter name: :order_items, in: :body, schema: {
+      parameter name: :id, in: :query, type: :integer, description: 'Order ID'
+      parameter name: :order_item_id, in: :body, schema: {
         type: :object,
         properties: {
-          user_id: { type: :integer },
-          total_price: { type: :number },
-          address_id: { type: :integer },
-          email: { type: :string },
-          payment_status: { type: :string },
-          razorpay_payment_id: { type: :string },
-          razorpay_order_id: { type: :string },
-          order_items_attributes: {
-            type: :array,
-            items: {
-              type: :object,
-              properties: {
-                product_item_id: { type: :integer },
-                quantity: { type: :integer },
-                product_item_variant_id: { type: :number },
-                status: { type: :string },
-                total_price: { type: :number },
-            }
-          }
+          order_item_id: { type: :integer },
+          reason: { type: :string, description: 'Please write a reason for cancel order' },
+          more_information: { type: :string, description: 'More Information' }
         },
-        required: ['total_price', 'address_id', 'payment_status', 'user_id','order_items_attributes']
-      }}
+        required: ['order_item_id', 'reason']
+      }
+      response '200', 'Order canceled successfully' do
+        let!(:order) { create(:order, user: user, payment_status: 'created') }
+        let(:id) { order.id }
+        run_test! 
+      end
 
-      response '201', 'order created' do
-        let(:Authorization) { "Bearer #{token}" }
-        let(:token) { JsonWebToken.encode(user_id: create(:user).id) }
-        let(:order) { 
-          {
-            user_id: 1,
-            total_price: '23',
-            address_id: '1',
-            email: 'john.doe@example.com',
-            payment_status: 'completed',
-            razorpay_payment_id: '12345',
-            razorpay_order_id: '234',
-            order_items_attributes: [
-              { product_item_id: 1, quantity: 2, price: 20.0, product_item_variant_id:1 },
-              { product_item_id: 2, quantity: 1, price: 10.0,  product_item_variant_id:1 }
-            ]
-          }
-        }
+      response '422', 'Order cannot be canceled' do
+        let!(:order) { create(:order, user: user, payment_status: 'paid', status: 'delivered') }
+        let(:id) { order.id }
+        run_test! 
+      end
+
+      response '404', 'Order not found' do
+        let(:id) { 'invalid' }
+        run_test! 
+      end
+
+      response '401', 'Unauthorized' do
+        let(:Authorization) { nil }
+        let!(:order) { create(:order, user: user) }
+        let(:id) { order.id }
         run_test!
       end
     end
