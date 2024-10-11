@@ -1,5 +1,5 @@
 class CouponSerializer < ActiveModel::Serializer
-	attributes  :id, :promo_code_name, :promo_code, :start_date, :end_date, :promo_type, :amount_off,
+	attributes  :id, :promo_code_name, :promo_code, :start_date, :end_date, :promo_type, :amount_off, :discount_type, :max_purchase,
 							:max_uses_per_client, :max_uses_per_promo, :product_ids, :image
 
   def image

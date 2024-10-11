@@ -1783,6 +1783,13 @@ paths:
                   enum:
                   - discount on product
                   - discount on amount
+                discount_type:
+                  type: string
+                  enum:
+                  - amount
+                  - percentage
+                max_purchase:
+                  type: number
                 amount_off:
                   type: number
                   format: float
@@ -1804,6 +1811,7 @@ paths:
               - end_date
               - promo_type
               - amount_off
+              - discount_type
   "/api/v2/coupons/{id}":
     parameters:
     - name: id
@@ -1854,6 +1862,13 @@ paths:
                   enum:
                   - discount on product
                   - discount on amount
+                discount_type:
+                  type: string
+                  enum:
+                  - amount
+                  - percentage
+                max_purchase:
+                  type: number
                 amount_off:
                   type: number
                   format: float
@@ -1875,6 +1890,7 @@ paths:
               - end_date
               - promo_type
               - amount_off
+              - discount_type
     delete:
       summary: delete coupon
       tags:
