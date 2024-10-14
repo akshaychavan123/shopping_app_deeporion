@@ -27,11 +27,18 @@ class Coupon < ApplicationRecord
   end
 
   def apply_coupon_discount_to_variant(variant)
-    discount_percent = amount_off
-    discounted_amount = [variant.price - (variant.price * (discount_percent / 100.0)), 0].max
+    if discount_type == "amount"
+      discounted_price = [variant.price - amount_off, 0].max
+      discount_percent = 100.0 * (amount_off.to_f / variant.price)
+    elsif discount_type == "percentage"
+      discount_percent = amount_off
+      discounted_price = [variant.price - (variant.price * (discount_percent / 100.0)), 0].max
+    end
+
+    discount_percent = discount_percent.round(2)
     variant.update(
       discount_percent: discount_percent,
-      discounted_price: discounted_amount
+      discounted_price: discounted_price
     )
   end
 

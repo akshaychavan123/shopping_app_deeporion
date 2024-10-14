@@ -2,8 +2,6 @@ class Api::V1::ClientReviewsController < ApplicationController
   before_action :authorize_request, only: :create
 
   def index
-    # @client_reviews = ClientReview.order(star: :desc).page(params[:page]).per(params[:per_page])
-
     if params[:star].present?
       @client_reviews = ClientReview.where(star: params[:star]).order(created_at: :desc)
     else
