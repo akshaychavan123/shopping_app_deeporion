@@ -13,9 +13,10 @@ class Api::V1::OrdersController < ApplicationController
 
       @order = @current_user.orders.new(order_params)
       @order.razorpay_order_id = razorpay_order.id
-      @order.order_number = razorpay_order.receipt
+      @order.receipt_number = razorpay_order.receipt
       @order.total_price = total_amount / 100.0
       @order.payment_status = 'created'
+      @order.status = 'created'
 
       cart_items = @current_user.cart.cart_items
 
@@ -56,18 +57,42 @@ class Api::V1::OrdersController < ApplicationController
     end
   end
 
-  def save_order_data
-    @order_data = Order.new(order_data_params)
-    if @order_data.save
-      cart_items = @current_user.cart.cart_items
-      cart_items.destroy_all
-      OrderMailer.order_confirmation(@order_data).deliver_later
-      render json: @order_data, status: :created
-    else
-      render json: { message: 'Something went wrong', errors: @order_data.errors.full_messages }, status: :unprocessable_entity
+  def cancel
+    @order = @current_user.orders.find_by(id: params[:id])
+    @order_item = @order.order_items.find_by(id: params[:order_item_id])
+  
+    if @order_item.nil?
+      render json: { message: 'Order item not found' }, status: :not_found
+      return
     end
-  end
-
+  
+    if @order_item.return_status == 'canceled'
+      render json: { message: 'Order item has already been canceled' }, status: :unprocessable_entity
+      return
+    end
+  
+    if @order.payment_status == 'created' && @order_item.return_status == 'not_returned'
+      address = Address.find_by(id: @order.address_id)
+      @return = Return.new(
+        order: @order,
+        order_item: @order_item,
+        address: address,
+        reason: params[:reason],
+        more_information: params[:more_information]
+      )
+  
+        if @return.save
+          @order_item.update(return_status: 'canceled', status: 'canceled')
+          updating_price_of_order_after_remove_some_ordere_item_from_order(@order, @order_item)
+          render json: { message: 'Order item canceled successfully' }, status: :ok
+        end
+    elsif @order.payment_status == 'paid' && @order_item.return_status != 'delivered'
+      cancel_order_item_with_refund(@order, @order_item)
+    else
+      render json: { message: 'Order item cannot be canceled' }, status: :unprocessable_entity
+    end
+  end  
+  
   def order_history
     orders = Order.where(user_id: @current_user.id)
     orders = orders.includes(:order_items).order(created_at: :desc)
@@ -81,26 +106,37 @@ class Api::V1::OrdersController < ApplicationController
 
   private
 
+  def updating_price_of_order_after_remove_some_ordere_item_from_order(order, order_item)
+    new_total_price = order.total_price - order_item.total_price  
+    order.update!(total_price: new_total_price)
+  end
+
+  def cancel_order_item_with_refund(order, order_item)
+    ActiveRecord::Base.transaction do
+      refund_amount = order_item.total_price
+      begin
+        razorpay_payment = Razorpay::Payment.fetch(order.razorpay_payment_id)
+        refund_amount_in_paise = (refund_amount * 100).to_i
+        refund = razorpay_payment.refund(amount: refund_amount_in_paise, speed: 'normal')
+
+        Refund.create!(
+          refund_id: refund.id,
+          amount: refund.amount / 100.0,
+          status: refund.status,
+          order: order,
+          order_item: order_item
+        )
+
+        order_item.update!(return_status: 'canceled')
+
+        render json: { message: 'Order item canceled and refunded successfully', refund: refund }, status: :ok
+      rescue Razorpay::Error => e
+        raise ActiveRecord::Rollback, "Refund failed: #{e.message}"
+      end
+    end
+  end
+
   def order_params
-    params.permit(:total_price, :address_id)
+    params.permit(:total_price, :address_id, :coupon_id)
   end
-
-  def order_data_params
-    params.permit(
-      :total_price, 
-      :address_id, 
-      :user_id,
-      :payment_status, 
-      :razorpay_order_id, 
-      :razorpay_payment_id, 
-      order_items_attributes: [:order_id, :product_item_id, :product_item_variant_id, :quantity, :total_price, :status]
-    )
-  end
-
-  def generate_custom_order_number
-    last_order = Order.order(:created_at).last
-    sequence_number = last_order.nil? ? 1 : last_order.order_number.split('-').last.to_i + 1
-    self.order_number = "ORD-#{Time.current.strftime('%Y%m%d')}-#{sequence_number.to_s.rjust(6, '0')}"
-  end
-
 end

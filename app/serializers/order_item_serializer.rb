@@ -1,5 +1,5 @@
 class OrderItemSerializer < ActiveModel::Serializer
-  attributes :id, :product_item_id, :order_id, :product_item_variant_id, :product_item_image, :quantity, :total_price, :status, :created_at, :contact_number, :order_placed, :product_name, :user_name, :address
+  attributes :id, :product_item_id, :order_id, :product_item_variant_id, :product_item_image, :quantity, :total_price, :status, :return_status, :created_at, :contact_number, :order_placed, :product_name, :user_name
 
   def order_placed
     object.created_at
@@ -30,9 +30,9 @@ class OrderItemSerializer < ActiveModel::Serializer
     @addressdetail.phone_number if @addressdetail.present?
   end
 
-  def address
-    Address.find_by(id: object.order.address_id)
-  end
+  # def address
+  #   Address.find_by(id: object.order.address_id)
+  # end
 
   private
 

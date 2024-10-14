@@ -75,10 +75,15 @@ Rails.application.routes.draw do
       get '/landing_page/index_of_product_by_category/:id', to: 'landing_page#index_of_product_by_category'     
       
       resources :orders, only: [:create] do
-        post 'payment_callback', on: :collection
-        post 'save_order_data', on: :collection
-        get 'order_history', on: :collection
+        resources :returns, only: [:create]
+      
+        collection do
+          post 'payment_callback'
+          post 'cancel'
+          get 'order_history'
+        end
       end
+      
       resources :contact_us, only: [:create]
 
       resources :wishlists, only: [] do

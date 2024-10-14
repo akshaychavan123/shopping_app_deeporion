@@ -1127,6 +1127,50 @@ paths:
           description: plan not found
         '401':
           description: unauthorized
+  "/api/v1/returns":
+    post:
+      summary: Creates a return for an order item
+      tags:
+      - Returns
+      security:
+      - bearer_auth: []
+      parameters: []
+      responses:
+        '201':
+          description: Return processed successfully
+        '404':
+          description: Order or item not found
+        '422':
+          description: Unprocessable entity
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                order_id:
+                  type: integer
+                  example: 1
+                order_item_id:
+                  type: integer
+                  example: 15
+                address_id:
+                  type: integer
+                  example: 1
+                reason:
+                  type: string
+                  example: Damaged product
+                refund_method:
+                  type: string
+                  example: card
+                more_information:
+                  type: string
+                  example: Product arrived broken.
+              required:
+              - order_id
+              - order_item_id
+              - address_id
+              - reason
   "/api/v1/review_votes":
     post:
       summary: Create Review Vote
@@ -1202,6 +1246,21 @@ paths:
         required: false
         schema:
           type: integer
+      - name: star
+        in: query
+        description: Filter according star
+        schema:
+          type: integer
+      - name: page
+        in: query
+        description: Page number for pagination
+        schema:
+          type: integer
+      - name: per_page
+        in: query
+        description: Number of items per page
+        schema:
+          type: integer
       responses:
         '200':
           description: successful
@@ -1247,6 +1306,11 @@ paths:
       tags:
       - Reviews
       parameters:
+      - name: star
+        in: query
+        description: Filter according star
+        schema:
+          type: integer
       - name: page
         in: query
         description: Page number for pagination
@@ -3471,19 +3535,8 @@ paths:
                   type: number
                 address_id:
                   type: integer
-                order_items_attributes:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      product_item_id:
-                        type: integer
-                      product_item_variant_id:
-                        type: integer
-                      quantity:
-                        type: integer
-                      total_price:
-                        type: number
+                coupon_id:
+                  type: integer
               required:
               - total_price
               - address_id
@@ -3519,58 +3572,45 @@ paths:
               - razorpay_payment_id
               - razorpay_order_id
               - order_id
-  "/api/v1/orders/save_order_data":
+  "/api/v1/orders/cancel":
     post:
-      summary: Saves an order data
+      summary: Cancel Order
       tags:
       - Orders
       security:
       - bearerAuth: []
-      parameters: []
+      parameters:
+      - name: id
+        in: query
+        description: Order ID
+        schema:
+          type: integer
       responses:
-        '201':
-          description: order created
+        '200':
+          description: Order canceled successfully
+        '422':
+          description: Order cannot be canceled
+        '404':
+          description: Order not found
+        '401':
+          description: Unauthorized
       requestBody:
         content:
           application/json:
             schema:
               type: object
               properties:
-                user_id:
+                order_item_id:
                   type: integer
-                total_price:
-                  type: number
-                address_id:
-                  type: integer
-                email:
+                reason:
                   type: string
-                payment_status:
+                  description: Please write a reason for cancel order
+                more_information:
                   type: string
-                razorpay_payment_id:
-                  type: string
-                razorpay_order_id:
-                  type: string
-                order_items_attributes:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      product_item_id:
-                        type: integer
-                      quantity:
-                        type: integer
-                      product_item_variant_id:
-                        type: number
-                      status:
-                        type: string
-                      total_price:
-                        type: number
-                required:
-                - total_price
-                - address_id
-                - payment_status
-                - user_id
-                - order_items_attributes
+                  description: More Information
+              required:
+              - order_item_id
+              - reason
   "/api/v1/orders/order_history":
     get:
       summary: Retrieves the order history for the current user

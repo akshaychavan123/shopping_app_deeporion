@@ -14,23 +14,35 @@ class Api::V1::ReviewsController < ApplicationController
       render json: @review.errors, status: :unprocessable_entity
     end
   end
-  
+
   def index
-    @reviews = @product_item.reviews.includes(:review_votes)
+    if params[:star].present?
+      @reviews = @product_item.reviews.where(star: params[:star]).includes(:review_votes).order(created_at: :desc)
+    else
+      @reviews = @product_item.reviews.includes(:review_votes).order(created_at: :desc)
+    end
+    @reviews = @reviews.page(params[:page]).per(params[:per_page])
     review_summary = calculate_review_summary(@product_item.id)
     render json: {
       reviews: ActiveModelSerializers::SerializableResource.new(@reviews, each_serializer: Review2Serializer, current_user: @current_user),
-      summary: review_summary
+      summary: review_summary,
+      meta: pagination_meta(@reviews)
     }
   end
 
   def show_all_review
-    @reviews = Review.all.page(params[:page]).per(params[:per_page])
+    if params[:star].present?
+      @reviews = Review.where(star: params[:star]).order(created_at: :desc).page(params[:page]).per(params[:per_page])
+    else
+      @reviews = Review.order(created_at: :desc)
+    end
+    @reviews = @reviews.page(params[:page]).per(params[:per_page])
     render json: {
       data: ActiveModelSerializers::SerializableResource.new(@reviews, each_serializer: ReviewSerializer),
       meta: pagination_meta(@reviews)
     }
   end
+  
 
   private
 
