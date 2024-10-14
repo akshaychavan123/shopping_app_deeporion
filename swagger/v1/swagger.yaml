@@ -340,6 +340,11 @@ paths:
       tags:
       - ClientReviews
       parameters:
+      - name: star
+        in: query
+        description: Sort by star
+        schema:
+          type: integer
       - name: page
         in: query
         description: Page number
