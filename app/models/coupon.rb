@@ -5,9 +5,11 @@ class Coupon < ApplicationRecord
   validates :promo_code_name, :promo_code, presence: true
   validates :promo_code, uniqueness: true
   validates :start_date, :end_date, :promo_type, presence: true
-  validates :max_uses_per_client, :max_uses_per_promo, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  # validates :max_uses_per_client, :max_uses_per_promo, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :promo_type, inclusion: { in: ["discount on product", "discount on amount"], message: "%{value} is not a valid promo type" }
   validate :end_date_after_start_date
+  validates :discount_type, inclusion: { in: ["amount", "percentage"], message: "%{value} is not a valid discount_type" }
+
   after_save :apply_discount_to_variants, if: -> { promo_type == "discount on product" && product_ids.present? }
   after_destroy :revert_discount_on_variants
 
@@ -25,11 +27,18 @@ class Coupon < ApplicationRecord
   end
 
   def apply_coupon_discount_to_variant(variant)
-    discount_percent = amount_off
-    discounted_amount = [variant.price - (variant.price * (discount_percent / 100.0)), 0].max
+    if discount_type == "amount"
+      discounted_price = [variant.price - amount_off, 0].max
+      discount_percent = 100.0 * (amount_off.to_f / variant.price)
+    elsif discount_type == "percentage"
+      discount_percent = amount_off
+      discounted_price = [variant.price - (variant.price * (discount_percent / 100.0)), 0].max
+    end
+
+    discount_percent = discount_percent.round(2)
     variant.update(
       discount_percent: discount_percent,
-      discounted_price: discounted_amount
+      discounted_price: discounted_price
     )
   end
 

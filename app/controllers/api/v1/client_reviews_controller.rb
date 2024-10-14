@@ -2,11 +2,16 @@ class Api::V1::ClientReviewsController < ApplicationController
   before_action :authorize_request, only: :create
 
   def index
-    @client_reviews = ClientReview.order(star: :desc).page(params[:page]).per(params[:per_page])
+    if params[:star].present?
+      @client_reviews = ClientReview.where(star: params[:star]).order(created_at: :desc)
+    else
+      @client_reviews = ClientReview.order(created_at: :desc)
+    end
+    @client_reviews = @client_reviews.page(params[:page]).per(params[:per_page])
 
     render json: {
       client_reviews: ActiveModelSerializers::SerializableResource.new(@client_reviews, each_serializer: ClientReviewSerializer),
-      client_review_count:  @client_reviews.count
+      meta: pagination_meta(@client_reviews)
     }, status: :ok
   end
 
@@ -25,5 +30,15 @@ class Api::V1::ClientReviewsController < ApplicationController
 
   def client_review_params
     params.require(:client_review).permit(:star, :review)
+  end
+
+  def pagination_meta(collection)
+    {
+      current_page: collection.current_page,
+      next_page: collection.next_page,
+      prev_page: collection.prev_page,
+      total_pages: collection.total_pages,
+      total_count: collection.total_count
+    }
   end
 end

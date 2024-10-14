@@ -5,7 +5,7 @@ RSpec.describe 'Client Reviews API', type: :request do
     get 'List all client reviews' do
       tags 'ClientReviews'
       produces 'application/json'
-
+      parameter name: :star, in: :query, type: :integer, description: 'Sort by star'
       parameter name: :page, in: :query, type: :integer, description: 'Page number'
       parameter name: :per_page, in: :query, type: :integer, description: 'Number of items per page'
 

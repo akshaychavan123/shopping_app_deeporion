@@ -66,7 +66,7 @@ class Api::V2::CouponsController < ApplicationController
   def coupon_params
     params.permit(
       :promo_code_name, :promo_code, :start_date, :end_date, 
-      :max_uses_per_client, :max_uses_per_promo, :promo_type, 
+      :max_uses_per_client, :max_uses_per_promo, :promo_type, :discount_type, :max_purchase,
       :amount_off, product_ids: []
     )
   end

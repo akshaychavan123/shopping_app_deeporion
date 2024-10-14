@@ -28,13 +28,15 @@ RSpec.describe 'Api::V2::Coupons', type: :request do
           start_date: { type: :string, format: :date },
           end_date: { type: :string, format: :date },
           promo_type: { type: :string, enum: ['discount on product', 'discount on amount'] },
+          discount_type: { type: :string, enum: ['amount', 'percentage'] },
+          max_purchase: { type: :number },
           amount_off: { type: :number, format: :float },
           max_uses_per_client: { type: :integer },
           max_uses_per_promo: { type: :integer },
           product_ids: { type: :array, items: { type: :integer } },
           image: { type: :string, format: :binary }
         },
-        required: ['promo_code_name', 'promo_code', 'start_date', 'end_date', 'promo_type', 'amount_off']
+        required: ['promo_code_name', 'promo_code', 'start_date', 'end_date', 'promo_type', 'amount_off', 'discount_type']
       }
 
       response(201, 'created') do
@@ -100,13 +102,15 @@ RSpec.describe 'Api::V2::Coupons', type: :request do
           start_date: { type: :string, format: :date },
           end_date: { type: :string, format: :date },
           promo_type: { type: :string, enum: ['discount on product', 'discount on amount'] },
+          discount_type: { type: :string, enum: ['amount', 'percentage'] },
+          max_purchase: { type: :number },
           amount_off: { type: :number, format: :float },
           max_uses_per_client: { type: :integer },
           max_uses_per_promo: { type: :integer },
           product_ids: { type: :array, items: { type: :integer } },
           image: { type: :string, format: :binary }
         },
-        required: ['promo_code_name', 'promo_code', 'start_date', 'end_date', 'promo_type', 'amount_off']
+        required: ['promo_code_name', 'promo_code', 'start_date', 'end_date', 'promo_type', 'amount_off','discount_type']
       }
 
       response(200, 'successful') do
