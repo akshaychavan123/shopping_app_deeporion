@@ -30,10 +30,6 @@ class OrderItemSerializer < ActiveModel::Serializer
     @addressdetail.phone_number if @addressdetail.present?
   end
 
-  # def address
-  #   Address.find_by(id: object.order.address_id)
-  # end
-
   private
 
   def base_url
