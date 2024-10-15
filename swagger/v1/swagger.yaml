@@ -1786,8 +1786,8 @@ paths:
                 promo_type:
                   type: string
                   enum:
-                  - discount on product
-                  - discount on amount
+                  - discount_on_product
+                  - discount_on_amount
                 discount_type:
                   type: string
                   enum:
@@ -1865,8 +1865,8 @@ paths:
                 promo_type:
                   type: string
                   enum:
-                  - discount on product
-                  - discount on amount
+                  - discount_on_product
+                  - discount_on_amount
                 discount_type:
                   type: string
                   enum:

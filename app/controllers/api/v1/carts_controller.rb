@@ -20,19 +20,17 @@ class Api::V1::CartsController < ApplicationController
 
   def discount_on_amount_coupons
     if params[:coupon_code].present?
-      @coupons = Coupon.where(promo_type: 'discount on amount', promo_code: params[:coupon_code])
+      @coupons = Coupon.where(promo_type: 'discount_on_amount', promo_code: params[:coupon_code])
     else
-      @coupons = Coupon.where(promo_type: 'discount on amount')
+      @coupons = Coupon.where(promo_type: 'discount_on_amount')
     end
   
     subtotal = @cart.cart_items.sum { |item| item.product_item_variant.price * item.quantity }
   
     render json: {
-      data: ActiveModelSerializers::SerializableResource.new(@coupons, each_serializer: CouponForCartSerializer, subtotal: subtotal)
+      data: ActiveModelSerializers::SerializableResource.new(@coupons, each_serializer: CouponForCartSerializer, subtotal: subtotal, current_user: @current_user)
     }, status: :ok
-  end
-  
-  
+  end  
 
   def apply_coupon
     coupon = Coupon.find_by(promo_code: params[:promo_code])
@@ -44,7 +42,7 @@ class Api::V1::CartsController < ApplicationController
         render json: {
           message: 'Coupon applied successfully',
           order_summary: {
-            subtotal: @subtotal,
+            subtotal: @subtotal + @discount,
             discount: @discount,
             taxes: @taxes,
             delivery_charge: @delivery_charge,
@@ -62,8 +60,9 @@ class Api::V1::CartsController < ApplicationController
   private
 
   def coupon_valid?(coupon)
-    
     return false if coupon.start_date > Date.today || coupon.end_date < Date.today
+
+    return false if coupon.max_purchase.blank?
     
     total_uses = CouponUsage.where(coupon_id: coupon.id).count
     return false if coupon.max_uses_per_promo && total_uses >= coupon.max_uses_per_promo
@@ -76,15 +75,28 @@ class Api::V1::CartsController < ApplicationController
 
   def apply_coupon_to_cart(coupon)
     calculate_order_summary
-
-    if coupon.promo_type == 'discount on amount'
-      @discount = coupon.amount_off
-      @subtotal -= @discount
+  
+    if @subtotal >= coupon.max_purchase.to_f
+      if coupon.discount_on_amount?
+        if coupon.percentage?
+          discount_percent = coupon.amount_off
+          @discount = (@subtotal * (discount_percent / 100.0)).round(2)
+        elsif coupon.amount?
+          @discount = coupon.amount_off.to_f
+        else
+          @discount = 0.0
+        end
+  
+        @subtotal -= @discount
+        @subtotal = [@subtotal, 0].max
+      end
+  
+      @taxes = @cart.cart_items.sum { |item| calculate_gst(item.product_item_variant.discounted_price) * item.quantity }
+      @total = @subtotal + @taxes + @delivery_charge
+      # CouponUsage.create(user_id: @current_user.id, coupon_id: coupon.id)
     end
-    @total = @subtotal + @taxes + @delivery_charge
-    CouponUsage.create(user_id: @current_user.id, coupon_id: coupon.id)
-  end
-
+  end 
+  
   def set_cart
     @cart = Cart.find_or_create_by(user: @current_user)
   end

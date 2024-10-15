@@ -192,7 +192,7 @@ class Api::V1::LandingPageController < ApplicationController
       .having("AVG(reviews.star) = ?", max_rating)
       .order("AVG(reviews.star) DESC")
     when 'discount'
-      coupon_ids = Coupon.where("end_date > ? AND promo_type = ?", Time.current, 'discount on product').pluck(:id)
+      coupon_ids = Coupon.where("end_date > ? AND promo_type = ?", Time.current, 'discount_on_product').pluck(:id)
       product_ids = Coupon.where(id: coupon_ids).pluck(:product_ids).flatten.uniq
         @product_items = @product_items
         .joins("INNER JOIN coupons ON coupons.product_ids @> ARRAY[product_items.product_id]::integer[]") 

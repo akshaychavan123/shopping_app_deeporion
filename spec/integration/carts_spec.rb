@@ -78,7 +78,7 @@ RSpec.describe 'Api::V1::Carts', type: :request do
       parameter name: :promo_code, in: :query, type: :string, description: 'Coupon promo code'
 
       response '200', 'Coupon applied successfully' do
-        let(:coupon) { create(:coupon, promo_code: 'DISCOUNT2024', promo_type: 'discount on amount', amount_off: 50) }
+        let(:coupon) { create(:coupon, promo_code: 'DISCOUNT2024', promo_type: 'discount_on_amount', amount_off: 50) }
         let(:promo_code) { coupon.promo_code }
         let(:Authorization) { "Bearer #{token}" }
 

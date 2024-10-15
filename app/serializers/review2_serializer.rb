@@ -23,7 +23,6 @@ class Review2Serializer < ActiveModel::Serializer
     user_review_vote = object.review_votes.find_by(user_id: current_user.id)
 
     if user_review_vote.present?
-      # { id: user_review_vote.id, helpful: user_review_vote.helpful }
       true
     else
       false

@@ -15,8 +15,8 @@ class Api::V2::CouponsController < ApplicationController
   def create
     @coupon = Coupon.new(coupon_params)
 
-    if @coupon.promo_type == "discount on product" && coupon_params[:product_ids].blank?
-      return render json: { errors: ["Product IDs must be present for 'discount on product' promo type"] }, status: :unprocessable_entity
+    if @coupon.promo_type == "discount_on_product" && coupon_params[:product_ids].blank?
+      return render json: { errors: ["Product IDs must be present for 'discount_on_product' promo type"] }, status: :unprocessable_entity
     end
 
     if @coupon.save
