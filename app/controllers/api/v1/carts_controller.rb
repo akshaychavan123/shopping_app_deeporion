@@ -20,9 +20,9 @@ class Api::V1::CartsController < ApplicationController
 
   def discount_on_amount_coupons
     if params[:coupon_code].present?
-      @coupons = Coupon.where(promo_type: 'discount on amount', promo_code: params[:coupon_code])
+      @coupons = Coupon.where(promo_type: 'discount_on_amount', promo_code: params[:coupon_code])
     else
-      @coupons = Coupon.where(promo_type: 'discount on amount')
+      @coupons = Coupon.where(promo_type: 'discount_on_amount')
     end
   
     subtotal = @cart.cart_items.sum { |item| item.product_item_variant.price * item.quantity }
@@ -77,11 +77,11 @@ class Api::V1::CartsController < ApplicationController
     calculate_order_summary
   
     if @subtotal >= coupon.max_purchase.to_f
-      if coupon.promo_type == 'discount on amount'
-        if coupon.discount_type == 'percentage'
+      if coupon.discount_on_amount?
+        if coupon.percentage?
           discount_percent = coupon.amount_off
           @discount = (@subtotal * (discount_percent / 100.0)).round(2)
-        elsif coupon.discount_type == 'amount'
+        elsif coupon.amount?
           @discount = coupon.amount_off.to_f
         else
           @discount = 0.0

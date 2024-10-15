@@ -6,10 +6,11 @@ class CouponForCartSerializer < ActiveModel::Serializer
     subtotal = @instance_options[:subtotal] || 0
 
     if coupon_valid?(object, subtotal) && subtotal > 0
-      if object.promo_type == 'discount on amount'
-        if object.discount_type == 'percentage'
+      
+      if object.discount_on_amount?
+        if object.percentage?
           discount = (subtotal * (object.amount_off / 100.0)).round(2)
-        elsif object.discount_type == 'amount'
+        elsif object.amount?
           discount = object.amount_off.to_f
         else
           discount = 0.0
