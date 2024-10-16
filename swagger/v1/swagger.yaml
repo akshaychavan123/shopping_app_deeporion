@@ -651,6 +651,16 @@ paths:
           Better Discount, Price:High to Low, Price: Low to High, Customer Rating'
         schema:
           type: string
+      - name: page
+        in: query
+        description: Page number for pagination
+        schema:
+          type: integer
+      - name: per_page
+        in: query
+        description: Number of items per page
+        schema:
+          type: integer
       responses:
         '200':
           description: successful

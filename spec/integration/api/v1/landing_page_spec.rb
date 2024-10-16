@@ -153,86 +153,6 @@ RSpec.describe 'Api::V1::LandingPage', type: :request do
     end
   end
 
-  # path '/api/v1/landing_page/product_items_filter' do
-  #   get('list and filter product items') do
-  #     tags 'Landing Page'
-  #     produces 'application/json'
-  #     security [bearerAuth: []]
-  #     parameter name: :category_id, in: :query, type: :integer, description: 'ID of the Category', required: true
-  #     parameter name: :subcategory_id, in: :query, type: :integer, description: 'ID of the subcategory'
-  #     parameter name: :product_id, in: :query, type: :integer, description: 'ID of the product'
-  #     parameter name: :brand, in: :query, type: :string, description: 'Brand of the product item'
-  #     parameter name: :size, in: :query, type: :string, description: 'Size of the product item'
-  #     parameter name: :color, in: :query, type: :string, description: 'Color of the product item'
-  #     parameter name: :min_price, in: :query, type: :number, format: :float, description: 'Minimum price of the product item'
-  #     parameter name: :max_price, in: :query, type: :number, format: :float, description: 'Maximum price of the product item'
-  #     parameter name: :search, in: :query, type: :string, description: 'Search term for the product item name, brand, color, or material'
-
-  #     response(200, 'successful') do
-  #       schema type: :object,
-  #         properties: {
-  #           data: {
-  #             type: :array,
-  #             items: {
-  #               type: :object,
-  #               properties: {
-  #                 id: { type: :integer },
-  #                 name: { type: :string },
-  #                 brand: { type: :string },
-  #                 product_id: { type: :integer },
-  #                 price_of_variant: { type: :number, format: :float },
-  #                 id_of_first_variant: { type: :integer },
-  #                 one_image_of_variant: { type: :string },
-  #                 rating_and_review: { type: :string, nullable: true }
-  #               }
-  #             }
-  #           }
-  #         },
-  #         required: [ 'data' ]
-
-  #       let(:category_id) { nil }  
-  #       let(:subcategory_id) { nil }
-  #       let(:product_id) { nil }
-  #       let(:brand) { nil }
-  #       let(:size) { nil }
-  #       let(:color) { nil }
-  #       let(:min_price) { nil }
-  #       let(:max_price) { nil }
-  #       let(:search) { nil }
-
-  #       run_test!
-  #     end
-
-  #     response(404, 'not found') do
-  #       schema type: :object,
-  #         properties: {
-  #           errors: {
-  #             type: :array,
-  #             items: { type: :string }
-  #           }
-  #         },
-  #         required: [ 'errors' ]
-
-  #       run_test!
-  #     end
-
-  #     response(422, 'unprocessable entity') do
-  #       schema type: :object,
-  #         properties: {
-  #           errors: {
-  #             type: :array,
-  #             items: { type: :string }
-  #           }
-  #         },
-  #         required: [ 'errors' ]
-
-  #       let(:search) { ' ' }
-
-  #       run_test!
-  #     end
-  #   end
-  # end
-
   path '/api/v1/landing_page/product_items_filter' do
     get('list and filter product items') do
       tags 'Landing Page'
@@ -248,6 +168,8 @@ RSpec.describe 'Api::V1::LandingPage', type: :request do
       parameter name: :price_ranges, in: :query, type: :array, items: { type: :string }, description: 'Price ranges in the format "min-max"'
       parameter name: :search, in: :query, type: :string, description: 'Search term for the product item name, brand, color, or material'
       parameter name: :sort_by, in: :query, type: :string, description: 'Sort for the product item Recommended, What New, Popularity, Better Discount, Price:High to Low, Price: Low to High, Customer Rating'
+      parameter name: :page, in: :query, type: :integer, description: 'Page number for pagination'
+      parameter name: :per_page, in: :query, type: :integer, description: 'Number of items per page'
   
       response(200, 'successful') do
         schema type: :object,
