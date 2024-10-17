@@ -7,13 +7,23 @@ class Api::V1::ReviewsController < ApplicationController
   def create
     @review = @product_item.reviews.new(review_params)
     @review.user = @current_user
-
+  
     if @review.save
-      render json: @review, status: :created
+
+      if params[:images_and_videos].present?
+        Array(params[:images_and_videos]).each do |media|
+          @review.images_and_videos.attach(media)
+        end
+      end
+  
+      render json: { 
+        reviews: ActiveModelSerializers::SerializableResource.new(@review, serializer: Review2Serializer)
+      }, status: :created
     else
-      render json: @review.errors, status: :unprocessable_entity
+      render json: { errors: @review.errors.full_messages }, status: :unprocessable_entity
     end
   end
+  
 
   def index
     if params[:star].present?
@@ -29,21 +39,7 @@ class Api::V1::ReviewsController < ApplicationController
       meta: pagination_meta(@reviews)
     }
   end
-
-  def show_all_review
-    if params[:star].present?
-      @reviews = Review.where(star: params[:star]).order(created_at: :desc).page(params[:page]).per(params[:per_page])
-    else
-      @reviews = Review.order(created_at: :desc)
-    end
-    @reviews = @reviews.page(params[:page]).per(params[:per_page])
-    render json: {
-      data: ActiveModelSerializers::SerializableResource.new(@reviews, each_serializer: ReviewSerializer),
-      meta: pagination_meta(@reviews)
-    }
-  end
   
-
   private
 
   def set_product_item

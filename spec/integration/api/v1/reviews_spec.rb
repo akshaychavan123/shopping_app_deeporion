@@ -5,12 +5,15 @@ RSpec.describe 'Api::V1::Reviews', type: :request do
     post('Create Review') do
       tags 'Reviews'
       security [bearerAuth: []]
-      consumes 'application/json'
-      produces 'application/json'
-      parameter name: :review, in: :body, schema: {
+      consumes 'multipart/form-data'
+      parameter name: :review, in: :formData, schema: {
         type: :object,
         properties: {
           star: { type: :integer },
+          images_and_videos: {
+              type: :array,
+              items: { type: :string, format: :binary }
+            },
           recommended: { type: :boolean },
           review: { type: :string },
           product_item_id: { type: :integer }
@@ -76,22 +79,4 @@ RSpec.describe 'Api::V1::Reviews', type: :request do
       end
     end
   end
-
-  path '/api/v1/reviews/show_all_review' do
-    get 'List All Reviews' do
-      tags 'Reviews'
-      produces 'application/json'
-      parameter name: :star, in: :query, type: :integer, description: 'Filter according star'      
-      parameter name: :page, in: :query, type: :integer, description: 'Page number for pagination'
-      parameter name: :per_page, in: :query, type: :integer, description: 'Number of items per page'
-  
-      response '200', 'successful' do
-        run_test!
-      end
-  
-      response '404', 'not found' do
-        run_test!
-      end
-    end
-  end  
 end
