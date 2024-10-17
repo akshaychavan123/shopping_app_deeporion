@@ -23,7 +23,6 @@ class Api::V1::ReviewsController < ApplicationController
       render json: { errors: @review.errors.full_messages }, status: :unprocessable_entity
     end
   end
-  
 
   def index
     if params[:star].present?

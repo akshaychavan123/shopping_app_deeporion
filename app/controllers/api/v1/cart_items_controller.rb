@@ -15,7 +15,15 @@ class Api::V1::CartItemsController < ApplicationController
 
   def update
     @cart_item = @cart.cart_items.find(params[:id])
-
+  
+    if params[:cart_item][:product_item_variant_id].present?
+      product_item_variant = ProductItemVariant.find_by(id: params[:cart_item][:product_item_variant_id])
+  
+      if product_item_variant.nil? || !product_item_variant.in_stock
+        return render json: { message: 'Selected variant is out of stock.' }, status: :unprocessable_entity
+      end
+    end
+  
     if @cart_item.update(cart_item_update_params)
       update_total_price(@cart_item)
       @cart_item.save
@@ -27,22 +35,28 @@ class Api::V1::CartItemsController < ApplicationController
       render json: @cart_item.errors, status: :unprocessable_entity
     end
   end
-
+  
   def add_item
     product_item = ProductItem.find(params[:product_item_id])
-
+  
     if params[:product_item_variant_id].blank? || params[:product_item_variant_id].to_i == 0
       return render json: { message: 'Please select a valid size.' }, status: :ok
     end
-
-    cart_item = @cart.cart_items.find_by(product_item: product_item)
+  
+    product_item_variant = ProductItemVariant.find_by(id: params[:product_item_variant_id])
+  
+    if product_item_variant.nil? || !product_item_variant.in_stock
+      return render json: { message: 'Out of stock.' }, status: :unprocessable_entity
+    end
+  
+    cart_item = @cart.cart_items.find_by(product_item: product_item, product_item_variant: product_item_variant)
   
     if cart_item.present?
       render json: { message: 'Item is already in the cart' }, status: :unprocessable_entity
     else
-      cart_item = @cart.cart_items.build(product_item: product_item, product_item_variant_id: params[:product_item_variant_id], quantity: 1)
+      cart_item = @cart.cart_items.build(product_item: product_item, product_item_variant: product_item_variant, quantity: 1)
       update_total_price(cart_item)
-
+  
       if cart_item.save
         render json: { message: 'Item added to cart' }
       else
@@ -50,7 +64,6 @@ class Api::V1::CartItemsController < ApplicationController
       end
     end
   end
-  
 
   def remove_or_move_to_wishlist
     cart_item = @cart.cart_items.find_by(product_item_id: params[:product_item_id])
