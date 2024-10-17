@@ -1,5 +1,5 @@
 class ProductItem2Serializer < ActiveModel::Serializer
-    attributes :id, :name, :brand, :price, :price_of_first_variant, :discounted_price_of_first_variant, :discount_percent_of_first_variant, :is_favorite, :image, :rating_and_review
+    attributes :id, :name, :brand, :price, :color, :price_of_first_variant, :discounted_price_of_first_variant, :discount_percent_of_first_variant, :is_favorite, :image, :rating_and_review
 
     def image
       if object.image.attached?

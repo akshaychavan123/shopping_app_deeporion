@@ -26,10 +26,16 @@ class Api::V1::WishlistItemsController < ApplicationController
 
   def add_to_cart
     wishlist_item = @wishlist.wishlist_items.find_by(product_item_id: params[:product_item_id])
-    
+  
     if wishlist_item
       cart = Cart.find_or_create_by(user: @wishlist.user)
       product_item_variant_id = params[:product_item_variant_id] || wishlist_item.product_item_variant_id
+  
+      product_item_variant = ProductItemVariant.find_by(id: product_item_variant_id)
+  
+      if product_item_variant.nil? || !product_item_variant.in_stock
+        return render json: { message: 'Out of stock.' }, status: :unprocessable_entity
+      end
   
       cart_item = cart.cart_items.find_or_initialize_by(
         product_item_id: wishlist_item.product_item_id,
