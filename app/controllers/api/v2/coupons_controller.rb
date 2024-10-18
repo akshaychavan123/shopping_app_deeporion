@@ -18,6 +18,8 @@ class Api::V2::CouponsController < ApplicationController
     if @coupon.promo_type == "discount_on_product" && coupon_params[:product_ids].blank?
       return render json: { errors: ["Product IDs must be present for 'discount_on_product' promo type"] }, status: :unprocessable_entity
     end
+    
+    @coupon.end_date = nil if coupon_params[:end_date] == "never"
 
     if @coupon.save
       attach_image

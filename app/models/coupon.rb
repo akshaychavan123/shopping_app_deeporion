@@ -4,9 +4,9 @@ class Coupon < ApplicationRecord
   
   validates :promo_code_name, :promo_code, presence: true
   validates :promo_code, uniqueness: true
-  validates :start_date, :end_date, :promo_type, presence: true
+  validates :start_date, :promo_type, presence: true
   # validates :max_uses_per_client, :max_uses_per_promo, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
-  validate :end_date_after_start_date
+  validate :end_date_after_start_date, unless: -> { end_date.nil? }
   enum promo_type: { discount_on_product: 'discount_on_product', discount_on_amount: 'discount_on_amount' }
   enum discount_type: { amount: 'amount', percentage: 'percentage' }
 
@@ -61,17 +61,9 @@ class Coupon < ApplicationRecord
   end
 
   def end_date_after_start_date
-    return if end_date.blank? || start_date.blank?
+    return if start_date.blank?
 
-    if end_date < start_date
-      errors.add(:end_date, "must be after the start date")
-    end
-  end
-
-  def end_date_after_start_date
-    return if end_date.blank? || start_date.blank?
-
-    if end_date < start_date
+    if end_date.present? && end_date < start_date
       errors.add(:end_date, "must be after the start date")
     end
   end
