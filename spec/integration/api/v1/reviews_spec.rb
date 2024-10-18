@@ -50,7 +50,8 @@ RSpec.describe 'Api::V1::Reviews', type: :request do
       produces 'application/json'
       security [bearerAuth: []]
       parameter name: :product_item_id, in: :query, type: :integer, description: 'Product Item ID', required: false
-      parameter name: :star, in: :query, type: :integer, description: 'Filter according star'      
+      parameter name: :filter, in: :query, type: :string, description: 'Filter by popular, latest, or my_reviews', required: false    
+      parameter name: :star, in: :query, type: :integer, description: 'Filter according star'  
       parameter name: :page, in: :query, type: :integer, description: 'Page number for pagination'
       parameter name: :per_page, in: :query, type: :integer, description: 'Number of items per page'
       response '200', 'successful' do

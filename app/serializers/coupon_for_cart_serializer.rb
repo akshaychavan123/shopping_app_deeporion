@@ -44,8 +44,7 @@ class CouponForCartSerializer < ActiveModel::Serializer
   end    
 
   def coupon_valid?(coupon, subtotal)
-    return false if coupon.start_date > Date.today || coupon.end_date < Date.today
-
+    return false if coupon.start_date > Date.today 
     return false if coupon.max_purchase.blank? || subtotal < coupon.max_purchase.to_f
     
     total_uses = CouponUsage.where(coupon_id: coupon.id).count

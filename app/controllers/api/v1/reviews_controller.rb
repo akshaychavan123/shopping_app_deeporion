@@ -4,6 +4,37 @@ class Api::V1::ReviewsController < ApplicationController
 
   before_action :set_product_item, only: [:create, :index]
 
+  def index
+    @reviews = @product_item.reviews.includes(:review_votes)
+  
+    if params[:filter] == 'popular'
+      @reviews = @reviews.left_joins(:review_votes)
+      .group('reviews.id')
+      .having('COUNT(review_votes.id) > 0')
+      .order('COUNT(review_votes.id) DESC, reviews.created_at DESC')
+    elsif params[:filter] == 'latest'
+      @reviews = @reviews.order(created_at: :desc).limit(10)
+    elsif params[:filter] == 'my_reviews'
+      @reviews = @reviews.where(user: @current_user)
+    else
+      @reviews = @reviews.order(created_at: :desc)
+    end
+  
+    if params[:star].present?
+      @reviews = @reviews.where(star: params[:star])
+    end
+  
+    @reviews = @reviews.page(params[:page]).per(params[:per_page])
+  
+    review_summary = calculate_review_summary(@product_item.id)
+  
+    render json: {
+      reviews: ActiveModelSerializers::SerializableResource.new(@reviews, each_serializer: Review2Serializer, current_user: @current_user),
+      summary: review_summary,
+      meta: pagination_meta(@reviews)
+    }
+  end
+
   def create
     @review = @product_item.reviews.new(review_params)
     @review.user = @current_user
@@ -22,21 +53,6 @@ class Api::V1::ReviewsController < ApplicationController
     else
       render json: { errors: @review.errors.full_messages }, status: :unprocessable_entity
     end
-  end
-
-  def index
-    if params[:star].present?
-      @reviews = @product_item.reviews.where(star: params[:star]).includes(:review_votes).order(created_at: :desc)
-    else
-      @reviews = @product_item.reviews.includes(:review_votes).order(created_at: :desc)
-    end
-    @reviews = @reviews.page(params[:page]).per(params[:per_page])
-    review_summary = calculate_review_summary(@product_item.id)
-    render json: {
-      reviews: ActiveModelSerializers::SerializableResource.new(@reviews, each_serializer: Review2Serializer, current_user: @current_user),
-      summary: review_summary,
-      meta: pagination_meta(@reviews)
-    }
   end
   
   private

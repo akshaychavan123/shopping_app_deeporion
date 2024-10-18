@@ -1266,6 +1266,12 @@ paths:
         required: false
         schema:
           type: integer
+      - name: filter
+        in: query
+        description: Filter by popular, latest, or my_reviews
+        required: false
+        schema:
+          type: string
       - name: star
         in: query
         description: Filter according star

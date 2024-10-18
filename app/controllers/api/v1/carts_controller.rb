@@ -60,8 +60,7 @@ class Api::V1::CartsController < ApplicationController
   private
 
   def coupon_valid?(coupon)
-    return false if coupon.start_date > Date.today || coupon.end_date < Date.today
-
+    return false if coupon.start_date > Date.today
     return false if coupon.max_purchase.blank?
     
     total_uses = CouponUsage.where(coupon_id: coupon.id).count
