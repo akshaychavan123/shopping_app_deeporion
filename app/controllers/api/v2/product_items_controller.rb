@@ -38,6 +38,7 @@ class Api::V2::ProductItemsController < ApplicationController
       end
       render json: { data: ActiveModelSerializers::SerializableResource.new(@product_item, each_serializer: ProductItemSerializer)}
       ::ProductItemNotificationService.new(@product_item).call
+      ::FcmNotificationService.new(@product_item).call
     else
       render json: { error: 'Something went to wrong' }, status: :unprocessable_entity
     end
