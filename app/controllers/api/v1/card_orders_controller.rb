@@ -1,7 +1,7 @@
 class Api::V1::CardOrdersController < ApplicationController
 	before_action :authorize_request
 
-	def create
+  def create
     gift_card = GiftCard.find_by(id: card_order_params[:gift_card_id])
 
     if gift_card.nil?
@@ -9,13 +9,22 @@ class Api::V1::CardOrdersController < ApplicationController
       return
     end
 
+    total_amount = (gift_card.price.to_f * 100).to_i
+
+    razorpay_order = Razorpay::Order.create(
+      amount: total_amount,
+      currency: 'INR',
+      receipt: "order_#{SecureRandom.hex(8)}"
+    )
+
     @card_order = CardOrder.new(card_order_params)
     @card_order.price = gift_card.price
+    @card_order.razorpay_order_id = razorpay_order.id 
 
     if @card_order.save
       render json: @card_order, status: :created
     else
-      render json: @card_order.errors, status: :unprocessable_entity
+      render json: { errors: @card_order.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
