@@ -5,13 +5,8 @@ class OrderNotificationService
   end
 
   def call
-		if @user.notification&.email
-			OrderMailer.order_confirmation(@order).deliver_now
-		end
-
-		# Uncomment this if you plan to add SMS notification support
-		# if @user.notification&.sms
-		#   ::OrderSmsNotificationService.new(@order).call
-		# end
+    if @user.notification&.email
+      OrderMailer.order_confirmation(@order).deliver_now
+    end
   end
 end
