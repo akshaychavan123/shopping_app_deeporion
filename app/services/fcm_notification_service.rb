@@ -76,8 +76,8 @@ class FcmNotificationService
     when Coupon
       {
         title: 'New Coupon Available!',
-        body: "New coupon created! #{@resource.promo_code_name}",
-        data: { message: "New coupon created! #{@resource.promo_code_name}" }
+        body: "New coupon created! #{@resource.promo_code_name}  please visit link https://app-like-pinklay-staging-fce0b804f3ce.herokuapp.com/CouponAndDiscountScreen to check new couponin app , weblink https://app-like-pinklay-staging-fce0b804f3ce.herokuapp.com/api/v2/coupons",
+        data: { message: "New coupon created! #{@resource.promo_code_name}  please visit link https://app-like-pinklay-staging-fce0b804f3ce.herokuapp.com/CouponAndDiscountScreen to check new couponin app , weblink https://app-like-pinklay-staging-fce0b804f3ce.herokuapp.com/api/v2/coupons" }
       }
     when Order
       {
