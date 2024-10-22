@@ -31,6 +31,7 @@ class Api::V1::OrdersController < ApplicationController
 
       if @order.save
         cart_items.destroy_all
+        send_order_notification
         render json: { order: @order }, status: :created
       else
         render json: @order.errors, status: :unprocessable_entity
@@ -138,5 +139,10 @@ class Api::V1::OrdersController < ApplicationController
 
   def order_params
     params.permit(:total_price, :address_id, :coupon_id)
+  end
+
+  def send_order_notification
+    OrderNotificationService.new(@order).call
+    FcmNotificationService.new(@order).call
   end
 end
