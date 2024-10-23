@@ -1,6 +1,6 @@
 class Api::V1::UserNotificationsController < ApplicationController
   before_action :set_notification, only: [:show, :mark_as_read]
-	before_action :authorize_request
+  before_action :authorize_request
   
   def index
     @notifications = @current_user.user_notifications.order(created_at: :desc)

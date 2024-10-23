@@ -10,18 +10,36 @@ class OrderItemSerializer < ActiveModel::Serializer
     @productitem.name if @productitem.present?
   end
 
+  # def product_item_image
+  #   @productitem = ProductItem.find_by(id: object.product_item_id)
+  #   if @productitem&.image&.attached?
+  #     host = base_url
+  #     Rails.env.development? || Rails.env.test? ?
+  #       "#{host}#{Rails.application.routes.url_helpers.rails_blob_path(@productitem.image, only_path: true)}" :
+  #       object.image.service.send(:object_for, @productitem.image.key).public_url
+  #   else
+  #     nil
+  #   end
+  # end
+
   def product_item_image
     @productitem = ProductItem.find_by(id: object.product_item_id)
-    if @productitem&.image&.attached?
+    
+    if @productitem.nil?
+      Rails.logger.error "ProductItem not found for product_item_id: #{object.product_item_id}"
+      return nil
+    end
+  
+    if @productitem.image.attached?
       host = base_url
       Rails.env.development? || Rails.env.test? ?
         "#{host}#{Rails.application.routes.url_helpers.rails_blob_path(@productitem.image, only_path: true)}" :
         object.image.service.send(:object_for, @productitem.image.key).public_url
     else
+      Rails.logger.warn "ProductItem found but no image attached for product_item_id: #{object.product_item_id}"
       nil
     end
   end
-  
 
   def user_name
     @addressdetail = Address.find_by(id: object.order.address_id)

@@ -11,6 +11,7 @@ class ProductItem < ApplicationRecord
   has_many :coupons, as: :couponable
   has_one_attached :image
   has_many_attached :photos
+  has_many :order_items, dependent: :destroy
 
   validates :name, presence: true, on: :create
   validates :description, presence: true, on: :create
