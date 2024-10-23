@@ -1,5 +1,5 @@
 class Review2Serializer < ActiveModel::Serializer
-	attributes :id, :star, :recommended, :review, :images_and_videos, :helpful_true_count, :helpful_false_count, :total_review_count, :created_time, :user_review_voted
+	attributes :id, :star, :review, :images_and_videos, :helpful_true_count, :helpful_false_count, :total_review_count, :created_time, :user_review_voted
   include ActionView::Helpers::DateHelper
 
   def helpful_true_count
