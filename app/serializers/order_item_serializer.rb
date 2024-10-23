@@ -17,8 +17,11 @@ class OrderItemSerializer < ActiveModel::Serializer
       Rails.env.development? || Rails.env.test? ?
         "#{host}#{Rails.application.routes.url_helpers.rails_blob_path(@productitem.image, only_path: true)}" :
         object.image.service.send(:object_for, @productitem.image.key).public_url
+    else
+      nil
     end
   end
+  
 
   def user_name
     @addressdetail = Address.find_by(id: object.order.address_id)

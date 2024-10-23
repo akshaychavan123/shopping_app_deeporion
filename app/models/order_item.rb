@@ -1,6 +1,6 @@
 class OrderItem < ApplicationRecord
   belongs_to :order
-  has_many :returns
+  has_many :returns, dependent: :destroy
 
   validates :product_item_id, presence: true
   validates :product_item_variant_id, presence: true
