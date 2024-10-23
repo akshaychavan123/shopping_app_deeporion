@@ -28,9 +28,24 @@ class FcmNotificationService
     end
   end
 
+  # def send_notifications_to_user(user)
+  #   devices = user.devices.where(is_active: true)
+  #   devices.each do |device|
+  #     send_fcm_message(device.device_token)
+  #   end
+  # end
+
   def send_notifications_to_user(user)
     devices = user.devices.where(is_active: true)
     devices.each do |device|
+      user.user_notifications.create!(
+        title: build_message_data[:title],
+        body: build_message_data[:body],
+        resource_type: @resource.class.name,
+        resource_id: @resource.id,
+        read: false
+      )
+
       send_fcm_message(device.device_token)
     end
   end

@@ -62,7 +62,7 @@ class Api::V1::ReviewsController < ApplicationController
   end
 
   def review_params
-    params.permit(:star, :recommended, :review)
+    params.permit(:star, :review)
   end
 
   def pagination_meta(collection)

@@ -14,31 +14,30 @@ RSpec.describe 'Api::V1::Reviews', type: :request do
               type: :array,
               items: { type: :string, format: :binary }
             },
-          recommended: { type: :boolean },
           review: { type: :string },
           product_item_id: { type: :integer }
         },
-        required: ['star', 'recommended', 'review', 'product_item_id']
+        required: ['star', 'review', 'product_item_id']
       }
 
       response '201', 'created' do
         let(:Authorization) { "Bearer #{token}" }
         let(:product_item_id) { create(:product_item).id }
-        let(:review) { { star: 5, recommended: true, review: 'Excellent product!', product_item_id: product_item_id } }
+        let(:review) { { star: 5, review: 'Excellent product!', product_item_id: product_item_id } }
         run_test!
       end
 
       response '422', 'unprocessable entity' do
         let(:Authorization) { "Bearer #{token}" }
         let(:product_item_id) { create(:product_item).id }
-        let(:review) { { star: nil, recommended: nil, review: '', product_item_id: product_item_id } }
+        let(:review) { { star: nil, review: '', product_item_id: product_item_id } }
         run_test!
       end
 
       response '401', 'unauthorized' do
         let(:product_item_id) { create(:product_item).id }
         let(:Authorization) { 'Bearer invalid_token' }
-        let(:review) { { star: 5, recommended: true, review: 'Excellent product!', product_item_id: product_item_id } }
+        let(:review) { { star: 5, review: 'Excellent product!', product_item_id: product_item_id } }
         run_test!
       end
     end
@@ -64,12 +63,11 @@ RSpec.describe 'Api::V1::Reviews', type: :request do
               user_id: { type: :integer },
               product_item_id: { type: :integer },
               star: { type: :integer },
-              recommended: { type: :boolean },
               review: { type: :string },
               created_at: { type: :string, format: 'date-time' },
               updated_at: { type: :string, format: 'date-time' }
             },
-            required: ['id', 'user_id', 'product_item_id', 'star', 'recommended', 'review', 'created_at', 'updated_at']
+            required: ['id', 'user_id', 'product_item_id', 'star', 'review', 'created_at', 'updated_at']
           }
         run_test!
       end

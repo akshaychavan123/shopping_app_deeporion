@@ -20,6 +20,7 @@ class User < ApplicationRecord
   has_one :notification, dependent: :destroy
   has_many :devices, dependent: :destroy
   has_many :orders
+  has_many :user_notifications, dependent: :destroy
 
   before_validation :parse_full_phone_number, if: -> { full_phone_number.present? }
   after_create :create_wishlist
