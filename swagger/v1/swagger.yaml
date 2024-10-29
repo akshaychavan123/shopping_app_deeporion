@@ -521,6 +521,16 @@ paths:
       responses:
         '200':
           description: successful
+  "/api/v1/landing_page/recent_viewed_product_items":
+    get:
+      summary: list recent viewed product items
+      tags:
+      - Landing Page
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: successful
   "/api/v1/landing_page/gift_cards_by_category/{id}":
     parameters:
     - name: id

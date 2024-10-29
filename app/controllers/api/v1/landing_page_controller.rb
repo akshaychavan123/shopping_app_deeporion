@@ -1,5 +1,5 @@
 class Api::V1::LandingPageController < ApplicationController  
-  before_action :set_current_user, only: [:product_items_filter, :product_items_search, :product_items_by_category, :product_items_show, :product_items_of_product, :new_arrivals, :product_items_by_sub_category]
+  before_action :set_current_user, only: [:product_items_filter, :recent_viewed_product_items, :product_items_search, :product_items_by_category, :product_items_show, :product_items_of_product, :new_arrivals, :product_items_by_sub_category]
 
   def categories_index
     @categories = Category.all
@@ -106,12 +106,22 @@ class Api::V1::LandingPageController < ApplicationController
 
   def product_items_show
     @product_item = ProductItem.includes(:product_item_variants).find_by(id: params[:id])
-
+    UserProductItem.create(user_id: @current_user.id, product_item_variant_id: @product_item.id)
     if @product_item
       review_summary = calculate_review_summary(@product_item.id)
       render json: { data: ActiveModelSerializers::SerializableResource.new(@product_item, serializer: ProductItemSerializer, current_user: @current_user), summary: review_summary }
     else
       render json: { errors: ['Product item not found'] }, status: :not_found
+    end
+  end
+
+  def recent_viewed_product_items
+    @product_item =  @current_user.user_product_items.map{|a| a.product_item_variant}.uniq
+
+    if @product_item
+      render json: { data: @product_item}
+    else
+      render json: { errors: ['No recently viewed product items found'] }, status: :not_found
     end
   end
   
