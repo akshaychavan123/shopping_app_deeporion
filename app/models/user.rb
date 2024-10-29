@@ -20,6 +20,8 @@ class User < ApplicationRecord
   has_one :notification, dependent: :destroy
   has_many :devices, dependent: :destroy
   has_many :orders
+  has_many :user_product_items
+  has_many :product_item_variants, through: :user_product_items
   has_many :user_notifications, dependent: :destroy
 
   before_validation :parse_full_phone_number, if: -> { full_phone_number.present? }

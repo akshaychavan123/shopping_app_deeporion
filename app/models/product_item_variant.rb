@@ -2,6 +2,8 @@ class ProductItemVariant < ApplicationRecord
   belongs_to :product_item
   belongs_to :cart_item, optional: true
   has_many :coupons, as: :couponable
+  has_many :user_product_items
+  has_many :users, through: :user_product_items
   
   validates :size, presence: true, uniqueness: { scope: :product_item_id }, on: :create
   validates :quantity, presence: true, on: :create

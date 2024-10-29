@@ -99,6 +99,18 @@ RSpec.describe 'Api::V1::LandingPage', type: :request do
     end
   end
 
+  path '/api/v1/landing_page/recent_viewed_product_items' do
+    get('list recent viewed product items') do
+      tags 'Landing Page'
+      produces 'application/json'
+      security [bearerAuth: []]
+
+      response(200, 'successful') do
+        run_test!
+      end
+    end
+  end
+
   path '/api/v1/landing_page/gift_cards_by_category/{id}' do
     parameter name: :id, in: :path, type: :integer, description: 'ID of the GiftCardCategory'
     get('list gift_card_categories') do
