@@ -20,7 +20,7 @@ class Api::V1::CartsController < ApplicationController
 
   def discount_on_amount_coupons
     if params[:coupon_code].present?
-      @coupons = Coupon.where(promo_type: 'discount_on_amount', promo_code: params[:coupon_code])
+      @coupons = Coupon.where("promo_type = ? AND promo_code ILIKE ?", 'discount_on_amount', "%#{params[:coupon_code]}%")
     else
       @coupons = Coupon.where(promo_type: 'discount_on_amount')
     end
@@ -30,7 +30,8 @@ class Api::V1::CartsController < ApplicationController
     render json: {
       data: ActiveModelSerializers::SerializableResource.new(@coupons, each_serializer: CouponForCartSerializer, subtotal: subtotal, current_user: @current_user)
     }, status: :ok
-  end  
+  end
+  
 
   def apply_coupon
     coupon = Coupon.find_by(promo_code: params[:promo_code])
