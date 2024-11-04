@@ -1,0 +1,2 @@
+class Instagrampost < ApplicationRecord
+end

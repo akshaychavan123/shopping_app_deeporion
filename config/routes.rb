@@ -18,6 +18,7 @@ Rails.application.routes.draw do
         end
       end
       resources :plans
+      resources :instagramposts
       resources :review_votes, only: [:create]
       resources :addresses
       resources :order_items, only: [:index, :update, :destroy] do
