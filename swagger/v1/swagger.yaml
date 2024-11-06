@@ -1934,6 +1934,93 @@ paths:
           description: career deleted
         '404':
           description: career not found
+  "/api/v2/client_review_comments":
+    get:
+      summary: list client_review_comments
+      tags:
+      - Client Review Comments
+      security:
+      - bearerAuth2: []
+      description: Fetch all client reviews with their comments
+      responses:
+        '200':
+          description: successful
+        '401':
+          description: unauthorized
+        '500':
+          description: internal server error
+    post:
+      summary: create client_review_comment
+      tags:
+      - Client Review Comments
+      security:
+      - bearerAuth2: []
+      parameters: []
+      responses:
+        '201':
+          description: created
+        '422':
+          description: unprocessable entity
+        '404':
+          description: review not found
+        '401':
+          description: unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                client_review_id:
+                  type: integer
+                comment:
+                  type: string
+              required:
+              - client_review_id
+              - comment
+  "/api/v2/client_review_comments/{id}":
+    parameters:
+    - name: id
+      in: path
+      description: ID of the client review comment
+      required: true
+      schema:
+        type: integer
+    patch:
+      summary: update client_review_comment
+      tags:
+      - Client Review Comments
+      security:
+      - bearerAuth2: []
+      parameters: []
+      responses:
+        '200':
+          description: successful
+        '422':
+          description: unprocessable entity
+        '404':
+          description: not found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                comment:
+                  type: string
+              required:
+              - comment
+    delete:
+      summary: destroy client_review_comment
+      tags:
+      - Client Review Comments
+      security:
+      - bearerAuth2: []
+      responses:
+        '200':
+          description: successful
+        '404':
+          description: not found
   "/api/v2/coupons":
     get:
       summary: list coupons

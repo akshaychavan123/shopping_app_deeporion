@@ -27,14 +27,14 @@ class ClientReviewSerializer < ActiveModel::Serializer
   def created_at
     object.created_at.in_time_zone('Asia/Kolkata').strftime("%Y-%m-%d %H:%M:%S %Z")
   end
-  
+
+  has_one :client_review_comment  
 
   private
 
   def base_url
     ENV['BASE_URL'] || 'http://localhost:3000'
   end
-
 
   def time_ago_in_words(from_time, include_seconds = false)
     distance_of_time_in_words(from_time, Time.current, include_seconds: include_seconds)
