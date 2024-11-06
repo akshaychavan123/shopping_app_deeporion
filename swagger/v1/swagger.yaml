@@ -3405,12 +3405,7 @@ paths:
       - Carts
       security:
       - bearerAuth: []
-      parameters:
-      - name: promo_code
-        in: query
-        description: Coupon promo code
-        schema:
-          type: string
+      parameters: []
       responses:
         '200':
           description: Coupon applied successfully
@@ -3465,6 +3460,17 @@ paths:
                     type: string
                 required:
                 - error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                promo_code:
+                  type: string
+                  description: Coupon promo code
+              required:
+              - promo_code
   "/api/v2/categories":
     get:
       summary: list categories

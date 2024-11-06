@@ -68,20 +68,26 @@ RSpec.describe 'Api::V1::Carts', type: :request do
       end
     end
   end
-  
+
   path '/api/v1/cart/apply_coupon' do
     post 'Applies a coupon to the cart' do
       tags 'Carts'
       security [bearerAuth: []]
       consumes 'application/json'
       produces 'application/json'
-      parameter name: :promo_code, in: :query, type: :string, description: 'Coupon promo code'
-
+      parameter name: :coupon_details, in: :body, schema: {
+        type: :object,
+        properties: {
+          promo_code: { type: :string, description: 'Coupon promo code' }
+        },
+        required: ['promo_code']
+      }
+  
       response '200', 'Coupon applied successfully' do
         let(:coupon) { create(:coupon, promo_code: 'DISCOUNT2024', promo_type: 'discount_on_amount', amount_off: 50) }
-        let(:promo_code) { coupon.promo_code }
+        let(:coupon_details) { { promo_code: coupon.promo_code } }
         let(:Authorization) { "Bearer #{token}" }
-
+  
         schema type: :object,
           properties: {
             message: { type: :string },
@@ -98,33 +104,33 @@ RSpec.describe 'Api::V1::Carts', type: :request do
             }
           },
           required: %w[message order_summary]
-
+  
         run_test!
       end
-
+  
       response '422', 'Coupon is invalid or expired' do
-        let(:promo_code) { 'INVALID2024' }
+        let(:coupon_details) { { promo_code: 'INVALID2024' } }
         let(:Authorization) { "Bearer #{token}" }
-
+  
         schema type: :object,
           properties: {
             error: { type: :string }
           },
           required: ['error']
-
+  
         run_test!
       end
-
+  
       response '404', 'Coupon not found' do
-        let(:promo_code) { 'NOTFOUND2024' }
+        let(:coupon_details) { { promo_code: 'NOTFOUND2024' } }
         let(:Authorization) { "Bearer #{token}" }
-
+  
         schema type: :object,
           properties: {
             error: { type: :string }
           },
           required: ['error']
-
+  
         run_test!
       end
     end

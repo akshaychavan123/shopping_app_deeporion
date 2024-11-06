@@ -31,7 +31,6 @@ class Api::V1::CartsController < ApplicationController
       data: ActiveModelSerializers::SerializableResource.new(@coupons, each_serializer: CouponForCartSerializer, subtotal: subtotal, current_user: @current_user)
     }, status: :ok
   end
-  
 
   def apply_coupon
     coupon = Coupon.find_by(promo_code: params[:promo_code])
