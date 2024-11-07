@@ -4,8 +4,25 @@ class Api::V2::ClientReviewCommentsController < ApplicationController
   before_action :set_client_review_comment, only: [:show, :update, :destroy]
 
   def index
-    client_reviews = ClientReview.includes(:client_review_comment).all
-    render json: client_reviews, each_serializer: ClientReviewSerializer
+    client_reviews = ClientReview.includes(:client_review_comment)
+  
+    case params[:filter]
+    when 'positive'
+      client_reviews = client_reviews.where(star: 5)
+    when 'negative'
+      client_reviews = client_reviews.where(star: 1)
+    when 'recent'
+      client_reviews = client_reviews.order(created_at: :desc)
+    else
+      client_reviews = client_reviews.all 
+    end
+  
+    client_reviews = client_reviews.page(params[:page]).per(params[:per_page])
+  
+    render json: {
+      data: ActiveModelSerializers::SerializableResource.new(client_reviews, each_serializer: ClientReviewSerializer),
+      meta: pagination_meta(client_reviews)
+    }, status: :ok
   end
 
   def create
@@ -60,5 +77,15 @@ class Api::V2::ClientReviewCommentsController < ApplicationController
 
   def check_user
     render json: { errors: ['Unauthorized access'] }, status: :forbidden unless @current_user.type == "Admin"
+  end
+
+  def pagination_meta(collection)
+    {
+      current_page: collection.current_page,
+      next_page: collection.next_page,
+      prev_page: collection.prev_page,
+      total_pages: collection.total_pages,
+      total_count: collection.total_count
+    }
   end
 end

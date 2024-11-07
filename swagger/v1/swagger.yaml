@@ -1942,6 +1942,22 @@ paths:
       security:
       - bearerAuth2: []
       description: Fetch all client reviews with their comments
+      parameters:
+      - name: page
+        in: query
+        description: Page number for pagination
+        schema:
+          type: integer
+      - name: per_page
+        in: query
+        description: Number of items per page
+        schema:
+          type: integer
+      - name: filter
+        in: query
+        description: positive, negative, recent
+        schema:
+          type: string
       responses:
         '200':
           description: successful

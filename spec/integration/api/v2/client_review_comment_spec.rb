@@ -10,6 +10,9 @@ RSpec.describe 'Api::V2::ClientReviewComments', type: :request do
       security [bearerAuth2: []]
       description 'Fetch all client reviews with their comments'
       produces 'application/json'
+      parameter name: :page, in: :query, type: :integer, description: 'Page number for pagination'
+      parameter name: :per_page, in: :query, type: :integer, description: 'Number of items per page'
+      parameter name: :filter, in: :query, type: :string, description: 'positive, negative, recent'
 
       response(200, 'successful') do
         let(:client_review) { create(:client_review) }
