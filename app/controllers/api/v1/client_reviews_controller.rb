@@ -1,13 +1,10 @@
 class Api::V1::ClientReviewsController < ApplicationController
-  before_action :authorize_request, only: :create
+  before_action :authorize_request, only: [:create, :update]
+  before_action :set_client_review, only: [:update]
 
   def index
-    if params[:star].present?
-      @client_reviews = ClientReview.where(star: params[:star]).order(created_at: :desc)
-    else
-      @client_reviews = ClientReview.order(created_at: :desc)
-    end
-    @client_reviews = @client_reviews.page(params[:page]).per(params[:per_page])
+      @client_reviews = ClientReview.includes(:client_review_comment).order(created_at: :desc)  
+      @client_reviews = @client_reviews.page(params[:page]).per(params[:per_page])
 
     render json: {
       client_reviews: ActiveModelSerializers::SerializableResource.new(@client_reviews, each_serializer: ClientReviewSerializer),
@@ -25,9 +22,27 @@ class Api::V1::ClientReviewsController < ApplicationController
       render json: @client_review.errors, status: :unprocessable_entity
     end
   end
+
+  def update
+    if @client_review.user == @current_user
+      if @client_review.update(client_review_params)
+        render json: @client_review, serializer: ClientReviewSerializer, status: :ok
+      else
+        render json: @client_review.errors, status: :unprocessable_entity
+      end
+    else
+      render json: { error: 'You are not authorized to update this review' }, status: :forbidden
+    end
+  end
   
   private
 
+  def set_client_review
+    @client_review = ClientReview.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: 'Review not found' }, status: :not_found
+  end
+  
   def client_review_params
     params.require(:client_review).permit(:star, :review)
   end

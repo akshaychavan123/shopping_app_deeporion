@@ -340,11 +340,6 @@ paths:
       tags:
       - ClientReviews
       parameters:
-      - name: star
-        in: query
-        description: Sort by star
-        schema:
-          type: integer
       - name: page
         in: query
         description: Page number
@@ -368,6 +363,40 @@ paths:
       responses:
         '201':
           description: Client review created
+        '422':
+          description: Invalid request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                star:
+                  type: integer
+                review:
+                  type: string
+              required:
+              - star
+              - review
+  "/api/v1/client_reviews/{id}":
+    put:
+      summary: Update a client review
+      tags:
+      - ClientReviews
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        description: Client review ID
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Client review updated
+        '403':
+          description: Unauthorized
         '422':
           description: Invalid request
       requestBody:
@@ -1379,11 +1408,11 @@ paths:
         required: false
         schema:
           type: string
-      - name: star
+      - name: sort_by
         in: query
-        description: Filter according star
+        description: positive, negative, recent
         schema:
-          type: integer
+          type: string
       - name: page
         in: query
         description: Page number for pagination
@@ -1942,6 +1971,22 @@ paths:
       security:
       - bearerAuth2: []
       description: Fetch all client reviews with their comments
+      parameters:
+      - name: page
+        in: query
+        description: Page number for pagination
+        schema:
+          type: integer
+      - name: per_page
+        in: query
+        description: Number of items per page
+        schema:
+          type: integer
+      - name: filter
+        in: query
+        description: positive, negative, recent
+        schema:
+          type: string
       responses:
         '200':
           description: successful
