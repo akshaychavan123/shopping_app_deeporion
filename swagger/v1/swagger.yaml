@@ -1379,11 +1379,11 @@ paths:
         required: false
         schema:
           type: string
-      - name: star
+      - name: sort_by
         in: query
-        description: Filter according star
+        description: positive, negative, recent
         schema:
-          type: integer
+          type: string
       - name: page
         in: query
         description: Page number for pagination
