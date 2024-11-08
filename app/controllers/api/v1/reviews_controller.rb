@@ -37,7 +37,6 @@ class Api::V1::ReviewsController < ApplicationController
       meta: pagination_meta(@reviews)
     }
   end
-  
 
   def create
     @review = @product_item.reviews.new(review_params)

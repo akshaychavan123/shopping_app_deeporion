@@ -31,7 +31,7 @@ Rails.application.routes.draw do
       end
       resource :card_details, only: [:index, :show, :create, :update, :destroy]
       resources :card_orders, only: [:create]
-      resources :client_reviews, only: [:index, :create]
+      resources :client_reviews, only: [:index, :create, :update]
 
       root to: 'home#index'
       resources :home, only: [:index]
