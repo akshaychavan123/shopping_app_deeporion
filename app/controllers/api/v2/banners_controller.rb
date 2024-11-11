@@ -14,22 +14,28 @@ class Api::V2::BannersController < ApplicationController
 
 	def create
     @banner = Banner.new(banner_params)
+    attach_images if params[:images].present?
     if @banner.save
-      attach_images if params[:images].present?
       render json: { data: BannerSerializer.new(@banner) }, status: :created
     else
-			render json: { message: 'Something went wrong' }, status: :unprocessable_entity
+      render json: @banner.errors, status: :unprocessable_entity
     end
   end
 
   def update
-    if @banner.update(banner_params)
-      attach_images if params[:images].present?
+    @banner.assign_attributes(banner_params)
+  
+    if @banner.save
+      if params[:images].present?
+        attach_images_update(@banner)
+      end
+  
       render json: { data: BannerSerializer.new(@banner) }, status: :ok
     else
-			render json: { message: 'Something went wrong' }, status: :unprocessable_entity
+      render json: @banner.errors, status: :unprocessable_entity
     end
   end
+  
 
 	def destroy
 		@banner.destroy
@@ -51,6 +57,11 @@ class Api::V2::BannersController < ApplicationController
       @banner.images.attach(image)
     end
   end
+
+  def attach_images_update(record)
+    record.images.each { |image| image.purge }  
+    Array(params[:images]).each { |photo| record.images.attach(photo) }
+  end  
 
 	def check_user
     unless @current_user.type == "Admin"
