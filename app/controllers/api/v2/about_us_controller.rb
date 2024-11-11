@@ -16,12 +16,13 @@ class Api::V2::AboutUsController < ApplicationController
   def create
     @about_us = AboutUs.new(about_us_params)
 
-    if @about_us.save
-      if params[:images].present?
-        Array(params[:images]).each do |photo|
-          @about_us.images.attach(photo)
-        end
+    if params[:images].present?
+      Array(params[:images]).each do |photo|
+        @about_us.images.attach(photo)
       end
+    end
+
+    if @about_us.save
       render json: @about_us, serializer: AboutUsSerializer, status: :created
     else
       render json: @about_us.errors, status: :unprocessable_entity
@@ -29,8 +30,13 @@ class Api::V2::AboutUsController < ApplicationController
   end
 
   def update
-    if @about_us.update(about_us_params)
-      attach_images if params[:images].present?
+    @about_us.assign_attributes(about_us_params)
+
+    if params[:images].present?
+      attach_images(@about_us)
+    end
+
+    if @about_us.save
       render json: @about_us, serializer: AboutUsSerializer
     else
       render json: @about_us.errors, status: :unprocessable_entity
@@ -59,10 +65,10 @@ class Api::V2::AboutUsController < ApplicationController
     end
   end
 
-  def attach_images
-    @about_us.images.purge
+  def attach_images(record)
+    record.images.purge
     Array(params[:images]).each do |photo|
-      @about_us.images.attach(photo)
+      record.images.attach(photo)
     end
   end
 end

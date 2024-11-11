@@ -20,35 +20,39 @@ class Api::V2::ProductItemsController < ApplicationController
   def show
     render json: { data: ActiveModelSerializers::SerializableResource.new(@product_item, each_serializer: ProductItemSerializer)}
   end
-
   
   def create
     @product = Product.find_by(id: params[:product_id])
     @product_item = @product.product_items.new(product_items_params)
     @product_item.product_code = generate_product_code
-    if @product_item.save
-      if params[:image].present?
-        @product_item.image.attach(params[:image])
-      end
 
-      if params[:photos].present?
-        Array(params[:photos]).each do |photo|
-          @product_item.photos.attach(photo)
-        end
+    if params[:image].present?
+      @product_item.image.attach(params[:image])
+    end
+
+    if params[:photos].present?
+      Array(params[:photos]).each do |photo|
+        @product_item.photos.attach(photo)
       end
+    end
+
+    if @product_item.save
       render json: { data: ActiveModelSerializers::SerializableResource.new(@product_item, each_serializer: ProductItemSerializer)}
       ::ProductItemNotificationService.new(@product_item).call
       ::FcmNotificationService.new(@product_item).call
     else
-      render json: { error: 'Something went to wrong' }, status: :unprocessable_entity
+      render json: @product_item.errors, status: :unprocessable_entity
     end
   end  
 
   def update
-    if @product_item.update(product_items_params)
-      attach_images if params[:image].present?
-      attach_photos if params[:photos].present?
-      render json: { data: ActiveModelSerializers::SerializableResource.new(@product_item, each_serializer: ProductItemSerializer)}
+    @product_item.assign_attributes(product_items_params)
+
+    attach_images if params[:image].present?
+    attach_photos if params[:photos].present?
+
+    if @product_item.valid? && @product_item.save
+      render json: { data: ActiveModelSerializers::SerializableResource.new(@product_item, each_serializer: ProductItemSerializer) }
     else
       render json: @product_item.errors, status: :unprocessable_entity
     end
@@ -103,5 +107,4 @@ class Api::V2::ProductItemsController < ApplicationController
       @product_item.photos.attach(photo)
     end
   end
-
 end
