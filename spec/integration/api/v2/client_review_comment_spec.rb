@@ -12,7 +12,7 @@ RSpec.describe 'Api::V2::ClientReviewComments', type: :request do
       produces 'application/json'
       parameter name: :page, in: :query, type: :integer, description: 'Page number for pagination'
       parameter name: :per_page, in: :query, type: :integer, description: 'Number of items per page'
-      parameter name: :filter, in: :query, type: :string, description: 'positive, negative, recent'
+      parameter name: :filter, in: :query, type: :string, description: 'positive, negative, recent, hidden'
 
       response(200, 'successful') do
         let(:client_review) { create(:client_review) }
@@ -157,6 +157,48 @@ RSpec.describe 'Api::V2::ClientReviewComments', type: :request do
 
       response(404, 'not found') do
         let(:id) { -1 }
+        run_test!
+      end
+    end
+  end
+
+  path '/api/v2/client_review_comments/{id}/delete_review' do
+    parameter name: :id, in: :path, type: :integer, description: 'ID of the client review'
+    delete('destroy delete_review') do
+      tags 'Client Review Comments'
+      security [bearerAuth2: []]
+
+      response(200, 'successful') do
+        run_test!
+      end
+
+      response(404, 'not found') do
+        run_test!
+      end
+    end
+  end
+
+  path '/api/v2/client_review_comments/{id}/hide_review' do
+    parameter name: :id, in: :path, type: :integer, description: 'ID of the client review'
+    
+    patch('hide review') do
+      tags 'Client Review Comments'
+      security [bearerAuth2: []]
+      description 'Soft delete (hide) a client review by setting the deleted_at timestamp'
+      consumes 'application/json'
+
+      response(200, 'review hide successfully') do
+        run_test! 
+      end
+
+      response(404, 'review not found') do
+        run_test! 
+      end
+
+      response(401, 'unauthorized') do
+        let(:Authorization) { 'Bearer invalid_token' }
+        let(:id) { create(:client_review).id }
+        
         run_test!
       end
     end
