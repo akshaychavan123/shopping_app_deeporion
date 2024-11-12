@@ -103,7 +103,6 @@ class Api::V1::LandingPageController < ApplicationController
     end
   end
   
-
   def product_items_show
     @product_item = ProductItem.includes(:product_item_variants).find_by(id: params[:id])
     UserProductItem.create(user_id: @current_user.id, product_item_variant_id: @product_item.id)
@@ -256,6 +255,39 @@ class Api::V1::LandingPageController < ApplicationController
     end
   end
 
+  def filter_data_for_mobile
+    categories = Category.all
+    subcategories = params[:category_id].present? ? Subcategory.where(category_id: params[:category_id]) : []
+    products = params[:subcategory_id].present? ? Product.where(subcategory_id: params[:subcategory_id]) : []
+  
+    variant_names = []
+    if params[:product_id].present?
+      product = Product.includes(product_items: :product_item_variants).find_by(id: params[:product_id])
+      if product
+        variant_names = product.product_items.flat_map { |item| item.product_item_variants.pluck(:size) }.uniq
+      end
+    end
+
+    unique_colors = []
+    
+    if params[:product_id].present?
+      product = Product.includes(product_items: :product_item_variants).find_by(id: params[:product_id])
+
+      if product
+        product_items_with_variants = product.product_items.select { |item| item.product_item_variants.exists? }
+        unique_colors = product_items_with_variants.pluck(:color).uniq
+      end
+    end
+  
+    render json: {
+      categories: categories,
+      subcategories: subcategories,
+      products: products,
+      unique_colors: unique_colors,
+      variant_names: variant_names
+    }, status: :ok
+  end
+  
   private
 
   def pagination_meta(collection)

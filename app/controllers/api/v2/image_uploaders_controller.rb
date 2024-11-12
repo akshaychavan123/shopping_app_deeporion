@@ -20,12 +20,13 @@ class Api::V2::ImageUploadersController < ApplicationController
   def create
     @image_uploader = ImageUploader.new(image_uploader_params)
 
-    if @image_uploader.save
-      if params[:images].present?
-        Array(params[:images]).each do |photo|
-          @image_uploader.images.attach(photo)
-        end
+    if params[:images].present?
+      Array(params[:images]).each do |photo|
+        @image_uploader.images.attach(photo)
       end
+    end
+    
+    if @image_uploader.save
       render json: @image_uploader, serializer: ImageUploaderSerializer, status: :created
     else
       render json: @image_uploader.errors, status: :unprocessable_entity

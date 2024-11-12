@@ -1052,6 +1052,34 @@ paths:
                     type: array
                     items:
                       type: string
+  "/api/v1/landing_page/filter_data_for_mobile":
+    get:
+      summary: filter data for mobile
+      tags:
+      - Landing Page
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: category_id
+        in: query
+        description: ID of the Category
+        schema:
+          type: integer
+      - name: subcategory_id
+        in: query
+        description: ID of the Subcategory
+        schema:
+          type: integer
+      - name: product_id
+        in: query
+        description: ID of the Product to fetch variant names and unique colors
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: successful
+        '404':
+          description: not found
   "/api/v1/notification/show_notification":
     get:
       summary: Retrieves Notification Settings

@@ -78,6 +78,7 @@ Rails.application.routes.draw do
       get '/landing_page/new_arrivals', to: 'landing_page#new_arrivals'
       get '/landing_page/top_category', to: 'landing_page#top_category'      
       get '/landing_page/index_of_product_by_category/:id', to: 'landing_page#index_of_product_by_category'     
+      get '/landing_page/filter_data_for_mobile', to: 'landing_page#filter_data_for_mobile'     
       
       resources :orders, only: [:create] do
         resources :returns, only: [:create]

@@ -17,5 +17,26 @@ class ProductItem < ApplicationRecord
   validates :description, presence: true, on: :create
   validates :product_code, uniqueness: true, on: :create
 
+  validate :image_size_validation
+  validate :photos_size_validation
+
   scope :new_arrivals, -> { order(created_at: :desc).limit(10) }
+
+  private
+
+  def image_size_validation
+    return unless image.attached?
+
+    if image.blob.byte_size < 50.kilobytes || image.blob.byte_size > 100.kilobytes
+      errors.add(:image, ' image must be between 50 KB and 100 KB')
+    end
+  end
+
+  def photos_size_validation
+    photos.each do |photo|
+      if photo.blob.byte_size < 50.kilobytes || photo.blob.byte_size > 100.kilobytes
+        errors.add(:photos, 'each photos must be between 50 KB and 100 KB')
+      end
+    end
+  end
 end
