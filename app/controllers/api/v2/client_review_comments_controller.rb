@@ -13,6 +13,8 @@ class Api::V2::ClientReviewCommentsController < ApplicationController
       client_reviews = client_reviews.where(star: 1)
     when 'recent'
       client_reviews = client_reviews.order(created_at: :desc)
+    when 'hidden'
+      client_reviews = client_reviews.where.not(deleted_at: nil)
     else
       client_reviews = client_reviews.all 
     end
@@ -60,6 +62,24 @@ class Api::V2::ClientReviewCommentsController < ApplicationController
     @client_review_comment.destroy
     render json: { message: 'Comment deleted successfully' }, status: :ok
   end
+
+  def delete_review
+    @client_review = ClientReview.find_by(id: params[:id])
+    @client_review.destroy
+    render json: { message: 'Review deleted successfully' }, status: :ok
+  end
+
+  def hide_review
+    @client_review = ClientReview.find_by(id: params[:id])
+  
+    if @client_review.nil?
+      render json: { error: 'Review not found' }, status: :not_found
+      return
+    end
+  
+    @client_review.soft_delete
+    render json: { message: 'Review hide successfully' }, status: :ok
+  end  
 
   private
 

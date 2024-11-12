@@ -128,7 +128,12 @@ Rails.application.routes.draw do
       resources :career_roles
       resources :video_descriptions
       resources :products, only: [:index, :show, :create, :update, :destroy]
-      resources :client_review_comments, only: [:index, :create, :update, :destroy]
+      resources :client_review_comments, only: [:index, :create, :update, :destroy] do
+        member do
+          delete :delete_review
+          patch :hide_review
+        end
+      end
       resources :categories do
         resources :subcategories, only: [:index, :show, :create, :update, :destroy]
       end
