@@ -28,7 +28,8 @@ RSpec.describe 'api/v1/plans', type: :request do
             service: { type: :string },
             amount: { type: :integer },
             frequency: { type: :string},
-            discription: { type: :string }
+            discription: { type: :string },
+            active: { type: :boolean }
         },
         required: ['name']
       }
@@ -89,7 +90,8 @@ RSpec.describe 'api/v1/plans', type: :request do
             service: { type: :string },
             amount: { type: :integer },
             frequency: { type: :string},
-            discription: { type: :string }
+            discription: { type: :string },
+            active: { type: :boolean }
         }
       }
 

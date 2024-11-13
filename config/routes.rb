@@ -89,7 +89,7 @@ Rails.application.routes.draw do
         end
       end
       
-      resources :contact_us, only: [:create]
+      resources :contact_us
 
       resources :wishlists, only: [] do
         get 'show_wishlistitems', to: 'wishlists#show_wishlistitems', on: :collection

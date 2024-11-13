@@ -49,7 +49,7 @@ class Api::V1::PlansController < ApplicationController
   end
 
   def plan_params
-    params.require(:plan).permit(:name, :service, :amount, :frequency, :discription)
+    params.require(:plan).permit(:name, :service, :amount, :frequency, :discription, :active)
   end
   
 end
