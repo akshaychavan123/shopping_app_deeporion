@@ -1,7 +1,6 @@
 class Api::V1::OrdersController < ApplicationController
   before_action :authorize_request
 
-
   def create
     ActiveRecord::Base.transaction do
       total_amount = (order_params[:total_price].to_f * 100).to_i

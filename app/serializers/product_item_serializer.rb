@@ -1,5 +1,5 @@
 class ProductItemSerializer < ActiveModel::Serializer
-  attributes :id, :name, :brand, :price, :discounted_price, :discount_percent, :is_tax_inclusive, :image, :photos, :height,
+  attributes :id, :name, :brand, :is_tax_inclusive, :image, :photos, :height,
              :expected_delivery, :product_code, :payment_method, :is_favorite, :product_id, :productdetails, :specification,:created_at
 
   has_many :product_item_variants, serializer: ProductItemVariantSerializer
@@ -8,7 +8,6 @@ class ProductItemSerializer < ActiveModel::Serializer
     ActiveModelSerializers::SerializableResource.new(object.reviews, each_serializer: ReviewSerializer)
   end
 
-
   def productdetails
     {
       material_and_care: object.care_instructions,
@@ -16,7 +15,6 @@ class ProductItemSerializer < ActiveModel::Serializer
       description: object.description
     }
   end
-
   
   def specification
     {

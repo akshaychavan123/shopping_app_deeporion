@@ -84,7 +84,7 @@ Rails.application.routes.draw do
         resources :returns, only: [:create]
       
         collection do
-          post 'payment_callback'
+          post 'callback'
           post 'cancel'
           get 'order_history'
         end
