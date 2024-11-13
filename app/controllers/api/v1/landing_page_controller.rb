@@ -1,5 +1,5 @@
 class Api::V1::LandingPageController < ApplicationController  
-  before_action :set_current_user, only: [:product_items_filter, :recent_viewed_product_items, :product_items_search, :product_items_by_category, :product_items_show, :product_items_of_product, :new_arrivals, :product_items_by_sub_category]
+  before_action :authorize_request, only: [:product_items_show, :recent_viewed_product_items]
 
   def categories_index
     @categories = Category.all
@@ -91,6 +91,7 @@ class Api::V1::LandingPageController < ApplicationController
       @product_items = @product.product_items
       .joins(:product_item_variants)
       .distinct
+      .order(created_at: :desc)
       .page(params[:page])
       .per(params[:per_page])
       
