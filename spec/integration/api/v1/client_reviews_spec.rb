@@ -79,4 +79,25 @@ RSpec.describe 'Client Reviews API', type: :request do
       end
     end
   end
+
+  path '/api/v1/client_reviews/{id}' do
+    delete 'Delete a client review' do
+      tags 'ClientReviews'
+      security [bearerAuth: []]
+      produces 'application/json'
+      parameter name: :id, in: :path, type: :integer, description: 'Client review ID'
+
+      response '204', 'Client review deleted' do
+        run_test! 
+      end
+
+      response '403', 'Unauthorized' do
+        run_test! 
+      end
+
+      response '404', 'Review not found' do
+        run_test! 
+      end
+    end
+  end
 end

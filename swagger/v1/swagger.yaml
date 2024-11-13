@@ -412,6 +412,26 @@ paths:
               required:
               - star
               - review
+    delete:
+      summary: Delete a client review
+      tags:
+      - ClientReviews
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        description: Client review ID
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: Client review deleted
+        '403':
+          description: Unauthorized
+        '404':
+          description: Review not found
   "/api/v1/contact_us":
     post:
       summary: Creates a Contact Us record
