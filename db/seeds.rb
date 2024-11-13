@@ -113,19 +113,25 @@ categories.each do |category_name, subcategories|
         )
 
         product_item.image.attach(
-          io: File.open("/home/manoj/Downloads/User (Webp images)/Product detail page/Product detail view 1.webp"),
-          filename: "Product_detail_view_1.webp",
+          io: File.open(Rails.root.join("app/assets/images/Frame 6356836.webp")),
+          filename: "Frame_6356836.webp",
           content_type: "image/webp"
         )
+        
         product_item.photos.attach([
           {
-            io: File.open("/home/manoj/Downloads/Product detail_/Frame 6356836.webp"),
-            filename: "Frame_6356836.webp",
+            io: File.open(Rails.root.join("app/assets/images/Frame 6356837.webp")),
+            filename: "Frame_6356837.webp",
             content_type: "image/webp"
           },
           {
-            io: File.open("/home/manoj/Downloads/Product detail_/Frame 6356835.webp"),
-            filename: "Frame_6356835.webp",
+            io: File.open(Rails.root.join("app/assets/images/Frame 6356838.webp")),
+            filename: "Frame_6356838.webp",
+            content_type: "image/webp"
+          },
+          {
+            io: File.open(Rails.root.join("app/assets/images/Product detail view 1.webp")),
+            filename: "Product_detail_view_1.webp",
             content_type: "image/webp"
           }
         ])        
