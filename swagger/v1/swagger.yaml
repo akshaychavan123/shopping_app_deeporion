@@ -412,6 +412,26 @@ paths:
               required:
               - star
               - review
+    delete:
+      summary: Delete a client review
+      tags:
+      - ClientReviews
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        description: Client review ID
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: Client review deleted
+        '403':
+          description: Unauthorized
+        '404':
+          description: Review not found
   "/api/v1/contact_us":
     get:
       summary: Retrieves all Contacts
@@ -1123,19 +1143,51 @@ paths:
         description: ID of the Category
         schema:
           type: integer
-      - name: subcategory_id
+      - name: subcategory_ids
         in: query
-        description: ID of the Subcategory
+        description: Comma-separated list of Subcategory IDs
         schema:
-          type: integer
-      - name: product_id
+          type: string
+      - name: product_ids
         in: query
-        description: ID of the Product to fetch variant names and unique colors
+        description: Comma-separated list of Product IDs to fetch variant names and
+          unique colors
         schema:
-          type: integer
+          type: string
       responses:
         '200':
           description: successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  categories:
+                    type: array
+                    items:
+                      type: object
+                  subcategories:
+                    type: array
+                    items:
+                      type: object
+                  products:
+                    type: array
+                    items:
+                      type: object
+                  unique_colors:
+                    type: array
+                    items:
+                      type: string
+                  variant_names:
+                    type: array
+                    items:
+                      type: string
+                required:
+                - categories
+                - subcategories
+                - products
+                - unique_colors
+                - variant_names
         '404':
           description: not found
   "/api/v1/notification/show_notification":

@@ -1,6 +1,6 @@
 class Api::V1::ClientReviewsController < ApplicationController
-  before_action :authorize_request, only: [:create, :update]
-  before_action :set_client_review, only: [:update]
+  before_action :authorize_request, only: [:create, :update, :destroy]
+  before_action :set_client_review, only: [:update, :destroy]
 
   def index
       @client_reviews = ClientReview.includes(:client_review_comment).order(created_at: :desc)  
@@ -35,6 +35,15 @@ class Api::V1::ClientReviewsController < ApplicationController
     end
   end
   
+  def destroy
+    if @client_review.user == @current_user
+      @client_review.destroy
+      render json: { message: 'Review was successfully deleted.' }, status: :ok
+    else
+      render json: { error: 'You are not authorized to delete this review' }, status: :forbidden
+    end
+  end
+
   private
 
   def set_client_review

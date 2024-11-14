@@ -94,7 +94,7 @@ categories.each do |category_name, subcategories|
           name: "#{product_name} Item #{rand(1..100)}",
           brand: Faker::Company.name,
           description: Faker::Lorem.sentence,
-          size: ["XS", "S", "M", "L", "XL"].sample,
+          size: ["XS", "S", "M", "L", "XL", "XXL", "XXXL"].sample,
           material: Faker::Commerce.material,
           care: "Machine wash",
           product_code: unique_product_code,
@@ -113,26 +113,32 @@ categories.each do |category_name, subcategories|
         )
 
         product_item.image.attach(
-          io: File.open("/home/manoj/Downloads/User (Webp images)/Product detail page/Product detail view 1.webp"),
-          filename: "Product_detail_view_1.webp",
+          io: File.open(Rails.root.join("app/assets/images/Frame 6356836.webp")),
+          filename: "Frame_6356836.webp",
           content_type: "image/webp"
         )
+        
         product_item.photos.attach([
           {
-            io: File.open("/home/manoj/Downloads/Product detail_/Frame 6356836.webp"),
-            filename: "Frame_6356836.webp",
+            io: File.open(Rails.root.join("app/assets/images/Frame 6356837.webp")),
+            filename: "Frame_6356837.webp",
             content_type: "image/webp"
           },
           {
-            io: File.open("/home/manoj/Downloads/Product detail_/Frame 6356835.webp"),
-            filename: "Frame_6356835.webp",
+            io: File.open(Rails.root.join("app/assets/images/Frame 6356838.webp")),
+            filename: "Frame_6356838.webp",
+            content_type: "image/webp"
+          },
+          {
+            io: File.open(Rails.root.join("app/assets/images/Product detail view 1.webp")),
+            filename: "Product_detail_view_1.webp",
             content_type: "image/webp"
           }
         ])        
 
-        sizes = ["XS", "S", "M", "L", "XL"]
+        sizes = ["XS", "S", "M", "L", "XL", "XXL", "XXXL"]
 
-        5.times do
+        7.times do
           variant_price = Faker::Commerce.price(range: 10..100)
 
           unique_size = sizes.pop 
