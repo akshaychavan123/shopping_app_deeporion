@@ -258,36 +258,52 @@ class Api::V1::LandingPageController < ApplicationController
 
   def filter_data_for_mobile
     categories = Category.all
-    subcategories = params[:category_id].present? ? Subcategory.where(category_id: params[:category_id]) : []
-    products = params[:subcategory_id].present? ? Product.where(subcategory_id: params[:subcategory_id]) : []
+  
+    if params[:category_id].present?
+      category_id = params[:category_id]
+      subcategories = Subcategory.where(category_id: category_id)
+    else
+      subcategories = []
+    end
+  
+    products = []
+    if params[:subcategory_ids].present?
+      subcategory_ids = params[:subcategory_ids].split(',').map(&:to_i)
+      products = Product.where(subcategory_id: subcategory_ids)
+    end
   
     variant_names = []
-    if params[:product_id].present?
-      product = Product.includes(product_items: :product_item_variants).find_by(id: params[:product_id])
-      if product
-        variant_names = product.product_items.flat_map { |item| item.product_item_variants.pluck(:size) }.uniq
-      end
-    end
-
     unique_colors = []
-    
-    if params[:product_id].present?
-      product = Product.includes(product_items: :product_item_variants).find_by(id: params[:product_id])
+    unique_materials = []
 
-      if product
-        product_items_with_variants = product.product_items.select { |item| item.product_item_variants.exists? }
-        unique_colors = product_items_with_variants.pluck(:color).uniq
-      end
-    end
+    if params[:product_ids].present?
+      product_ids = params[:product_ids].split(',').map(&:to_i)
+      product_items = ProductItem.where(product_id: product_ids)
+      variant_names = product_items.joins(:product_item_variants).pluck('product_item_variants.size').uniq
+      unique_colors = product_items.joins(:product_item_variants).pluck(:color).uniq
+      unique_materials = product_items.pluck(:material).uniq
+    elsif params[:subcategory_ids].present?
+      product_items = ProductItem.where(product_id: products.select(:id))
+      variant_names = product_items.joins(:product_item_variants).pluck('product_item_variants.size').uniq
+      unique_colors = product_items.joins(:product_item_variants).pluck(:color).uniq
+      unique_materials = product_items.pluck(:material).uniq
+    elsif params[:category_id].present?
+      products_in_category = Product.joins(:subcategory).where(subcategories: { category_id: category_id })
+      product_items = ProductItem.where(product_id: products_in_category.select(:id))
+      variant_names = product_items.joins(:product_item_variants).pluck('product_item_variants.size').uniq
+      unique_colors = product_items.joins(:product_item_variants).pluck(:color).uniq
+      unique_materials = product_items.pluck(:material).uniq
+    end  
   
     render json: {
       categories: categories,
       subcategories: subcategories,
       products: products,
       unique_colors: unique_colors,
-      variant_names: variant_names
+      variant_names: variant_names,
+      unique_materials: unique_materials,
     }, status: :ok
-  end
+  end  
   
   private
 

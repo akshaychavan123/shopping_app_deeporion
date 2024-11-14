@@ -94,7 +94,7 @@ categories.each do |category_name, subcategories|
           name: "#{product_name} Item #{rand(1..100)}",
           brand: Faker::Company.name,
           description: Faker::Lorem.sentence,
-          size: ["XS", "S", "M", "L", "XL"].sample,
+          size: ["XS", "S", "M", "L", "XL", "XXL", "XXXL"].sample,
           material: Faker::Commerce.material,
           care: "Machine wash",
           product_code: unique_product_code,
@@ -136,9 +136,9 @@ categories.each do |category_name, subcategories|
           }
         ])        
 
-        sizes = ["XS", "S", "M", "L", "XL"]
+        sizes = ["XS", "S", "M", "L", "XL", "XXL", "XXXL"]
 
-        5.times do
+        7.times do
           variant_price = Faker::Commerce.price(range: 10..100)
 
           unique_size = sizes.pop 

@@ -407,18 +407,27 @@ RSpec.describe 'Api::V1::LandingPage', type: :request do
       tags 'Landing Page'
       produces 'application/json'
       security [bearerAuth: []]
-
+  
       parameter name: :category_id, in: :query, type: :integer, description: 'ID of the Category'
-      parameter name: :subcategory_id, in: :query, type: :integer, description: 'ID of the Subcategory'
-      parameter name: :product_id, in: :query, type: :integer, description: 'ID of the Product to fetch variant names and unique colors'
-
+      parameter name: :subcategory_ids, in: :query, type: :string, description: 'Comma-separated list of Subcategory IDs'
+      parameter name: :product_ids, in: :query, type: :string, description: 'Comma-separated list of Product IDs to fetch variant names and unique colors'
+  
       response(200, 'successful') do
+        schema type: :object,
+               properties: {
+                 categories: { type: :array, items: { type: :object } },
+                 subcategories: { type: :array, items: { type: :object } },
+                 products: { type: :array, items: { type: :object } },
+                 unique_colors: { type: :array, items: { type: :string } },
+                 variant_names: { type: :array, items: { type: :string } }
+               },
+               required: %w[categories subcategories products unique_colors variant_names]
         run_test!
       end
-
+  
       response(404, 'not found') do
         run_test!
       end
     end
-  end
+  end  
 end
