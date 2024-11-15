@@ -3077,6 +3077,96 @@ paths:
           description: not found
         '401':
           description: unauthorized
+  "/api/v2/product_review_manage":
+    get:
+      summary: list reviews
+      tags:
+      - Admin Reviews
+      parameters:
+      - name: category_id
+        in: query
+        description: Category ID
+        schema:
+          type: integer
+      security:
+      - bearerAuth2: []
+      responses:
+        '200':
+          description: successful
+        '404':
+          description: category not found
+  "/api/v2/product_review_manage/{id}":
+    delete:
+      summary: delete review
+      tags:
+      - Admin Reviews
+      security:
+      - bearerAuth2: []
+      parameters:
+      - name: id
+        in: path
+        description: Review ID
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: review deleted successfully
+        '404':
+          description: review not found
+  "/api/v2/product_review_manage/{id}/hide_review":
+    patch:
+      summary: hide review
+      tags:
+      - Admin Reviews
+      security:
+      - bearerAuth2: []
+      parameters:
+      - name: id
+        in: path
+        description: Review ID
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: review hidden successfully
+        '404':
+          description: review not found
+  "/api/v2/product_review_manage/{id}/product_reviews":
+    get:
+      summary: fetch product reviews
+      tags:
+      - Admin Reviews
+      security:
+      - bearerAuth2: []
+      parameters:
+      - name: id
+        in: path
+        description: Product Item ID
+        required: true
+        schema:
+          type: integer
+      - name: sort_by
+        in: query
+        description: Sort reviews by criteria (positive, negative, recent, hidden)
+        schema:
+          type: string
+      - name: page
+        in: query
+        description: Page number for pagination
+        schema:
+          type: integer
+      - name: per_page
+        in: query
+        description: Number of reviews per page
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: successful
+        '404':
+          description: product item not found
   "/api/v2/shipping_policies":
     get:
       summary: Retrieves all Shipping Policies

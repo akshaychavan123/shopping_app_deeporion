@@ -5,7 +5,7 @@ class Api::V1::ReviewsController < ApplicationController
   before_action :set_product_item, only: [:create, :index]
 
   def index
-    @reviews = @product_item.reviews.includes(:review_votes)
+    @reviews = @product_item.reviews.includes(:review_votes).where(deleted_at: nil)
   
     case params[:filter]
     when 'popular'

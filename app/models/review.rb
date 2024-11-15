@@ -6,4 +6,10 @@ class Review < ApplicationRecord
 
   validates :star, presence: true
   validates :review, presence: true
+
+  scope :active, -> { where(deleted_at: nil) }
+
+  def soft_delete
+    update(deleted_at: Time.current)
+  end
 end

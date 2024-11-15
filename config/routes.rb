@@ -12,11 +12,7 @@ Rails.application.routes.draw do
             get 'show_notification'
         end
       end
-      resources :reviews, only: [:create, :index] do
-        collection do
-          get :show_all_review
-        end
-      end
+      resources :reviews, only: [:create, :index] 
       resources :plans
       resources :instagramposts
       resources :review_votes, only: [:create]
@@ -147,6 +143,12 @@ Rails.application.routes.draw do
       resources :image_uploaders, only: [:index, :show, :create, :destroy] do
         collection do
           get 'images_by_name'
+        end
+      end
+      resources :product_review_manage, only: [:index, :destroy]  do
+        member do
+          patch 'hide_review', action: :hide_review
+          get 'product_reviews', action: :product_reviews
         end
       end
     end
