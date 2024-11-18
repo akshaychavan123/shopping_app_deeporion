@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   
   namespace :api do
     namespace :v1 do
+      resources :help_centers
       get 'user_notifications/index'
       get 'user_notifications/show'
       get 'user_notifications/mark_as_read'
