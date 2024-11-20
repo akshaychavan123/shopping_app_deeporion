@@ -124,11 +124,11 @@ class Api::V2::ProductReviewManageController < ApplicationController
 
    
   def product_item_image_url(product_item)
-    if product_item.product.image.attached?
+    if product_item.image.attached?
       host = base_url
       Rails.env.development? || Rails.env.test? ?
-        "#{host}#{Rails.application.routes.url_helpers.rails_blob_path(product_item.product.image, only_path: true)}" :
-        product_item.product.image.service.send(:object_for, product_item.product.image.key).public_url
+        "#{host}#{Rails.application.routes.url_helpers.rails_blob_path(product_item.image, only_path: true)}" :
+        product_item.image.service.send(:object_for, product_item.image.key).public_url
     end
   end
   
