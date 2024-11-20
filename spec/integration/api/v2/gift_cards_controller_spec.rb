@@ -21,11 +21,12 @@ RSpec.describe 'Api::V2::GiftCards', type: :request do
       parameter name: :gift_card, in: :formData, schema: {
         type: :object,
         properties: {
+          name:  { type: :string },
           images: { type: :array, items: { type: :file } },
           price: { type: :number, format: :decimal },
           gift_card_category_id: { type: :integer }
         },
-        required: [ 'images', 'price', 'gift_card_category_id' ]
+        required: [ 'name','images', 'price', 'gift_card_category_id' ]
       }
       response(201, 'created') do
         let(:gift_card) { { price: 50.0, gift_card_category_id: 1, images: [Rack::Test::UploadedFile.new('path/to/image1.jpg', 'image/jpeg'), Rack::Test::UploadedFile.new('path/to/image2.jpg', 'image/jpeg')] } }
@@ -66,6 +67,7 @@ RSpec.describe 'Api::V2::GiftCards', type: :request do
       parameter name: :gift_card, in: :formData, schema: {
         type: :object,
         properties: {
+          name:  { type: :string },
           images: { type: :array, items: { type: :file } },
           price: { type: :number, format: :decimal },
           gift_card_category_id: { type: :integer },

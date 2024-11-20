@@ -2661,6 +2661,8 @@ paths:
             schema:
               type: object
               properties:
+                name:
+                  type: string
                 images:
                   type: array
                   items:
@@ -2671,6 +2673,7 @@ paths:
                 gift_card_category_id:
                   type: integer
               required:
+              - name
               - images
               - price
               - gift_card_category_id
@@ -2711,6 +2714,8 @@ paths:
             schema:
               type: object
               properties:
+                name:
+                  type: string
                 images:
                   type: array
                   items:

@@ -59,7 +59,7 @@ class Api::V2::GiftCardsController < ApplicationController
   end
 
   def gift_card_params
-    params.permit(:gift_card_category_id, :price)
+    params.permit(:gift_card_category_id, :name, :price)
   end
 
   def check_user
