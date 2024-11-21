@@ -16,7 +16,7 @@ class Api::V1::ReviewsController < ApplicationController
     when 'latest'
       @reviews = @reviews.order(created_at: :desc)
     when 'my_reviews'
-      @reviews = @reviews.where(user: @current_user)
+      @reviews = @reviews.where(user: @current_user).order(created_at: :desc)
     end
   
     case params[:sort_by]
