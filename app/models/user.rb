@@ -11,15 +11,15 @@ class User < ApplicationRecord
 
   has_one :wishlist, dependent: :destroy
   has_one :cart, dependent: :destroy
-  has_many :reviews
-  has_many :review_votes
+  has_many :reviews, dependent: :destroy
+  has_many :review_votes, dependent: :destroy
   has_one_attached :image
   has_many :addresses, dependent: :destroy
   has_one :card_detail, dependent: :destroy
-  has_many :client_reviews
+  has_many :client_reviews, dependent: :destroy
   has_one :notification, dependent: :destroy
   has_many :devices, dependent: :destroy
-  has_many :orders
+  has_many :orders, dependent: :destroy
   has_many :user_product_items
   has_many :product_item_variants, through: :user_product_items
   has_many :user_notifications, dependent: :destroy
