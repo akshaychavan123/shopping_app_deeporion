@@ -145,7 +145,7 @@ class Api::V1::LandingPageController < ApplicationController
     end
 
     if params[:product_ids].present?
-      product_ids = params[:product_ids].split(',')
+      product_ids = params[:product_ids].split(',').map(&:to_i)
       @product_items = @product_items.where(product_id: product_ids)
     end
 
@@ -171,10 +171,20 @@ class Api::V1::LandingPageController < ApplicationController
     
       price_conditions = price_ranges.map do |range|
         min_price, max_price = range.split('-').map(&:to_f)
-        "(product_item_variants.price BETWEEN #{min_price} AND #{max_price})"
+        "(
+          EXISTS (
+            SELECT 1
+            FROM product_item_variants piv
+            WHERE piv.product_item_id = product_items.id
+              AND piv.id = (SELECT MIN(id) FROM product_item_variants WHERE product_item_id = product_items.id)
+              AND piv.price BETWEEN #{min_price} AND #{max_price}
+          )
+        )"
       end
+    
       @product_items = @product_items.where(price_conditions.join(' OR '))
     end
+    
     
     if params[:search].present?
       search_term = "%#{params[:search].downcase}%"
@@ -210,20 +220,20 @@ class Api::V1::LandingPageController < ApplicationController
         .select("product_items.*, COALESCE(MAX(coupons.amount_off), 0) AS max_discount")
         .group("product_items.id")
         .order("max_discount DESC")
-    when 'price_asc'
-      @product_items = @product_items
-        .joins(:product_item_variants)
-        .select('product_items.*, MIN(product_item_variants.price) AS variant_price')
-        .group('product_items.id')
-        .order('variant_price ASC')
-    when 'price_desc'
-      @product_items = @product_items
-        .joins(:product_item_variants)
-        .select('product_items.*, MIN(product_item_variants.price) AS variant_price')
-        .group('product_items.id')
-        .order('variant_price DESC')
-    end
-    
+        when 'price_asc'
+          @product_items = @product_items
+            .joins(:product_item_variants)
+            .select('product_items.*, product_item_variants.price AS first_variant_price')
+            .where("product_item_variants.id = (SELECT MIN(id) FROM product_item_variants WHERE product_item_variants.product_item_id = product_items.id)")
+            .order('first_variant_price ASC')
+        when 'price_desc'
+          @product_items = @product_items
+            .joins(:product_item_variants)
+            .select('product_items.*, product_item_variants.price AS first_variant_price')
+            .where("product_item_variants.id = (SELECT MIN(id) FROM product_item_variants WHERE product_item_variants.product_item_id = product_items.id)")
+            .order('first_variant_price DESC')
+        end
+
     @product_items = @product_items.page(params[:page]).per(params[:per_page])
   
     if @product_items.any?
