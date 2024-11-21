@@ -2,6 +2,7 @@ class GiftCard < ApplicationRecord
   belongs_to :gift_card_category
   has_many_attached :images
   has_many :card_orders
+  validates :name, presence: true
   validates :price, presence: true
 
   validate :image_sizes, if: -> { images.attached? }

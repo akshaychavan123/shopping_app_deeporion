@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <h1>Hello <%= @user_name %>,</h1>
+    <p>Your query has been resolved. Here are the details:</p>
+    <ul>
+      <li><strong>Contact Us Number:</strong> <%= @contact_us.id %></li>
+      <li><strong>Status:</strong> <%= @contact_us.status %></li>
+      <li><strong>Admin's Comment:</strong> <%= @contact_us.comment %></li>
+    </ul>
+    <p>Thank you for reaching out to us!</p>
+  </body>
+</html>

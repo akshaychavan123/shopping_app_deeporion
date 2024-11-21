@@ -87,7 +87,7 @@ Rails.application.routes.draw do
         end
       end
       
-      resources :contact_us
+      resources :contact_us, only: [:create]
 
       resources :wishlists, only: [] do
         get 'show_wishlistitems', to: 'wishlists#show_wishlistitems', on: :collection
@@ -152,6 +152,7 @@ Rails.application.routes.draw do
           get 'product_reviews', action: :product_reviews
         end
       end
+      resources :contact_us_manage, only: [:index, :show, :update]
     end
   end
 end
