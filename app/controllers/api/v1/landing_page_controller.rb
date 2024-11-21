@@ -197,20 +197,21 @@ class Api::V1::LandingPageController < ApplicationController
     when 'recommended'
       @product_items = @product_items.order(created_at: :desc).limit(2)
     when 'rating'
-      max_rating = @product_items
-      .joins("LEFT JOIN reviews ON reviews.product_item_id = product_items.id")
-      .group("product_items.id")
-      .having("COUNT(reviews.id) > 0")
-      .average("reviews.star")
-      .values
-      .map(&:to_f)
-      .max
-
+    max_rating = @product_items
+                     .joins("LEFT JOIN reviews ON reviews.product_item_id = product_items.id")
+                     .group("product_items.id")
+                     .having("COUNT(reviews.id) > 0")
+                     .average("reviews.star")
+                     .values
+                     .map(&:to_f)
+                     .max
+    
       @product_items = @product_items
-      .joins("LEFT JOIN reviews ON reviews.product_item_id = product_items.id")
-      .group("product_items.id")
-      .having("AVG(reviews.star) = ?", max_rating)
-      .order("AVG(reviews.star) DESC")
+                         .select("product_items.*, AVG(reviews.star) as average_rating")
+                         .joins("LEFT JOIN reviews ON reviews.product_item_id = product_items.id")
+                         .group("product_items.id")
+                         .having("AVG(reviews.star) = ?", max_rating)
+                         .order("average_rating DESC")    
     when 'discount'
       coupon_ids = Coupon.where("end_date > ? AND promo_type = ?", Time.current, 'discount_on_product').pluck(:id)
       product_ids = Coupon.where(id: coupon_ids).pluck(:product_ids).flatten.uniq
