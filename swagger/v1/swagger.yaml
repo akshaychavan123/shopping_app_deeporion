@@ -4729,6 +4729,10 @@ paths:
                   type: string
                 youtube_link:
                   type: string
+                twitter_link:
+                  type: string 
+                google_link:
+                  type: string 
   "/api/v1/users/{id}/show_profile":
     get:
       summary: Show User Profile

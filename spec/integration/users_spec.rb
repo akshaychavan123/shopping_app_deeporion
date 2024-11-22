@@ -104,12 +104,16 @@ RSpec.describe 'api/v1/users', type: :request do
           facebook_link: { type: :string },
           linkedin_link: { type: :string },
           instagram_link: { type: :string },
-          youtube_link: { type: :string }
+          youtube_link: { type: :string },
+          twitter_link: { type: :string }
+          google_link: { type: :string }
+
+          
         }
       }
 
       response '200', 'Profile updated' do
-        let(:profile) { { bio: 'Updated bio', facebook_link: 'https://facebook.com/user', linkedin_link: 'https://linkedin.com/in/user', instagram_link: 'https://instagram.com/user', youtube_link: 'https://youtube.com/user' } }
+        let(:profile) { { bio: 'Updated bio', facebook_link: 'https://facebook.com/user', linkedin_link: 'https://linkedin.com/in/user', instagram_link: 'https://instagram.com/user', youtube_link: 'https://youtube.com/user',twitter_link: 'https://twitter.com/user',google_link: 'https://google.com/user' } }
         run_test!
       end
 
