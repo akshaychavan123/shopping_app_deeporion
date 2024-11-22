@@ -65,11 +65,14 @@ RSpec.describe 'api/v1/user_notifications', type: :request do
         run_test!
       end
     end
+  end
 
+  path '/api/v1/user_notifications/{id}/mark_as_read' do
     patch 'Marks a notification as read' do
       tags 'User Notifications'
       produces 'application/json'
       security [bearerAuth: []]
+      parameter name: :id, in: :path, type: :string, description: 'Notification ID', required: true
 
       response '200', 'Notification marked as read' do
         let(:Authorization) { "Bearer #{JsonWebToken.encode(user_id: create(:user).id)}" }

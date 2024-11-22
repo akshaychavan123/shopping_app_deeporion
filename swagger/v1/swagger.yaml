@@ -1713,12 +1713,20 @@ paths:
           description: Notification not found
         '401':
           description: Unauthorized
+  "/api/v1/user_notifications/{id}/mark_as_read":
     patch:
       summary: Marks a notification as read
       tags:
       - User Notifications
       security:
       - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        description: Notification ID
+        required: true
+        schema:
+          type: string
       responses:
         '200':
           description: Notification marked as read
