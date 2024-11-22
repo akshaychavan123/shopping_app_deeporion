@@ -409,14 +409,12 @@ RSpec.describe 'Api::V1::LandingPage', type: :request do
       security [bearerAuth: []]
   
       parameter name: :category_id, in: :query, type: :integer, description: 'ID of the Category'
-      parameter name: :subcategory_ids, in: :query, type: :string, description: 'Comma-separated list of Subcategory IDs'
       parameter name: :product_ids, in: :query, type: :string, description: 'Comma-separated list of Product IDs to fetch variant names and unique colors'
   
       response(200, 'successful') do
         schema type: :object,
                properties: {
                  categories: { type: :array, items: { type: :object } },
-                 subcategories: { type: :array, items: { type: :object } },
                  products: { type: :array, items: { type: :object } },
                  unique_colors: { type: :array, items: { type: :string } },
                  variant_names: { type: :array, items: { type: :string } }

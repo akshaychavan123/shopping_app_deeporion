@@ -28,6 +28,7 @@ class FcmNotificationService
     end
   end
 
+  # em-zIGVMQV-zcgP9hVYR63:APA91b FdS4ZJgkYGj9Plcm16q1dQkPIPhJu QK6pb9p2J0oQV4Nkjzidg5aa3R4Xh AN7KzhMi7ikyZ8ojcLjGvGldrJrfBExi CddJJIE02p_ms9sOA9T7MDO
   # def send_notifications_to_user(user)
   #   devices = user.devices.where(is_active: true)
   #   devices.each do |device|

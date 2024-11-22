@@ -1185,11 +1185,6 @@ paths:
         description: ID of the Category
         schema:
           type: integer
-      - name: subcategory_ids
-        in: query
-        description: Comma-separated list of Subcategory IDs
-        schema:
-          type: string
       - name: product_ids
         in: query
         description: Comma-separated list of Product IDs to fetch variant names and
@@ -1205,10 +1200,6 @@ paths:
                 type: object
                 properties:
                   categories:
-                    type: array
-                    items:
-                      type: object
-                  subcategories:
                     type: array
                     items:
                       type: object
