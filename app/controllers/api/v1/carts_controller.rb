@@ -32,31 +32,6 @@ class Api::V1::CartsController < ApplicationController
     }, status: :ok
   end
 
-  # def apply_coupon
-  #   coupon = Coupon.find_by(promo_code: params[:promo_code])
-  
-  #   if coupon.present?
-  #     if coupon_valid?(coupon)
-  #       apply_coupon_to_cart(coupon)
-  
-  #       render json: {
-  #         message: 'Coupon applied successfully',
-  #         order_summary: {
-  #           subtotal: @subtotal + @discount,
-  #           discount: @discount,
-  #           taxes: @taxes,
-  #           delivery_charge: @delivery_charge,
-  #           total: @total
-  #         }
-  #       }, status: :ok
-  #     else
-  #       render json: { error: 'Coupon is invalid or expired' }, status: :unprocessable_entity
-  #     end
-  #   else
-  #     render json: { error: 'Coupon not found' }, status: :not_found
-  #   end
-  # end
-
   def apply_coupon
     coupon = Coupon.find_by(promo_code: params[:promo_code])
   
@@ -64,21 +39,17 @@ class Api::V1::CartsController < ApplicationController
       if coupon_valid?(coupon)
         apply_coupon_to_cart(coupon)
   
-        # Check if discount exceeds subtotal and handle that condition
         if @discount > @subtotal
           return render json: { error: 'Discount exceeds subtotal, coupon cannot be applied' }, status: :unprocessable_entity
         end
 
-        # Ensure the max_purchase condition is met
         if coupon.max_purchase.present? && @subtotal < coupon.max_purchase.to_f
           return render json: { error: "Minimum purchase of #{coupon.max_purchase} required to apply this coupon" }, status: :unprocessable_entity
         end
   
-        # Apply discount to subtotal
         @subtotal -= @discount
         @subtotal = [@subtotal, 0].max
   
-        # Recalculate taxes and total
         @taxes = @cart.cart_items.sum { |item| calculate_gst(item.product_item_variant.discounted_price) * item.quantity }
         @total = @subtotal + @taxes + @delivery_charge
   
@@ -117,30 +88,6 @@ class Api::V1::CartsController < ApplicationController
 
     true
   end
-
-  # def apply_coupon_to_cart(coupon)
-  #   calculate_order_summary
-  
-  #   if @subtotal >= coupon.max_purchase.to_f
-  #     if coupon.discount_on_amount?
-  #       if coupon.percentage?
-  #         discount_percent = coupon.amount_off
-  #         @discount = (@subtotal * (discount_percent / 100.0)).round(2)
-  #       elsif coupon.amount?
-  #         @discount = coupon.amount_off.to_f
-  #       else
-  #         @discount = 0.0
-  #       end
-  
-  #       @subtotal -= @discount
-  #       @subtotal = [@subtotal, 0].max
-  #     end
-  
-  #     @taxes = @cart.cart_items.sum { |item| calculate_gst(item.product_item_variant.discounted_price) * item.quantity }
-  #     @total = @subtotal + @taxes + @delivery_charge
-  #     # CouponUsage.create(user_id: @current_user.id, coupon_id: coupon.id)
-  #   end
-  # end
   
   def apply_coupon_to_cart(coupon)
     calculate_order_summary
