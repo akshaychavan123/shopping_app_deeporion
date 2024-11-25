@@ -105,10 +105,8 @@ RSpec.describe 'api/v1/users', type: :request do
           linkedin_link: { type: :string },
           instagram_link: { type: :string },
           youtube_link: { type: :string },
-          twitter_link: { type: :string }
+          twitter_link: { type: :string },
           google_link: { type: :string }
-
-          
         }
       }
 

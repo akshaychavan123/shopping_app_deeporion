@@ -104,7 +104,8 @@ RSpec.describe 'Api::V1::LandingPage', type: :request do
       tags 'Landing Page'
       produces 'application/json'
       security [bearerAuth: []]
-
+      parameter name: :page, in: :query, type: :integer, description: 'Page number for pagination'
+      parameter name: :per_page, in: :query, type: :integer, description: 'Number of items per page for pagination'  
       response(200, 'successful') do
         run_test!
       end
@@ -409,6 +410,7 @@ RSpec.describe 'Api::V1::LandingPage', type: :request do
       security [bearerAuth: []]
   
       parameter name: :category_id, in: :query, type: :integer, description: 'ID of the Category'
+      parameter name: :subcategory_ids, in: :query, type: :string, description: 'Comma-separated list of Subcategory IDs'
       parameter name: :product_ids, in: :query, type: :string, description: 'Comma-separated list of Product IDs to fetch variant names and unique colors'
   
       response(200, 'successful') do

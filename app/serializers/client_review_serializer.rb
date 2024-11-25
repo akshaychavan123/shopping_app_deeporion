@@ -1,9 +1,13 @@
 class ClientReviewSerializer < ActiveModel::Serializer
-  attributes :id, :star, :review, :user_name, :user_image, :created_at, :created_time
+  attributes :id, :star, :review, :user_name, :user_id, :user_image, :created_at, :created_time
   include ActionView::Helpers::DateHelper
 
   def user_name
     object.user.name
+  end
+
+  def user_id
+    object.user_id
   end
 
   def user_image

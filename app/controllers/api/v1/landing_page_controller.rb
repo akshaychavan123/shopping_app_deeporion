@@ -86,7 +86,7 @@ class Api::V1::LandingPageController < ApplicationController
 
   def product_items_of_product
     @product = Product.find_by(id: params[:id])
-    
+
     if @product
       @product_items = @product.product_items
       .joins(:product_item_variants)
@@ -106,7 +106,7 @@ class Api::V1::LandingPageController < ApplicationController
   
   def product_items_show
     @product_item = ProductItem.includes(:product_item_variants).find_by(id: params[:id])
-    UserProductItem.create(user_id: @current_user.id, product_item_variant_id: @product_item.id)
+    UserProductItem.create(user_id: @current_user.id, product_item_id: @product_item.id)
     if @product_item
       review_summary = calculate_review_summary(@product_item.id)
       render json: { data: ActiveModelSerializers::SerializableResource.new(@product_item, serializer: ProductItemSerializer, current_user: @current_user), summary: review_summary }
@@ -116,14 +116,27 @@ class Api::V1::LandingPageController < ApplicationController
   end
 
   def recent_viewed_product_items
-    @product_item =  @current_user.user_product_items.map{|a| a.product_item_variant}.uniq
-
-    if @product_item
-      render json: { data: @product_item}
+    product_items = @current_user.user_product_items
+      .includes(:product_item)            
+      .order(created_at: :desc)          
+      .map(&:product_item)                
+      .uniq                              
+    
+    paginated_product_items = Kaminari.paginate_array(product_items).page(params[:page]).per(params[:per_page])
+  
+    if paginated_product_items.present?
+      render json: {
+        data: ActiveModelSerializers::SerializableResource.new(
+          paginated_product_items,
+          each_serializer: ProductItem2Serializer,
+          current_user: @current_user
+        ),
+        meta: pagination_meta(paginated_product_items)  
+      }, status: :ok
     else
       render json: { errors: ['No recently viewed product items found'] }, status: :not_found
     end
-  end
+  end  
   
   def product_items_filter
   
