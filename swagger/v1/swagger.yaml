@@ -777,6 +777,17 @@ paths:
       - Landing Page
       security:
       - bearerAuth: []
+      parameters:
+      - name: page
+        in: query
+        description: Page number for pagination
+        schema:
+          type: integer
+      - name: per_page
+        in: query
+        description: Number of items per page for pagination
+        schema:
+          type: integer
       responses:
         '200':
           description: successful
@@ -1185,6 +1196,11 @@ paths:
         description: ID of the Category
         schema:
           type: integer
+      - name: subcategory_ids
+        in: query
+        description: Comma-separated list of Subcategory IDs
+        schema:
+          type: string
       - name: product_ids
         in: query
         description: Comma-separated list of Product IDs to fetch variant names and
@@ -4729,9 +4745,9 @@ paths:
                 youtube_link:
                   type: string
                 twitter_link:
-                  type: string 
+                  type: string
                 google_link:
-                  type: string 
+                  type: string
   "/api/v1/users/{id}/show_profile":
     get:
       summary: Show User Profile
