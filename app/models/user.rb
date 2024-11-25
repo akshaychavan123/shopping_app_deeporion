@@ -1,6 +1,7 @@
 class User < ApplicationRecord
   has_secure_password
-  before_validation :downcase_email
+  before_validation :downcase_email, unless: -> { phone_number.present? }
+  validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP, message: "must be a valid email address" }, uniqueness: true, unless: -> { phone_number.present? }
 
   validates :password, format: { with: /\A(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}\z/,
   message: "must be at least 8 characters long, include at least one uppercase letter, one lowercase letter, and one number"}, if: :password_digest_changed?
@@ -11,15 +12,15 @@ class User < ApplicationRecord
 
   has_one :wishlist, dependent: :destroy
   has_one :cart, dependent: :destroy
-  has_many :reviews
-  has_many :review_votes
+  has_many :reviews, dependent: :destroy
+  has_many :review_votes, dependent: :destroy
   has_one_attached :image
   has_many :addresses, dependent: :destroy
   has_one :card_detail, dependent: :destroy
-  has_many :client_reviews
+  has_many :client_reviews, dependent: :destroy
   has_one :notification, dependent: :destroy
   has_many :devices, dependent: :destroy
-  has_many :orders
+  has_many :orders, dependent: :destroy
   has_many :user_product_items
   has_many :product_item_variants, through: :user_product_items
   has_many :user_notifications, dependent: :destroy

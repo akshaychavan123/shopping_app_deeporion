@@ -3,16 +3,23 @@ class Api::V1::WishlistItemsController < ApplicationController
   before_action :set_wishlist, only: [:add_to_cart, :create]
 
   def create
-    @wishlist = Wishlist.find_by(user: @current_user)
+    @wishlist = Wishlist.find_or_create_by(user: @current_user)
     @product_item = ProductItem.find(params[:product_item_id])
-    @wishlist_item = @wishlist.wishlist_items.build(product_item: @product_item)
-
-    if @wishlist_item.save
-      render json: @wishlist_item, status: :created
+    existing_wishlist_item = @wishlist.wishlist_items.find_by(product_item: @product_item)
+  
+    if existing_wishlist_item
+      existing_wishlist_item.destroy
+      render json: { message: 'Item removed from wishlist' }, status: :ok
     else
-      render json: @wishlist_item.errors, status: :unprocessable_entity
+      @wishlist_item = @wishlist.wishlist_items.build(product_item: @product_item)
+  
+      if @wishlist_item.save
+        render json: { message: 'Item added to wishlist', data: @wishlist_item }, status: :created
+      else
+        render json: @wishlist_item.errors, status: :unprocessable_entity
+      end
     end
-  end
+  end  
 
   def destroy
     @wishlist_item = WishlistItem.find_by(id: params[:id])

@@ -28,13 +28,6 @@ class FcmNotificationService
     end
   end
 
-  # def send_notifications_to_user(user)
-  #   devices = user.devices.where(is_active: true)
-  #   devices.each do |device|
-  #     send_fcm_message(device.device_token)
-  #   end
-  # end
-
   def send_notifications_to_user(user)
     devices = user.devices.where(is_active: true)
     devices.each do |device|

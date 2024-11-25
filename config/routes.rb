@@ -5,9 +5,6 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :help_centers
-      get 'user_notifications/index'
-      get 'user_notifications/show'
-      get 'user_notifications/mark_as_read'
       resources :notification, only: [:update] do 
         collection do
             get 'show_notification'
@@ -106,6 +103,10 @@ Rails.application.routes.draw do
             delete 'remove_or_move_to_wishlist'
           end
         end
+      end
+
+      resources :user_notifications, only: [:index, :show] do
+        patch :mark_as_read, on: :member
       end
     end
 

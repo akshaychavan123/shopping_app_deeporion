@@ -12,11 +12,14 @@ class CouponNotificationService
   def send_email_and_sms_notifications
     User.includes(:notification).where.not(email: nil).find_each do |user|
       if user.notification&.email
-        CouponMailer.new_coupon_email(user, @coupon).deliver_later
+        CouponMailer.new_coupon_email(user, @coupon).deliver_now
       end
     end
-    # if user.notification&.sms
-    #   # ::CouponSmsNotificationService.new(@coupon).call
-    # end
+
+    User.includes(:notification).where.not(full_phone_number: nil).find_each do |user|
+      if user.notification&.sms
+        ::CouponSmsNotificationService.new(@coupon).call
+      end
+    end
   end
 end

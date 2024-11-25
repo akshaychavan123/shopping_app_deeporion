@@ -1185,11 +1185,6 @@ paths:
         description: ID of the Category
         schema:
           type: integer
-      - name: subcategory_ids
-        in: query
-        description: Comma-separated list of Subcategory IDs
-        schema:
-          type: string
       - name: product_ids
         in: query
         description: Comma-separated list of Product IDs to fetch variant names and
@@ -1205,10 +1200,6 @@ paths:
                 type: object
                 properties:
                   categories:
-                    type: array
-                    items:
-                      type: object
-                  subcategories:
                     type: array
                     items:
                       type: object
@@ -1722,12 +1713,20 @@ paths:
           description: Notification not found
         '401':
           description: Unauthorized
+  "/api/v1/user_notifications/{id}/mark_as_read":
     patch:
       summary: Marks a notification as read
       tags:
       - User Notifications
       security:
       - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        description: Notification ID
+        required: true
+        schema:
+          type: string
       responses:
         '200':
           description: Notification marked as read
@@ -4729,6 +4728,10 @@ paths:
                   type: string
                 youtube_link:
                   type: string
+                twitter_link:
+                  type: string 
+                google_link:
+                  type: string 
   "/api/v1/users/{id}/show_profile":
     get:
       summary: Show User Profile
