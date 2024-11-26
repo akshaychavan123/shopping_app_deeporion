@@ -1,6 +1,6 @@
 class ProductItemSerializer < ActiveModel::Serializer
   attributes :id, :name, :brand, :is_tax_inclusive, :image, :photos, :height,
-             :expected_delivery, :product_code, :payment_method, :is_favorite, :product_id, :productdetails, :specification,:created_at
+             :expected_delivery, :product_code, :payment_method, :is_favorite, :product_id, :productdetails, :specification,:created_at, :in_stock
 
   has_many :product_item_variants, serializer: ProductItemVariantSerializer
 

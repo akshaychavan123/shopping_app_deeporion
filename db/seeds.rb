@@ -109,7 +109,8 @@ categories.each do |category_name, subcategories|
           length: ["Full Length", "3/4 Length", "Short"].sample,
           occasion: ["Casual", "Formal", "Party"].sample,
           color: Faker::Color.color_name,
-          height: "#{rand(140..200)} cm"
+          height: "#{rand(140..200)} cm",
+          in_stock: true
         )
 
         product_item.image.attach(

@@ -225,11 +225,14 @@ paths:
                   type: string
                 cvv:
                   type: string
+                card_type:
+                  type: string
               required:
               - holder_name
               - card_number
               - expiry_date
               - cvv
+              - type
     put:
       summary: Updates Card Details
       tags:
@@ -258,11 +261,14 @@ paths:
                   type: string
                 cvv:
                   type: string
+                card_type:
+                  type: string
               required:
               - holder_name
               - card_number
               - expiry_date
               - cvv
+              - type
     delete:
       summary: Deletes Card Details
       tags:
@@ -3196,6 +3202,8 @@ paths:
                   type: string
                 color:
                   type: string
+                in_stock:
+                  type: boolean
     delete:
       summary: delete product_item
       tags:
