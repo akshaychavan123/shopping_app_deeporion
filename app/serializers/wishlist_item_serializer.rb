@@ -1,5 +1,5 @@
 class WishlistItemSerializer < ActiveModel::Serializer
-  attributes :id, :product_item_id, :product_item_name, :product_item_brand, :price_of_first_variant, :rating_and_review, :image
+  attributes :id, :product_item_id, :product_item_name, :product_item_brand, :price_of_first_variant, :rating_and_review, :image, :in_stock
 
   def product_item_id
     object.product_item_id
@@ -15,6 +15,10 @@ class WishlistItemSerializer < ActiveModel::Serializer
 
   def price_of_first_variant
     object.product_item.product_item_variants&.first&.discounted_price
+  end
+
+  def product_item_stock_statuc
+    object.product_item&.in_stock
   end
 
   def image

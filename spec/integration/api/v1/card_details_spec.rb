@@ -43,9 +43,10 @@ RSpec.describe 'api/v1/card_details', type: :request do
           holder_name: { type: :string },
           card_number: { type: :string },
           expiry_date: { type: :string },
-          cvv: { type: :string }
+          cvv: { type: :string },
+          card_type: { type: :string }
         },
-        required: %w[holder_name card_number expiry_date cvv]
+        required: %w[holder_name card_number expiry_date cvv type]
       }
 
       response '201', 'card detail created' do
@@ -77,9 +78,10 @@ RSpec.describe 'api/v1/card_details', type: :request do
           holder_name: { type: :string },
           card_number: { type: :string },
           expiry_date: { type: :string },
-          cvv: { type: :string }
+          cvv: { type: :string },
+          card_type: { type: :string }
         },
-        required: %w[holder_name card_number expiry_date cvv]
+        required: %w[holder_name card_number expiry_date cvv type]
       }
 
       response '200', 'card detail updated' do

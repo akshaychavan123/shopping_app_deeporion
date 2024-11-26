@@ -25,6 +25,7 @@ class Api::V2::ProductItemsController < ApplicationController
     @product = Product.find_by(id: params[:product_id])
     @product_item = @product.product_items.new(product_items_params)
     @product_item.product_code = generate_product_code
+    @product_item.in_stock = true 
 
     if params[:image].present?
       @product_item.image.attach(params[:image])
@@ -70,7 +71,7 @@ class Api::V2::ProductItemsController < ApplicationController
   private
 
   def product_items_params
-    params.permit(:name, :brand, :price, :discounted_price, :description, :material, :care, :product_code, :care_instructions, :fabric, :hemline, :neck, :texttile_thread, :size_and_fit, :main_trend, :knite_or_woven, :length ,:height, :occasion, :color)
+    params.permit(:name, :brand, :price, :discounted_price, :description, :material, :care, :product_code, :care_instructions, :fabric, :hemline, :neck, :texttile_thread, :size_and_fit, :main_trend, :knite_or_woven, :length ,:height, :occasion, :color, :in_stock)
   end  
 
   def set_product_items
