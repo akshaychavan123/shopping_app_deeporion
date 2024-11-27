@@ -5,14 +5,14 @@ class Api::V1::ReviewsController < ApplicationController
   before_action :set_product_item, only: [:create, :index]
 
   def index
-    @reviews = @product_item.reviews.includes(:review_votes).where(deleted_at: nil)
+    @reviews = @product_item.reviews.includes(:review_votes).where(deleted_at: nil).order(created_at: :desc)
   
     case params[:filter]
     when 'popular'
       @reviews = @reviews.left_joins(:review_votes)
                          .group('reviews.id')
                          .having('COUNT(review_votes.id) > 0')
-                         .order('COUNT(review_votes.id) DESC, reviews.created_at DESC')
+                         .order(created_at: :desc)
     when 'latest'
       @reviews = @reviews.order(created_at: :desc)
     when 'my_reviews'
