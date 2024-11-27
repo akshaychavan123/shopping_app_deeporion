@@ -106,7 +106,9 @@ class Api::V1::LandingPageController < ApplicationController
   
   def product_items_show
     @product_item = ProductItem.includes(:product_item_variants).find_by(id: params[:id])
-    UserProductItem.create(user_id: @current_user.id, product_item_id: @product_item.id)
+    user_product_item = UserProductItem.find_or_initialize_by(user_id: @current_user.id, product_item_id: @product_item.id)
+    user_product_item.save! if user_product_item.new_record?
+
     if @product_item
       review_summary = calculate_review_summary(@product_item.id)
       render json: { data: ActiveModelSerializers::SerializableResource.new(@product_item, serializer: ProductItemSerializer, current_user: @current_user), summary: review_summary }
