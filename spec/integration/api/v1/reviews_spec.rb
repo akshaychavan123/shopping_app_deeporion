@@ -10,7 +10,11 @@ RSpec.describe 'Api::V1::Reviews', type: :request do
         type: :object,
         properties: {
           star: { type: :integer },
-          images_and_videos: {
+          images {
+              type: :array,
+              items: { type: :string, format: :binary }
+            },
+          videos: {
               type: :array,
               items: { type: :string, format: :binary }
             },

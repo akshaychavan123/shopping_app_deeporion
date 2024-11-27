@@ -1,5 +1,5 @@
 class AdminReviewSerializer < ActiveModel::Serializer
-  attributes :id, :reviewer_name, :reviewer_image, :star, :review, :images_and_videos, 
+  attributes :id, :reviewer_name, :reviewer_image, :star, :review, :images, :videos, 
              :helpful_true_count, :helpful_false_count, :total_review_count, 
              :created_time
 

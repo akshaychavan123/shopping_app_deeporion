@@ -37,20 +37,25 @@ class Api::V1::ReviewsController < ApplicationController
       meta: pagination_meta(@reviews)
     }
   end
-
+  
   def create
     @review = @product_item.reviews.new(review_params)
     @review.user = @current_user
-  
-    if @review.save
-
-      if params[:images_and_videos].present?
-        Array(params[:images_and_videos]).each do |media|
-          @review.images_and_videos.attach(media)
+    
+      if params[:images].present?
+        Array(params[:images]).each do |image|
+          @review.images.attach(image) 
         end
       end
   
-      render json: { 
+      if params[:videos].present?
+        Array(params[:videos]).each do |video|
+          @review.videos.attach(video) 
+        end
+      end
+   
+    if @review.save
+      render json: {
         reviews: ActiveModelSerializers::SerializableResource.new(@review, serializer: Review2Serializer)
       }, status: :created
     else
@@ -67,7 +72,7 @@ class Api::V1::ReviewsController < ApplicationController
   def review_params
     params.permit(:star, :review)
   end
-
+ 
   def pagination_meta(collection)
     {
       current_page: collection.current_page,
