@@ -4379,6 +4379,49 @@ paths:
               required:
               - order_item_id
               - reason
+  "/api/v1/orders/exchange_order":
+    post:
+      summary: Handles exchange request for an order item
+      tags:
+      - Orders
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: order_id
+        in: query
+        description: Order ID
+        required: true
+        schema:
+          type: integer
+      - name: order_item_id
+        in: query
+        description: Order Item ID
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: Exchange request created successfully
+        '404':
+          description: Order or Order Item not found
+        '422':
+          description: Exchange already in process or cannot be exchanged
+        '401':
+          description: Unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+                  description: Reason for exchange request
+                more_information:
+                  type: string
+                  description: Additional information for the exchange
+              required:
+              - reason
   "/api/v1/orders/order_history":
     get:
       summary: Retrieves the order history for the current user

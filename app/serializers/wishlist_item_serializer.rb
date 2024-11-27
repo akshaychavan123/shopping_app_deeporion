@@ -14,7 +14,7 @@ class WishlistItemSerializer < ActiveModel::Serializer
   end
 
   def price_of_first_variant
-    object.product_item.product_item_variants&.first&.discounted_price
+    object.product_item.product_item_variants&.first&.price
   end
 
   def product_item_stock_status

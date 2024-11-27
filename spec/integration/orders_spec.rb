@@ -134,6 +134,44 @@ RSpec.describe 'api/v1/orders', type: :request do
     end
   end
 
+  path '/api/v1/orders/exchange_order' do
+    post 'Handles exchange request for an order item' do
+      tags 'Orders'
+      consumes 'application/json'
+      security [bearerAuth: []]
+      parameter name: :order_id, in: :query, type: :integer, description: 'Order ID', required: true
+      parameter name: :order_item_id, in: :query, type: :integer, description: 'Order Item ID', required: true
+      parameter name: :reason, in: :body, schema: {
+        type: :object,
+        properties: {
+          reason: { type: :string, description: 'Reason for exchange request' },
+          more_information: { type: :string, description: 'Additional information for the exchange' }
+        },
+        required: ['reason']
+      }
+
+      response '200', 'Exchange request created successfully' do
+        run_test! 
+      end
+
+      response '404', 'Order or Order Item not found' do
+        run_test! 
+      end
+
+      response '422', 'Invalid request or exchange not allowed' do
+        run_test! 
+      end
+
+      response '422', 'Exchange already in process or cannot be exchanged' do
+        run_test! 
+      end
+
+      response '401', 'Unauthorized' do
+        run_test! 
+      end
+    end
+  end
+
   path '/api/v1/orders/order_history' do
     get 'Retrieves the order history for the current user' do
       tags 'Orders'
