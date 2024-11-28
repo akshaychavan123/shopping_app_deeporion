@@ -34,12 +34,21 @@ class AdminReviewSerializer < ActiveModel::Serializer
     time_ago_in_words(object.created_at)
   end
 
-  def images_and_videos
+  def images
     host = base_url
-    object.images_and_videos.map do |photo|
+    object.images.map do |photo|
       Rails.env.development? || Rails.env.test? ?
         "#{host}#{Rails.application.routes.url_helpers.rails_blob_path(photo, only_path: true)}" :
         photo.service.send(:object_for, photo.key).public_url
+    end
+  end
+             
+  def videos
+    host = base_url
+    object.videos.map do |video|
+      Rails.env.development? || Rails.env.test? ?
+        "#{host}#{Rails.application.routes.url_helpers.rails_blob_path(video, only_path: true)}" :
+        video.service.send(:object_for, video.key).public_url
     end
   end
 
