@@ -154,6 +154,22 @@ class Api::V1::OrdersController < ApplicationController
     end
   end
 
+  def order_item_details
+    @order = @current_user.orders.find_by(id: params[:order_id])
+    unless @order
+      render json: { message: 'Order not found' }, status: :not_found
+      return
+    end
+  
+    @order_item = @order.order_items.find_by(id: params[:order_item_id])
+    unless @order_item
+      render json: { message: 'Order item not found' }, status: :not_found
+      return
+    end
+  
+    render json: @order_item, serializer: OrderItemDetailSerializer, status: :ok
+  end  
+
   private
 
   def updating_price_of_order_after_remove_some_ordere_item_from_order(order, order_item)

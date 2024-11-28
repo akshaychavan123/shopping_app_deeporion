@@ -2,6 +2,7 @@ class OrderItem < ApplicationRecord
   belongs_to :order
   belongs_to :product_item
   has_many :returns, dependent: :destroy
+  belongs_to :product_item_variant, optional: true
 
   validates :product_item_id, presence: true
   validates :product_item_variant_id, presence: true

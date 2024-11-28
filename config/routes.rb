@@ -82,6 +82,7 @@ Rails.application.routes.draw do
           post 'cancel'
           post 'exchange_order'
           get 'order_history'
+          get 'order_item_details'
         end
       end
       

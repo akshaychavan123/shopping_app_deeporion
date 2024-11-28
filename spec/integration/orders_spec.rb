@@ -212,4 +212,31 @@ RSpec.describe 'api/v1/orders', type: :request do
       end
     end
   end
+
+  path '/api/v1/orders/order_item_details' do
+    get 'Fetch order item details' do
+      tags 'Orders'
+      produces 'application/json'
+      security [bearerAuth: []]
+      parameter name: :order_id, in: :query, type: :integer, required: true, description: 'Order ID'
+      parameter name: :order_item_id, in: :query, type: :integer, required: true, description: 'Order Item ID'
+  
+
+      response '200', 'Order item details retrieved successfully' do
+        run_test!
+      end
+
+      response '404', 'Order not found' do
+        run_test!
+      end
+
+      response '404', 'Order item not found' do
+        run_test!
+      end
+
+      response '401', 'Unauthorized' do
+        run_test!
+      end
+    end
+  end
 end
