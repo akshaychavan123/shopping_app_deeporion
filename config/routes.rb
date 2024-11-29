@@ -1,7 +1,6 @@
 Rails.application.routes.draw do
   mount Rswag::Ui::Engine => '/api-docs'
   mount Rswag::Api::Engine => '/api-docs'
-  
   namespace :api do
     namespace :v1 do
       resources :help_centers
@@ -80,7 +79,9 @@ Rails.application.routes.draw do
         collection do
           post 'callback'
           post 'cancel'
+          post 'exchange_order'
           get 'order_history'
+          get 'order_item_details'
         end
       end
       
@@ -109,7 +110,6 @@ Rails.application.routes.draw do
         patch :mark_as_read, on: :member
       end
     end
-
     namespace :v2 do
       get 'product_items/admin_product_list/:product_id', to: 'product_items#admin_product_list'
       resources :product_item_variants, only: [:create, :update]
