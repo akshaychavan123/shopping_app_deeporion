@@ -1661,6 +1661,67 @@ paths:
                   - updated_at
         '404':
           description: not found
+  "/api/v1/reviews/{id}":
+    put:
+      summary: Update Review
+      tags:
+      - Reviews
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Review ID
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: updated successfully
+        '403':
+          description: not authorized
+        '404':
+          description: not found
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                star:
+                  type: integer
+                review:
+                  type: string
+                images:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                videos:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+    delete:
+      summary: Delete Review
+      tags:
+      - Reviews
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: Review ID
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: deleted successfully
+        '403':
+          description: not authorized
+        '404':
+          description: not found
   "/api/v1/user_notifications":
     get:
       summary: Retrieves all notifications for the current user

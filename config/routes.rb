@@ -10,7 +10,7 @@ Rails.application.routes.draw do
             get 'show_notification'
         end
       end
-      resources :reviews, only: [:create, :index] 
+      resources :reviews, only: [:create, :index, :update, :destroy] 
       resources :plans
       resources :instagramposts
       resources :review_votes, only: [:create]

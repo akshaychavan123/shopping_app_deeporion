@@ -1,7 +1,6 @@
 class Api::V1::ReviewsController < ApplicationController
-  before_action :authorize_request, only: :create
-  before_action :set_current_user, only: [:index]
-
+  before_action :authorize_request, only: [:create, :update, :destroy]
+  before_action :set_review, only: [:update, :destroy]
   before_action :set_product_item, only: [:create, :index]
 
   def index
@@ -62,11 +61,55 @@ class Api::V1::ReviewsController < ApplicationController
       render json: { errors: @review.errors.full_messages }, status: :unprocessable_entity
     end
   end
+
+  def update
+    if @review.user != @current_user
+      render json: { error: 'You are not authorized to update this review' }, status: :forbidden
+      return
+    end
+
+    if params[:images].present?
+      @review.images.purge
+      Array(params[:images]).each { |image| @review.images.attach(image) }
+    end
+
+    if params[:videos].present?
+      @review.videos.purge
+      Array(params[:videos]).each { |video| @review.videos.attach(video) }
+    end
+
+    if @review.update(review_params)
+      render json: {
+        message: 'Review updated successfully',
+        review: ActiveModelSerializers::SerializableResource.new(@review, serializer: Review2Serializer)
+      }, status: :ok
+    else
+      render json: { errors: @review.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
+  def destroy
+    if @review.user != @current_user
+      render json: { error: 'You are not authorized to delete this review' }, status: :forbidden
+      return
+    end
+
+    @review.destroy
+    render json: { message: 'Review deleted successfully' }, status: :ok
+  end
   
   private
 
   def set_product_item
     @product_item = ProductItem.find(params[:product_item_id])
+  end
+
+  def set_review
+    @review = Review.find_by(id: params[:id])
+
+    unless @review
+      render json: { error: 'Review not found' }, status: :not_found
+    end
   end
 
   def review_params
