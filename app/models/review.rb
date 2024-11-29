@@ -23,8 +23,8 @@ class Review < ApplicationRecord
     return unless images.attached?
 
     images.each do |image|
-      if image.blob.byte_size < 50.kilobytes || image.blob.byte_size > 100.kilobytes
-        errors.add(:images, "each image must be between 50 KB and 100 KB")
+      if image.blob.byte_size > 100.kilobytes 
+        errors.add(:images, "each must be up to 100 KB")
       end
     end
   end
@@ -34,7 +34,7 @@ class Review < ApplicationRecord
 
     videos.each do |video|
       if video.blob.byte_size > 1.megabyte
-        errors.add(:videos, "each video must be up to 1 MB")
+        errors.add(:videos, "each must be up to 1 MB")
       end
     end
   end

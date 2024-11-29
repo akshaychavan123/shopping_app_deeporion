@@ -80,9 +80,7 @@ Rails.application.routes.draw do
         collection do
           post 'callback'
           post 'cancel'
-          post 'exchange_order'
           get 'order_history'
-          get 'order_item_details'
         end
       end
       
@@ -155,7 +153,7 @@ Rails.application.routes.draw do
           get 'product_reviews', action: :product_reviews
         end
       end
-      resources :contact_us_manage, only: [:index, :show, :update]
+      resources :contact_us_manage, only: [:index, :show, :update, :destroy]
     end
   end
 end

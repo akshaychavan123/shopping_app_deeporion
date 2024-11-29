@@ -69,5 +69,26 @@ RSpec.describe 'Api::V2::ContactUsManage', type: :request do
         run_test!
       end
     end
+
+    delete 'Delete a specific ContactUs entry' do
+      tags 'ContactUs Management'
+      security [bearerAuth2: []]
+      parameter name: :id, in: :path, type: :integer, description: 'ContactUs ID'
+
+      response '204', 'ContactUs entry deleted successfully' do
+        let(:id) { ContactUs.create!.id } 
+        run_test!
+      end
+
+      response '404', 'ContactUs entry not found' do
+        let(:id) { -1 } 
+        run_test!
+      end
+
+      response '401', 'Unauthorized' do
+        let(:Authorization) { nil } 
+        run_test!
+      end
+    end
   end
 end
