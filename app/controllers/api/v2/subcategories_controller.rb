@@ -5,7 +5,7 @@ class Api::V2::SubcategoriesController < ApplicationController
   before_action :check_user
 
   def index
-    @subcategories = @category.subcategories
+    @subcategories = @category.subcategories.order(created_at: :asc)
     render json: @subcategories
   end
 

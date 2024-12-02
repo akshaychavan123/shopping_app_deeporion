@@ -12,7 +12,7 @@ class OrderItemDetailSerializer < ActiveModel::Serializer
       if Rails.env.development? || Rails.env.test?
         Rails.application.routes.url_helpers.rails_blob_path(product_item.image, only_path: true, host: host)
       else
-        productitem.image.service.send(:object_for, productitem.image.key).public_url
+        product_item.image.service.send(:object_for, product_item.image.key).public_url
       end
     end   
 
