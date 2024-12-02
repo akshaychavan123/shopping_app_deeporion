@@ -1,7 +1,6 @@
 Rails.application.routes.draw do
   mount Rswag::Ui::Engine => '/api-docs'
   mount Rswag::Api::Engine => '/api-docs'
-  
   namespace :api do
     namespace :v1 do
       resources :help_centers
@@ -111,7 +110,6 @@ Rails.application.routes.draw do
         patch :mark_as_read, on: :member
       end
     end
-
     namespace :v2 do
       get 'product_items/admin_product_list/:product_id', to: 'product_items#admin_product_list'
       resources :product_item_variants, only: [:create, :update]
@@ -155,7 +153,7 @@ Rails.application.routes.draw do
           get 'product_reviews', action: :product_reviews
         end
       end
-      resources :contact_us_manage, only: [:index, :show, :update]
+      resources :contact_us_manage, only: [:index, :show, :update, :destroy]
     end
   end
 end

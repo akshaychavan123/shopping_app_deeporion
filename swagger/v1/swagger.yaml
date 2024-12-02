@@ -2448,6 +2448,26 @@ paths:
                       example: Resolved successfully
                   required:
                   - status
+    delete:
+      summary: Delete a specific ContactUs entry
+      tags:
+      - ContactUs Management
+      security:
+      - bearerAuth2: []
+      parameters:
+      - name: id
+        in: path
+        description: ContactUs ID
+        required: true
+        schema:
+          type: integer
+      responses:
+        '204':
+          description: ContactUs entry deleted successfully
+        '404':
+          description: ContactUs entry not found
+        '401':
+          description: Unauthorized
   "/api/v2/coupons":
     get:
       summary: list coupons
