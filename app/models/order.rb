@@ -11,17 +11,12 @@ class Order < ApplicationRecord
   validates :receipt_number, presence: true, uniqueness: true
 
   enum status: {
+    created: 'created',
+    paid: 'paid',
     shipped: 'shipped',
     delivered: 'delivered',
     canceled: 'canceled',
     returned: 'returned',
-    refunded: 'refunded'
-  }
-
-  enum payment_status: {
-    created: 'created',
-    paid: 'paid',
-    failed: 'failed',
     refunded: 'refunded'
   }
 

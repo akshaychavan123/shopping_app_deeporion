@@ -47,7 +47,7 @@ class Api::V1::OrdersController < ApplicationController
 
       if razorpay_payment.status == 'captured'
         order = Order.find(params[:order_id])
-        order.update(payment_status: 'paid', status: 'paid')
+        order.update(status: 'paid')
         render json: { message: 'Payment successful', order: order }, status: :ok
       else
         render json: { message: 'Payment failed', status: razorpay_payment.status }, status: :unprocessable_entity
@@ -84,12 +84,12 @@ class Api::V1::OrdersController < ApplicationController
         if @return.save
           @order_item.update(status: 'cancelled')
           updating_price_of_order_after_remove_some_ordere_item_from_order(@order, @order_item)
-          render json: { message: 'Order item cancelled successfully' }, status: :ok
+          render json: { message: 'Order item canceled successfully' }, status: :ok
         end
     elsif @order.payment_status == 'paid' && @order_item.return_status != 'delivered'
       cancel_order_item_with_refund(@order, @order_item)
     else
-      render json: { message: 'Order item cannot be cancelled' }, status: :unprocessable_entity
+      render json: { message: 'Order item cannot be canceled' }, status: :unprocessable_entity
     end
   end 
   
@@ -193,9 +193,9 @@ class Api::V1::OrdersController < ApplicationController
           order_item: order_item
         )
 
-        order_item.update!(return_status: 'return_approved')
+        order_item.update!(return_status: 'canceled')
 
-        render json: { message: 'Order item cancelled and refunded successfully', refund: refund }, status: :ok
+        render json: { message: 'Order item canceled and refunded successfully', refund: refund }, status: :ok
       rescue Razorpay::Error => e
         raise ActiveRecord::Rollback, "Refund failed: #{e.message}"
       end
