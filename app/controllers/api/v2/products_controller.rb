@@ -4,7 +4,7 @@ class Api::V2::ProductsController < ApplicationController
   before_action :check_user, except: [:index]
 
   def index
-    @products = Product.all
+    @products = Product.order(created_at: :asc)
     render json: { data: ActiveModelSerializers::SerializableResource.new(@products, each_serializer: ProductSerializer)}
   end
 
