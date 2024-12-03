@@ -340,6 +340,34 @@ paths:
                   - sender_email
               required:
               - card_order
+  "/api/v1/card_orders/callback":
+    post:
+      summary: Verifies payment and updates order status
+      tags:
+      - Card Orders
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '200':
+          description: payment verified and email sent
+        '404':
+          description: order not found
+        '422':
+          description: payment failed
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                razorpay_payment_id:
+                  type: string
+                razorpay_order_id:
+                  type: string
+              required:
+              - razorpay_payment_id
+              - razorpay_order_id
   "/api/v1/client_reviews":
     get:
       summary: List all client reviews
