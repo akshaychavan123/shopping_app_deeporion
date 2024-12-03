@@ -67,7 +67,7 @@ class Api::V1::OrdersController < ApplicationController
     end
   
     if @order_item.status == 'cancelled'
-      render json: { message: 'Order item has already been canceled' }, status: :unprocessable_entity
+      render json: { message: 'Order item has already been cancelled' }, status: :unprocessable_entity
       return
     end
   
