@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <h1>Congratulations, <%= @card_order.recipient_name %>!</h1>
+    <p>You’ve received a gift card worth <%= @gift_card.price %>!</p>
+    <p>Message from <%= @card_order.sender_email %>:</p>
+    <p><%= @card_order.message %></p>
+    <p>Enjoy your gift card!</p>
+  </body>
+</html>

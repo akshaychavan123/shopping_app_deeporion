@@ -28,6 +28,30 @@ class Api::V1::CardOrdersController < ApplicationController
     end
   end
 
+  def callback
+    begin
+      razorpay_payment = Razorpay::Payment.fetch(params[:razorpay_payment_id])
+      razorpay_order = Razorpay::Order.fetch(params[:razorpay_order_id])
+
+      if razorpay_payment.status == 'captured'
+        @card_order = CardOrder.find_by(razorpay_order_id: razorpay_order.id)
+
+        if @card_order.nil?
+          render json: { message: 'Order not found' }, status: :not_found
+          return
+        end
+
+        @card_order.update(payment_status: 'paid', order_status: 'completed')
+        GiftCardMailer.send_gift_card(@card_order).deliver_now
+        render json: { message: 'Payment successful and email sent', order: @card_order }, status: :ok
+      else
+        render json: { message: 'Payment failed', status: razorpay_payment.status }, status: :unprocessable_entity
+      end
+    rescue Razorpay::Error => e
+      render json: { message: "Payment verification failed", error: e.message }, status: :unprocessable_entity
+    end
+  end
+
 	private
 
 	def card_order_params

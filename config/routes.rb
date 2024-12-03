@@ -23,7 +23,11 @@ Rails.application.routes.draw do
         end
       end
       resource :card_details, only: [:index, :show, :create, :update, :destroy]
-      resources :card_orders, only: [:create]
+      resources :card_orders, only: [:create] do
+        collection do
+            post 'callback'
+        end
+      end
       resources :client_reviews, only: [:index, :create, :update, :destroy]
 
       root to: 'home#index'

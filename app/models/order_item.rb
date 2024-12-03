@@ -24,6 +24,7 @@ class OrderItem < ApplicationRecord
     delivered: 'delivered',
     cancelled: 'cancelled',
     returned: 'returned'
-  }
+  }, _default: 'pending'
+
 end
 
