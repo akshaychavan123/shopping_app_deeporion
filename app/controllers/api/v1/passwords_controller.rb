@@ -2,23 +2,15 @@ class Api::V1::PasswordsController < ApplicationController
   RESET_LINK_INTERVAL = 30.seconds # Define interval time (30 seconds)
 
   def forgot
-    # Return early if the email parameter is missing
-    return render json: { error: 'Email not present' }, status: :bad_request if params[:email].blank?
-
-    @user = User.find_by(email: params[:email])
-    # Return if the user is not found
-    return render json: { error: 'Email address not found. Please check and try again.' }, status: :not_found unless @user
-
-    # Return early if the user requested a reset link too recently
-    if password_reset_recently_requested?(@user)
-      return render json: { error: 'You can only request a reset link once every 30 seconds.' }, status: :too_many_requests
+    if params[:email].blank? || params[:type].blank?
+      return render json: { error: 'Email and type are required.' }, status: :bad_request
     end
 
-    # Send the reset email and update the timestamp
-    send_reset_email(@user)
-    update_reset_timestamp(@user)
-
-    render json: { status: 'Link sent to your email' }, status: :ok
+    if params[:type].casecmp?('admin')
+      return handle_admin_reset_request(params[:email])
+    else
+      return handle_user_reset_request(params[:email])
+    end
   end
 
   def reset
@@ -57,6 +49,43 @@ class Api::V1::PasswordsController < ApplicationController
   # Update the password reset timestamp
   def update_reset_timestamp(user)
     user.update!(password_reset_requested_at: Time.current)
+  end
+
+  # Logic for handling admin password reset
+  def handle_admin_reset_request(email)
+    admin_emails = User.where(type: 'Admin').pluck(:email) # Fetch all admin emails
+    unless admin_emails.include?(email)
+      return render json: { error: 'Unauthorized email for admin reset.' }, status: :unauthorized
+    end
+
+    @user = User.find_by(email: email, type: 'Admin')
+
+    if password_reset_recently_requested?(@user)
+      return render json: { error: 'You can only request a reset link once every 30 seconds.' }, status: :too_many_requests
+    end
+
+    send_reset_email(@user)
+    update_reset_timestamp(@user)
+
+    render json: { status: 'A reset link has been sent to your email address.' }, status: :ok
+  end
+
+  # Logic for handling user password reset
+  def handle_user_reset_request(email)
+    @user = User.find_by(email: email)
+
+    unless @user
+      return render json: { error: 'Email address not found. Please check and try again.' }, status: :not_found
+    end
+
+    if password_reset_recently_requested?(@user)
+      return render json: { error: 'You can only request a reset link once every 30 seconds.' }, status: :too_many_requests
+    end
+
+    send_reset_email(@user)
+    update_reset_timestamp(@user)
+
+    render json: { status: 'A reset link has been sent to your email address.' }, status: :ok
   end
 
   def password_params
