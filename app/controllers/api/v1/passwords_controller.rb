@@ -46,6 +46,7 @@ class Api::V1::PasswordsController < ApplicationController
     UserForgotPasswordMailer.forgot_password(user).deliver_now
   end
 
+  # Update the password reset timestamp
   def update_reset_timestamp(user)
     user.update!(password_reset_requested_at: Time.current)
   end
