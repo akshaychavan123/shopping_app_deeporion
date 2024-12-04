@@ -1352,15 +1352,9 @@ paths:
       parameters: []
       responses:
         '200':
-          description: Password reset link sent
-        '400':
-          description: Bad Request
+          description: OK
         '404':
           description: Not Found
-        '429':
-          description: Too Many Requests
-        '403':
-          description: Unauthorized Access to Admin Email
       requestBody:
         content:
           application/json:
@@ -1369,15 +1363,8 @@ paths:
               properties:
                 email:
                   type: string
-                type:
-                  type: string
-                  enum:
-                  - user
-                  - admin
-                  description: Specifies whether the email is for an admin or a user
               required:
               - email
-              - type
   "/api/v1/passwords/reset":
     post:
       summary: Reset password
