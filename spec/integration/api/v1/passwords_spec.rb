@@ -68,6 +68,16 @@ RSpec.describe 'Api::V1::Passwords', type: :request do
 
         run_test!
       end
+
+      response '201', 'Alert Email Sent to Admin' do
+        schema type: :object,
+               properties: {
+                 status: { type: :string, example: 'Alert email sent to admin due to suspicious activity.' }
+               },
+               required: ['status']
+
+        run_test!
+      end
     end
   end
 
