@@ -13,6 +13,10 @@ class Api::V2::CouponsController < ApplicationController
   end
 
   def create
+    if params[:product_ids].is_a?(String)
+      params[:product_ids] = params[:product_ids].split(',').map(&:to_i)
+    end
+    
     @coupon = Coupon.new(coupon_params)
 
     if @coupon.promo_type == "discount_on_product" && coupon_params[:product_ids].blank?

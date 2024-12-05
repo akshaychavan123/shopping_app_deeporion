@@ -1,4 +1,6 @@
 class Api::V1::PlansController < ApplicationController
+  before_action :authorize_request
+  before_action :check_user, only: [:create, :update, :destroy]
   before_action :set_plan, only: [:show, :update, :destroy]
 
   def index
@@ -11,12 +13,38 @@ class Api::V1::PlansController < ApplicationController
   end
 
   def create
-    @plan = Plan.new(plan_params)
-    if @plan.save
-      render json: @plan, status: :created
-    else
-      render json: @plan.errors, status: :unprocessable_entity
+    # Create a Razorpay plan
+    ActiveRecord::Base.transaction do
+      razorpay_plan = Razorpay::Plan.create({
+        period: params[:period],
+        interval: params[:interval],
+        item: {
+          name: params[:name],
+          description: params[:description],
+          amount: params[:amount].to_i,
+          currency: params[:currency]
+        }
+      })
+
+      @plan = Plan.new(
+        razorpay_plan_id: razorpay_plan.id,
+        name: params[:name],
+        description: params[:description],
+        amount: params[:amount],
+        currency: params[:currency],
+        period: params[:period],
+        interval: params[:interval]
+      )
+
+      if @plan.save
+         @plan.update(active: true)
+         render json: { plan: @plan, message: 'Plan created successfully' }, status: :created
+      else
+        raise ActiveRecord::Rollback, @plan.errors.full_messages.join(', ')
+      end
     end
+    rescue Razorpay::Error => e
+    render json: { error: e.message }, status: :unprocessable_entity
   end
 
   def update
@@ -49,7 +77,6 @@ class Api::V1::PlansController < ApplicationController
   end
 
   def plan_params
-    params.require(:plan).permit(:name, :service, :amount, :frequency, :discription, :active)
+    params.require(:plan).permit(:name, :service, :amount, :frequency, :description, :active, :currency, :period, :interval)
   end
-  
 end
