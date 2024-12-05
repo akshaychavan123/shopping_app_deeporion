@@ -53,7 +53,15 @@ class Api::V1::PasswordsController < ApplicationController
   # Logic for handling admin password reset
   def handle_admin_reset_request(email)
     admin_emails = User.where(type: 'Admin').pluck(:email) # Fetch all admin emails
+    admin_email_alert_limit = 2
+
     unless admin_emails.include?(email)
+      increment_failed_admin_attempts(email)
+
+      if failed_admin_attempts > admin_email_alert_limit
+        send_alert_to_admin(email)
+      end
+
       return render json: { error: 'Unauthorized email for admin reset.' }, status: :unauthorized
     end
 
@@ -85,6 +93,28 @@ class Api::V1::PasswordsController < ApplicationController
     update_reset_timestamp(@user)
 
     render json: { status: 'A reset link has been sent to your email address.' }, status: :ok
+  end
+
+  # Helper method to track failed attempts for admin email
+  def increment_failed_admin_attempts(email)
+    # Read the current number of failed attempts from cache
+    current_attempts = failed_admin_attempts
+
+    new_attempts = current_attempts + 1
+
+    Rails.cache.write("failed_admin_login_attempts", new_attempts, expires_in: 1.hour)
+    Rails.logger.info "failed attempt to reset admin with email #{email}: #{new_attempts}"
+  end
+
+  def failed_admin_attempts
+    Rails.cache.read("failed_admin_login_attempts").to_i
+  end
+
+  # Alert the admin in case of too many unauthorized attempts
+  def send_alert_to_admin(email)
+    Rails.logger.debug"==============SENDING ALERT TO ADMIN FOR FAILED ATTEMPTS TO LOGIN with email: #{email}=================="
+    admin_email = User.find_by(type: 'Admin').email # Send to the primary admin email
+    AdminAlertMailer.with(email: email, admin_email: admin_email).unauthorized_attempt_alert.deliver_now
   end
 
   def password_params

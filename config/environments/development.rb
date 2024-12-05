@@ -24,6 +24,11 @@ Rails.application.configure do
     config.action_controller.enable_fragment_cache_logging = true
 
     config.cache_store = :memory_store
+    # Use Redis as the cache store in development
+    # config.cache_store = :redis_cache_store, {
+    #   url: "redis://localhost:6379/0",
+    #   namespace: "e_shopping_cache"
+    # }
     config.public_file_server.headers = {
       "Cache-Control" => "public, max-age=#{2.days.to_i}"
     }

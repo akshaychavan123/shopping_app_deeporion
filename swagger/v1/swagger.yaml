@@ -1361,6 +1361,8 @@ paths:
           description: Too Many Requests
         '403':
           description: Unauthorized Access to Admin Email
+        '201':
+          description: Alert Email Sent to Admin
       requestBody:
         content:
           application/json:
