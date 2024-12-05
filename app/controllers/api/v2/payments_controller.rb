@@ -87,7 +87,6 @@ class Api::V2::PaymentsController < ApplicationController
     signature = params[:signature]
 
     razorpay_payment = Razorpay::Payment.fetch(payment_id)
-    debugger
     if Razorpay::Utility.verify_payment_signature(
       payment_id: payment_id,
       order_id: order_id,
