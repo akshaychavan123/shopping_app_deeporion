@@ -1,4 +1,4 @@
-## Admin Login Failed Attempt Alert
+## Admin Reset Failed Attempt Alert
 
 ### Purpose
 To monitor and alert the admin when there are multiple failed password reset attempts in the admin panel (e.g., 3 failed attempts within an hour).
