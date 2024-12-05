@@ -4293,6 +4293,13 @@ paths:
       - Order Items
       security:
       - bearerAuth2: []
+      parameters:
+      - name: status
+        in: query
+        description: Filter by multiple statuses (comma-separated). (e.g., pending,
+          out_for_delivery, delivered, cancelled)
+        schema:
+          type: string
       responses:
         '200':
           description: successful

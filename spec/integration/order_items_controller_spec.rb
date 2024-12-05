@@ -6,6 +6,8 @@ RSpec.describe 'Api::V1::OrderItemsController', type: :request do
       tags 'Order Items'
       produces 'application/json'
       security [ bearerAuth2: [] ]
+       parameter name: :status, in: :query, type: :string, 
+                description: 'Filter by multiple statuses (comma-separated). (e.g., pending, out_for_delivery, delivered, cancelled)'
 
       response(200, 'successful') do
         run_test!

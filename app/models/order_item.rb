@@ -19,8 +19,7 @@ class OrderItem < ApplicationRecord
 
   enum status: {
     pending: 'pending',
-    processing: 'processing',
-    shipped: 'shipped',
+    out_for_delivery: 'out_for_delivery',
     delivered: 'delivered',
     cancelled: 'cancelled',
     returned: 'returned'

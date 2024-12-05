@@ -6,7 +6,6 @@ class Api::V2::CategoriesController < ApplicationController
   def index
     @categories = Category.order(created_at: :asc)
     render json: { data: ActiveModelSerializers::SerializableResource.new(@categories, each_serializer: CategorySerializer)}
-
   end
 
   def show
