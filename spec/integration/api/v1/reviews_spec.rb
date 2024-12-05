@@ -10,7 +10,11 @@ RSpec.describe 'Api::V1::Reviews', type: :request do
         type: :object,
         properties: {
           star: { type: :integer },
-          images_and_videos: {
+          images: {
+              type: :array,
+              items: { type: :string, format: :binary }
+            },
+          videos: {
               type: :array,
               items: { type: :string, format: :binary }
             },
@@ -74,6 +78,66 @@ RSpec.describe 'Api::V1::Reviews', type: :request do
 
       response '404', 'not found' do
         let(:product_item_id) { 'invalid' }
+        run_test!
+      end
+    end
+  end
+
+  path '/api/v1/reviews/{id}' do
+    put('Update Review') do
+      tags 'Reviews'
+      security [bearerAuth: []]
+      consumes 'multipart/form-data'
+      parameter name: :id, in: :path, type: :integer, required: true, description: 'Review ID'
+      parameter name: :review, in: :formData, schema: {
+        type: :object,
+        properties: {
+          star: { type: :integer },
+          review: { type: :string },
+          images: {
+            type: :array,
+            items: { type: :string, format: :binary }
+          },
+          videos: {
+            type: :array,
+            items: { type: :string, format: :binary }
+          }
+        }
+      }
+  
+      response '200', 'updated successfully' do
+        run_test!
+      end
+  
+      response '403', 'not authorized' do
+        run_test!
+      end
+  
+      response '404', 'not found' do
+        run_test!
+      end
+    end
+  
+    delete('Delete Review') do
+      tags 'Reviews'
+      security [bearerAuth: []]
+      parameter name: :id, in: :path, type: :integer, required: true, description: 'Review ID'
+  
+      response '200', 'deleted successfully' do
+        let(:Authorization) { "Bearer #{token}" }
+        let(:id) { create(:review, user: current_user).id }
+        run_test!
+      end
+  
+      response '403', 'not authorized' do
+        let(:Authorization) { "Bearer #{token}" }
+        let(:id) { create(:review).id }
+        run_test!
+      end
+  
+      response '404', 'not found' do
+        let(:Authorization) { "Bearer #{token}" }
+        let(:id) { 'invalid' }
         run_test!
       end
     end

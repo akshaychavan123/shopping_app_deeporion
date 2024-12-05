@@ -66,8 +66,8 @@ class Api::V1::OrdersController < ApplicationController
       return
     end
   
-    if @order_item.return_status == 'cancelled'
-      render json: { message: 'Order item has already been canceled' }, status: :unprocessable_entity
+    if @order_item.status == 'cancelled'
+      render json: { message: 'Order item has already been cancelled' }, status: :unprocessable_entity
       return
     end
   
@@ -82,7 +82,7 @@ class Api::V1::OrdersController < ApplicationController
       )
   
         if @return.save
-          @order_item.update(return_status: 'canceled', status: 'canceled')
+          @order_item.update(status: 'cancelled')
           updating_price_of_order_after_remove_some_ordere_item_from_order(@order, @order_item)
           render json: { message: 'Order item canceled successfully' }, status: :ok
         end
@@ -91,7 +91,57 @@ class Api::V1::OrdersController < ApplicationController
     else
       render json: { message: 'Order item cannot be canceled' }, status: :unprocessable_entity
     end
-  end  
+  end 
+  
+  def exchange_order
+    @order = @current_user.orders.find_by(id: params[:order_id])
+    unless @order
+      render json: { message: 'Order not found' }, status: :not_found
+      return
+    end
+  
+    @order_item = @order.order_items.find_by(id: params[:order_item_id])
+    unless @order_item
+      render json: { message: 'Order item not found' }, status: :not_found
+      return
+    end
+  
+    unless @order.payment_status == 'paid'
+      render json: { message: 'Exchange request cannot be created as payment is not completed' }, status: :unprocessable_entity
+      return
+    end
+  
+    if @order_item.return_status == 'exchange_requested'
+      render json: { message: 'Order item exchange request is already in process' }, status: :unprocessable_entity
+      return
+    end
+  
+    unless @order_item.delivered? || @order_item.not_returned?
+      render json: { message: 'Order item cannot be exchanged at this stage' }, status: :unprocessable_entity
+      return
+    end
+  
+    address = Address.find_by(id: @order.address_id)
+    unless address
+      render json: { message: 'Address not found' }, status: :not_found
+      return
+    end
+  
+    @exchange = Return.new(
+      order: @order,
+      order_item: @order_item,
+      address: address,
+      reason: params[:reason],
+      more_information: params[:more_information]
+    )
+  
+    if @exchange.save
+      @order_item.update(return_status: :return_requested, status: :processing)
+      render json: { message: 'Exchange request created successfully', exchange: @exchange }, status: :ok
+    else
+      render json: { errors: @exchange.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
   
   def order_history
     orders = Order.where(user_id: @current_user.id)
@@ -103,6 +153,22 @@ class Api::V1::OrdersController < ApplicationController
       render json: { message: 'No orders found' }, status: :not_found
     end
   end
+
+  def order_item_details
+    @order = @current_user.orders.find_by(id: params[:order_id])
+    unless @order
+      render json: { message: 'Order not found' }, status: :not_found
+      return
+    end
+  
+    @order_item = @order.order_items.find_by(id: params[:order_item_id])
+    unless @order_item
+      render json: { message: 'Order item not found' }, status: :not_found
+      return
+    end
+  
+    render json: @order_item, serializer: OrderItemDetailSerializer, status: :ok
+  end  
 
   private
 

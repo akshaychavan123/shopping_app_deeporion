@@ -1,5 +1,5 @@
 class Review2Serializer < ActiveModel::Serializer
-	attributes :id, :reviewer_name, :star, :review, :images_and_videos, :helpful_true_count, :helpful_false_count, :total_review_count, :created_time, :user_review_voted
+	attributes :id, :reviewer_name, :star, :review, :images, :videos, :helpful_true_count, :helpful_false_count, :total_review_count, :created_time, :user_review_voted
   include ActionView::Helpers::DateHelper
 
   def reviewer_name
@@ -33,12 +33,21 @@ class Review2Serializer < ActiveModel::Serializer
     end
   end
 
-  def images_and_videos
+  def images
     host = base_url
-    object.images_and_videos.map do |photo|
+    object.images.map do |photo|
       Rails.env.development? || Rails.env.test? ?
         "#{host}#{Rails.application.routes.url_helpers.rails_blob_path(photo, only_path: true)}" :
         photo.service.send(:object_for, photo.key).public_url
+    end
+  end
+             
+  def videos
+    host = base_url
+    object.videos.map do |video|
+      Rails.env.development? || Rails.env.test? ?
+        "#{host}#{Rails.application.routes.url_helpers.rails_blob_path(video, only_path: true)}" :
+        video.service.send(:object_for, video.key).public_url
     end
   end
 
@@ -56,3 +65,4 @@ class Review2Serializer < ActiveModel::Serializer
     ENV['BASE_URL'] || 'http://localhost:3000'
   end 
 end
+

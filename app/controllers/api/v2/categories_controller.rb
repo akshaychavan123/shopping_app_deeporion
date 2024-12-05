@@ -4,8 +4,8 @@ class Api::V2::CategoriesController < ApplicationController
   before_action :set_category, only: [:show, :update, :destroy]
 
   def index
-    @categories = Category.all
-    render json: @categories
+    @categories = Category.order(created_at: :asc)
+    render json: { data: ActiveModelSerializers::SerializableResource.new(@categories, each_serializer: CategorySerializer)}
   end
 
   def show

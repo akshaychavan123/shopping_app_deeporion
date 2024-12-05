@@ -3,7 +3,13 @@ class Api::V1::OrderItemsController < ApplicationController
   before_action :set_order_item, only: [:update, :destroy]
 
   def index
-    order_items = OrderItem.all
+    if params[:status].present?
+      statuses = params[:status].split(',')
+      order_items = OrderItem.where(status: statuses).order(created_at: :desc)
+    else
+      order_items = OrderItem.order(created_at: :desc)
+    end
+
     render json: {
       orders: ActiveModelSerializers::SerializableResource.new(order_items, each_serializer: OrderItemSerializer)
     }

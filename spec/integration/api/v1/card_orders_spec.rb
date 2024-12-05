@@ -48,4 +48,33 @@ RSpec.describe 'api/v1/card_orders', type: :request do
       end
     end
   end
+
+  path '/api/v1/card_orders/callback' do
+    post 'Verifies payment and updates order status' do
+      tags 'Card Orders'
+      consumes 'application/json'
+      security [bearerAuth: []]
+
+      parameter name: :callback_params, in: :body, schema: {
+        type: :object,
+        properties: {
+          razorpay_payment_id: { type: :string },
+          razorpay_order_id: { type: :string }
+        },
+        required: ['razorpay_payment_id', 'razorpay_order_id']
+      }
+
+      response '200', 'payment verified and email sent' do
+        run_test!
+      end
+
+      response '404', 'order not found' do
+        run_test!
+      end
+
+      response '422', 'payment failed' do
+        run_test!
+      end
+    end
+  end
 end

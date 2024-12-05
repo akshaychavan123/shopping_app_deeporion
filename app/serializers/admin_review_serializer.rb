@@ -1,5 +1,5 @@
 class AdminReviewSerializer < ActiveModel::Serializer
-  attributes :id, :reviewer_name, :reviewer_image, :star, :review, :images_and_videos, 
+  attributes :id, :reviewer_name, :reviewer_image, :star, :review, :images, :videos, 
              :helpful_true_count, :helpful_false_count, :total_review_count, 
              :created_time
 
@@ -13,9 +13,11 @@ class AdminReviewSerializer < ActiveModel::Serializer
     return unless object.user&.image&.attached?
 
     host = base_url
-    Rails.env.development? || Rails.env.test? ?
-      "#{host}#{Rails.application.routes.url_helpers.rails_blob_path(object.user.image, only_path: true)}" :
+    if Rails.env.development? || Rails.env.test?
+      "#{host}#{Rails.application.routes.url_helpers.rails_blob_path(object.user.image, only_path: true)}"
+    else
       object.user.image.service_url
+    end
   end
 
   def helpful_true_count
@@ -34,12 +36,25 @@ class AdminReviewSerializer < ActiveModel::Serializer
     time_ago_in_words(object.created_at)
   end
 
-  def images_and_videos
+  def images
     host = base_url
-    object.images_and_videos.map do |photo|
-      Rails.env.development? || Rails.env.test? ?
-        "#{host}#{Rails.application.routes.url_helpers.rails_blob_path(photo, only_path: true)}" :
-        photo.service.send(:object_for, photo.key).public_url
+    object.images.map do |photo|
+      if Rails.env.development? || Rails.env.test?
+        "#{host}#{Rails.application.routes.url_helpers.rails_blob_path(photo, only_path: true)}"
+      else
+        photo.service_url
+      end
+    end
+  end
+
+  def videos
+    host = base_url
+    object.videos.map do |video|
+      if Rails.env.development? || Rails.env.test?
+        "#{host}#{Rails.application.routes.url_helpers.rails_blob_path(video, only_path: true)}"
+      else
+        video.service_url
+      end
     end
   end
 

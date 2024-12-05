@@ -42,6 +42,18 @@ class Api::V2::ContactUsManageController < ApplicationController
     render json: { message: 'ContactUs entry not found' }, status: :not_found
   end
 
+  def destroy
+    contact_us_entry = ContactUs.find(params[:id])
+
+    if contact_us_entry.destroy
+      render json: { message: 'ContactUs entry deleted successfully' }, status: :ok
+    else
+      render json: { message: 'Failed to delete ContactUs entry', errors: contact_us_entry.errors.full_messages }, status: :unprocessable_entity
+    end
+  rescue ActiveRecord::RecordNotFound
+    render json: { message: 'ContactUs entry not found' }, status: :not_found
+  end
+
   private
 
   def check_user

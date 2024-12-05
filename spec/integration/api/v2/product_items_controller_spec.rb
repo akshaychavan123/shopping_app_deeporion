@@ -160,7 +160,8 @@ RSpec.describe 'Api::V2::ProductItems', type: :request do
             knite_or_woven: { type: :string },  
             length: { type: :string },
             occasion: { type: :string },
-            color:{type: :string}
+            color:{type: :string},
+            in_stock: {type: :boolean}
           }
       }
 
