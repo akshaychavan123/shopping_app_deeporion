@@ -15,7 +15,7 @@ class Order < ApplicationRecord
     paid: 'paid',
     shipped: 'shipped',
     delivered: 'delivered',
-    canceled: 'canceled',
+    cancelled: 'cancelled',
     returned: 'returned',
     refunded: 'refunded'
   }
