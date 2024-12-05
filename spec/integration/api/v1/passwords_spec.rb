@@ -6,28 +6,65 @@ RSpec.describe 'Api::V1::Passwords', type: :request do
     post('Forgot password') do
       tags 'Passwords'
       consumes 'application/json'
-      parameter name: :email, in: :body, schema: {
+      parameter name: :request_body, in: :body, schema: {
         type: :object,
         properties: {
-          email: { type: :string }
+          email: { type: :string },
+          type: {
+            type: :string,
+            enum: ['user', 'admin'],
+            description: 'Specifies whether the email is for an admin or a user'
+          }
         },
-        required: [ 'email' ]
+        required: ['email', 'type']
       }
-      response '200', 'OK' do
+
+      response '200', 'Password reset link sent' do
         schema type: :object,
-          properties: {
-            status: { type: :string }
-          },
-          required: [ 'status' ]
+               properties: {
+                 status: { type: :string, example: 'Link sent to your email' }
+               },
+               required: ['status']
 
         run_test!
       end
+
+      response '400', 'Bad Request' do
+        schema type: :object,
+               properties: {
+                 error: { type: :string, example: 'Email not present' }
+               },
+               required: ['error']
+
+        run_test!
+      end
+
       response '404', 'Not Found' do
         schema type: :object,
-          properties: {
-            error: { type: :string }
-          },
-          required: [ 'error' ]
+               properties: {
+                 error: { type: :string, example: 'Email address not found. Please check and try again.' }
+               },
+               required: ['error']
+
+        run_test!
+      end
+
+      response '429', 'Too Many Requests' do
+        schema type: :object,
+               properties: {
+                 error: { type: :string, example: 'You can only request a reset link once every 30 seconds.' }
+               },
+               required: ['error']
+
+        run_test!
+      end
+
+      response '403', 'Unauthorized Access to Admin Email' do
+        schema type: :object,
+               properties: {
+                 error: { type: :string, example: 'Unauthorized email for admin password reset.' }
+               },
+               required: ['error']
 
         run_test!
       end
