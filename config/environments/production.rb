@@ -59,8 +59,11 @@ Rails.application.configure do
   # Use a different cache store in production.
   # config.cache_store = :mem_cache_store
   config.cache_store = :redis_cache_store, {
-    url: ENV["REDIS_URL"],
-    namespace: "e_shopping_cache"
+    url: ENV["REDIS_TLS_URL"],
+    namespace: "e_shopping_cache",
+    ssl_params: {
+      verify_mode: OpenSSL::SSL::VERIFY_PEER # Ensure certificate verification
+    }
   }
 
   # Use a real queuing backend for Active Job (and separate queues per environment).

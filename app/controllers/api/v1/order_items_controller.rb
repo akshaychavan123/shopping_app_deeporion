@@ -41,18 +41,34 @@ class Api::V1::OrderItemsController < ApplicationController
     }        
   end
 
-  def order_status_graph   
-    order_details = Order.joins(:order_items).select("DATE(orders.created_at) AS order_date,COUNT(CASE WHEN order_items.status = 'pending' THEN 1 END) AS pending_count,COUNT(CASE WHEN order_items.status =
-    'delivered' THEN 1 END) AS delivered_count").where("orders.created_at >= ?", 1.week.ago).group("DATE(orders.created_at)")
+  def order_status_graph
+    start_date = params[:start_date].present? ? Date.parse(params[:start_date]) : 1.week.ago.to_date
+    end_date = params[:end_date].present? ? Date.parse(params[:end_date]) : Date.today
+  
+    order_details = Order.joins(:order_items)
+                         .select(
+                           "DATE(orders.created_at) AS order_date,
+                            COUNT(CASE WHEN order_items.status = 'pending' THEN 1 END) AS pending_count,
+                            COUNT(CASE WHEN order_items.status = 'delivered' THEN 1 END) AS delivered_count"
+                         )
+                         .where("DATE(orders.created_at) BETWEEN ? AND ?", start_date, end_date)
+                         .group("DATE(orders.created_at)")
+  
     pending_orders = order_details.sum { |order| order.pending_count.to_i }
     delivered_orders = order_details.sum { |order| order.delivered_count.to_i }
     total_orders = pending_orders + delivered_orders
+  
     if order_details.present?
-      render json: { order_details: order_details, pending_orders: pending_orders, delivered_orders: delivered_orders, total_orders: total_orders}, status: :ok 
+      render json: {
+        order_details: order_details,
+        pending_orders: pending_orders,
+        delivered_orders: delivered_orders,
+        total_orders: total_orders
+      }, status: :ok
     else
-      render json: { order_details: [] }, status: :not_found 
-    end    
-  end
+      render json: { order_details: [] }, status: :not_found
+    end
+  end  
 
   def update
     if @order_item.update(order_item_params)
