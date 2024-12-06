@@ -62,7 +62,7 @@ Rails.application.configure do
     url: ENV["REDIS_TLS_URL"],
     namespace: "e_shopping_cache",
     ssl_params: {
-      verify_mode: OpenSSL::SSL::VERIFY_PEER # Ensure certificate verification
+      verify_mode: OpenSSL::SSL::VERIFY_NONE
     }
   }
 
