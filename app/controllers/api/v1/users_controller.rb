@@ -45,8 +45,7 @@ class Api::V1::UsersController < ApplicationController
     @user.instagram = params[:instagram_link] if params[:instagram_link].present? && !params[:instagram_link].strip.empty?
     @user.youtube = params[:youtube_link] if params[:youtube_link].present? && !params[:youtube_link].strip.empty?
     @user.twitter = params[:twitter_link] if params[:twitter_link].present? && !params[:twitter_link].strip.empty?
-    @user.google = params[:google_link] if params[:google].present? && !params[:google_link].strip.empty?
-
+    @user.google = params[:google_link] if params[:google_link].present? && !params[:google_link].strip.empty?
     
     if @user.save
       render json: { user: @user }, status: :ok
