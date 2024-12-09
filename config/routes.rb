@@ -9,8 +9,8 @@ Rails.application.routes.draw do
             get 'show_notification'
         end
       end
-      resources :reviews, only: [:create, :index, :update, :destroy] 
-      resources :plans
+      resources :reviews, only: [:create, :index] 
+      resources :plans, only: [:index, :show, :create, :update, :destroy]
       resources :instagramposts
       resources :review_votes, only: [:create]
       resources :addresses
@@ -157,7 +157,14 @@ Rails.application.routes.draw do
           get 'product_reviews', action: :product_reviews
         end
       end
-      resources :contact_us_manage, only: [:index, :show, :update, :destroy]
+      resources :contact_us_manage, only: [:index, :show, :update]
+
+      resources :subscriptions, only: [:index, :show, :create, :update, :destroy]
+      post 'payments/create_order', to: 'payments#create_order'
+      post 'payments/capture_payment', to: 'payments#capture_payment'
+      post 'payments/verify_payment', to: 'payments#verify_payment'
+      # post 'payments/webhook', to: 'payments#webhook'
+      # get 'payments/checkout_iframe', to: 'payments#checkout_iframe'
     end
   end
 end

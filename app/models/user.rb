@@ -25,6 +25,8 @@ class User < ApplicationRecord
   has_many :product_item_variants, through: :user_product_items
   has_many :user_notifications, dependent: :destroy
   has_many :client_review_comments, dependent: :destroy
+  has_many :subscriptions, dependent: :destroy
+  has_many :payments, dependent: :destroy
 
   before_validation :parse_full_phone_number, if: -> { full_phone_number.present? }
   after_create :create_wishlist
