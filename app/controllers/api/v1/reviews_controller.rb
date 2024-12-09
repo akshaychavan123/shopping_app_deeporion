@@ -2,6 +2,7 @@ class Api::V1::ReviewsController < ApplicationController
   before_action :authorize_request, only: [:create, :update, :destroy]
   before_action :set_review, only: [:update, :destroy]
   before_action :set_product_item, only: [:create, :index]
+  before_action :set_current_user, only: [:index]      
 
   def index
     @reviews = @product_item.reviews.includes(:review_votes).where(deleted_at: nil).order(created_at: :desc)
@@ -15,7 +16,11 @@ class Api::V1::ReviewsController < ApplicationController
     when 'latest'
       @reviews = @reviews.order(created_at: :desc)
     when 'my_reviews'
-      @reviews = @reviews.where(user: @current_user).order(created_at: :desc)
+      if @current_user.present?
+        @reviews = @reviews.where(user: @current_user).order(created_at: :desc)
+      else
+        render json: { error: 'User not logged in' }, status: :unauthorized and return
+      end
     end
   
     case params[:sort_by]

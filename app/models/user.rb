@@ -21,7 +21,7 @@ class User < ApplicationRecord
   has_one :notification, dependent: :destroy
   has_many :devices, dependent: :destroy
   has_many :orders, dependent: :destroy
-  has_many :user_product_items
+  has_many :user_product_items, dependent: :destroy
   has_many :product_item_variants, through: :user_product_items
   has_many :user_notifications, dependent: :destroy
   has_many :client_review_comments, dependent: :destroy
