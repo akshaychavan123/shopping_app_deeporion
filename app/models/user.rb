@@ -53,6 +53,7 @@ class User < ApplicationRecord
       user.provider="google_oauth2"
       user.uid=data["email"]
       user.email=data["email"]
+      user.name = data["name"]
       user.password=generate_secure_password
       user.password_confirmation=user.password
       user.save!

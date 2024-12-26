@@ -1989,10 +1989,11 @@ paths:
                   type: string
                 banner_type:
                   type: string
-                images:
+                images[]:
                   type: array
                   items:
-                    type: file
+                    type: string
+                    format: binary
               required:
               - heading
               - description

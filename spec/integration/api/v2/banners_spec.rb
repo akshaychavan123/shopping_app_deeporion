@@ -23,7 +23,7 @@ RSpec.describe 'Api::V2::Banners', type: :request do
           heading: { type: :string },
           description: { type: :string },
           banner_type: { type: :string },
-          images: { type: :array, items: { type: :file } }
+          'images[]': { type: :array, items: { type: :string, format: :binary } }
         },
         required: [ 'heading', 'description', 'banner_type' ]
       }
