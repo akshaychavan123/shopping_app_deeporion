@@ -19,10 +19,7 @@ RSpec.describe 'Api::V2::AboutUsController', type: :request do
         properties: {
           heading: { type: :string },
           description: { type: :string },
-          images: {
-              type: :array,
-              items: { type: :string, format: :binary }
-            }
+          "images[]": { type: :array, items: { type: :string, format: :binary } }
         },
         required: ['heading', 'description']
       }
@@ -64,7 +61,7 @@ RSpec.describe 'Api::V2::AboutUsController', type: :request do
         properties: {
           heading: { type: :string },
           description: { type: :string },
-          images: {
+          'images[]': {
               type: :array,
               items: { type: :string, format: :binary }
             }
