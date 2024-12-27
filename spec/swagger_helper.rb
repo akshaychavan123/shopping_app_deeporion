@@ -34,10 +34,18 @@ RSpec.configure do |config|
       paths: {},
       servers: [
         {
-          url: 'https://{defaultHost}',
+          url: 'http://{localhost}',
           variables: {
-            defaultHost: {
-              default: 'www.example.com'
+            localhost: {
+              default: 'localhost:3000'
+            }
+          }
+        },
+        {
+          url: 'http://{herokuhost}',
+          variables: {
+            herokuhost: {
+              default: 'https://app-like-pinklay-staging-fce0b804f3ce.herokuapp.com/'
             }
           }
         }

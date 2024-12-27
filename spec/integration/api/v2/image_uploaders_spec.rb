@@ -85,9 +85,9 @@ RSpec.describe 'Api::V2::ImageUploaders', type: :request do
         type: :object,
         properties: {
           name: { type: :string },
-          images: { type: :array, items: { type: :string, format: :binary } }
+          'images[]': { type: :array, items: { type: :string, format: :binary } }
         },
-        required: [ 'name', 'images' ]
+        required: [ 'name' ]
       }
 
       response '201', 'image uploader created' do
