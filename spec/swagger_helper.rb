@@ -42,10 +42,10 @@ RSpec.configure do |config|
           }
         },
         {
-          url: 'http://{herokuhost}',
+          url: 'https://{herokuhost}',
           variables: {
             herokuhost: {
-              default: 'https://app-like-pinklay-staging-fce0b804f3ce.herokuapp.com/'
+              default: 'app-like-pinklay-staging-fce0b804f3ce.herokuapp.com/'
             }
           }
         }
