@@ -1,5 +1,4 @@
 class ContactUsMailer < ApplicationMailer
-  default from: 'your-email@example.com'
 
   def contact_us_resolved(contact_us)
     @contact_us = contact_us

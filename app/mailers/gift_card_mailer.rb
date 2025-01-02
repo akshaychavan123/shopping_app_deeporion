@@ -1,5 +1,4 @@
 class GiftCardMailer < ApplicationMailer
-	default from: 'your_email@example.com' 
 
   def send_gift_card(card_order)
     @card_order = card_order

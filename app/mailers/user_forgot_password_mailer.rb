@@ -1,5 +1,4 @@
 class UserForgotPasswordMailer < ApplicationMailer
-  default from: 'no-reply@example.com'
 
   def forgot_password(user)
     @user = user
