@@ -34,7 +34,7 @@ class Api::V2::ContactUsManageController < ApplicationController
     if contact_us_entry.update(update_params)
       render json: { message: 'ContactUs entry updated successfully', data: contact_us_entry }, status: :ok
       ContactUsMailer.contact_us_resolved(contact_us_entry).deliver_now
-      send_sms_notification(contact_us_entry)
+      # send_sms_notification(contact_us_entry) SMS Notifications paused
     else
       render json: { message: 'Failed to update ContactUs entry', errors: contact_us_entry.errors.full_messages }, status: :unprocessable_entity
     end

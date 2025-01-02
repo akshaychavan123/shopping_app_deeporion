@@ -40,9 +40,9 @@ class Api::V1::NotificationController < ApplicationController
     if notification.email && @current_user.email.present?
       NotificationMailer.with(user: @current_user).send_notification_email.deliver_now
     end
-
-    if notification.sms && @current_user.full_phone_number.present?
-      SmsSubscribeService.new(@current_user.full_phone_number, "Thank you for subscribing us.").send_sms
-    end
+    # SMS Notification paused
+    # if notification.sms && @current_user.full_phone_number.present?
+    #   SmsSubscribeService.new(@current_user.full_phone_number, "Thank you for subscribing us.").send_sms
+    # end
   end
 end

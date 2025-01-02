@@ -15,11 +15,11 @@ class CouponNotificationService
         CouponMailer.new_coupon_email(user, @coupon).deliver_now
       end
     end
-
-    User.includes(:notification).where.not(full_phone_number: nil).find_each do |user|
-      if user.notification&.sms
-        ::CouponSmsNotificationService.new(@coupon).call
-      end
-    end
+    # SMS Notification Paused
+    # User.includes(:notification).where.not(full_phone_number: nil).find_each do |user|
+    #   if user.notification&.sms
+    #     ::CouponSmsNotificationService.new(@coupon).call
+    #   end
+    # end
   end
 end
