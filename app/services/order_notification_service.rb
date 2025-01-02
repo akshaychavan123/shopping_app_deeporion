@@ -6,7 +6,7 @@ class OrderNotificationService
   
   def call
     send_email_notification if @user.notification&.email && @user.email.present?
-    send_sms_notification if @user.notification&.sms && @user.full_phone_number&.present?
+    # send_sms_notification if @user.notification&.sms && @user.full_phone_number&.present? SMS Notification paused
   end
 
   private

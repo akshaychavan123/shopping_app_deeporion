@@ -15,11 +15,11 @@ class ProductItemNotificationService
         ProductItemMailer.new_product_item_email(user, @product_item).deliver_now
       end
     end
-
-    User.includes(:notification).where.not(full_phone_number: nil).find_each do |user|
-      if user.notification&.sms
-        ::ProductItemSmsNotificationService.new(@product_item).call
-      end
-    end
+    # SMS Notification paused
+    # User.includes(:notification).where.not(full_phone_number: nil).find_each do |user|
+    #   if user.notification&.sms
+    #     ::ProductItemSmsNotificationService.new(@product_item).call
+    #   end
+    # end
   end
 end

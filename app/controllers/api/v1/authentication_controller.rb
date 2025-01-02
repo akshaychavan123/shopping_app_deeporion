@@ -17,16 +17,16 @@ class Api::V1::AuthenticationController < ApplicationController
   def create
     @user = User.find_by(full_phone_number: Phonelib.parse(user_params[:full_phone_number]).sanitized)
     if @user
-      send_verification_code(@user)
-      render json: { message: 'Verification code sent', user_id: @user.id }, status: :ok
+      verification_code = send_verification_code(@user)
+      render json: { message: 'Verification code sent',verification_code: verification_code, user_id: @user.id }, status: :ok
     else
       @user = User.new(user_params)
       @user.password ||= generate_secure_password
       @user.email ||= nil
 
       if @user.save
-        send_verification_code(@user)
-        render json: { user_id: @user.id }, status: :created
+        verification_code = send_verification_code(@user)
+        render json: { user_id: @user.id, verification_code: verification_code }, status: :created
       else
         render json: @user.errors, status: :unprocessable_entity
       end
@@ -65,20 +65,21 @@ class Api::V1::AuthenticationController < ApplicationController
     account_sid = ENV['TWILIO_ACCOUNT_SID']
     twilio_auth_token = ENV['TWILIO_AUTH_TOKEN']
     
-    @client = Twilio::REST::Client.new(account_sid, twilio_auth_token)
+    # @client = Twilio::REST::Client.new(account_sid, twilio_auth_token) Mobile SMS Notifications paused
     verification_code = rand(100000..999999)
     user.update(phone_verification_code: verification_code, phone_verification_code_sent_at: Time.current)
+    verification_code
 
-    begin
-      @client.messages.create(
-        from: twilio_phone_number,
-        to: format_full_phone_number(user.full_phone_number),
-        body: "Your verification code is #{verification_code}"
-      )
-    rescue Twilio::REST::RestError => e
-      Rails.logger.error "Twilio Error: #{e.message}"
-      render json: { error: 'Failed to send verification code' }, status: :unprocessable_entity and return
-    end
+    # begin
+    #   @client.messages.create(
+    #     from: twilio_phone_number,
+    #     to: format_full_phone_number(user.full_phone_number),
+    #     body: "Your verification code is #{verification_code}"
+    #   )
+    # rescue Twilio::REST::RestError => e
+    #   Rails.logger.error "Twilio Error: #{e.message}"
+    #   render json: { error: 'Failed to send verification code' }, status: :unprocessable_entity and return
+    # end
   end
 
   def format_full_phone_number(full_phone_number)

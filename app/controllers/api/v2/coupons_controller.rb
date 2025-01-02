@@ -60,7 +60,7 @@ class Api::V2::CouponsController < ApplicationController
   private
 
   def call_notification_service
-    ::CouponNotificationService.new(@coupon).call
+    # ::CouponNotificationService.new(@coupon).call #SMS Notifications paused for now
     ::FcmNotificationService.new(@coupon).call
   end
 
