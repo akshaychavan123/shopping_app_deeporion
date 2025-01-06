@@ -49,7 +49,7 @@ class Api::V1::LandingPageController < ApplicationController
     if @new_arrivals.any?
       render json: { data: ActiveModelSerializers::SerializableResource.new(@new_arrivals, each_serializer: ProductItem2Serializer, current_user: @current_user) }, status: :ok
     else
-      render json: { errors: ['No new arrivals found'] }, status: :not_found
+      render json: { errors: [] }, status: :ok
     end
   end
 
@@ -59,7 +59,7 @@ class Api::V1::LandingPageController < ApplicationController
     if @top_category.any?
       render json: { data: ActiveModelSerializers::SerializableResource.new(@top_category, each_serializer: ProductSerializer)}
     else
-      render json: { errors: ['No new arrivals found'] }, status: :not_found
+      render json: { errors: [] }, status: :ok
     end
   end
 
@@ -100,7 +100,7 @@ class Api::V1::LandingPageController < ApplicationController
         meta: pagination_meta(@product_items)
       }
     else
-      render json: { error: 'Product not found' }, status: :not_found
+      render json: { error: [] }, status: :ok
     end
   end
   
@@ -113,7 +113,7 @@ class Api::V1::LandingPageController < ApplicationController
       review_summary = calculate_review_summary(@product_item.id)
       render json: { data: ActiveModelSerializers::SerializableResource.new(@product_item, serializer: ProductItemSerializer, current_user: @current_user), summary: review_summary }
     else
-      render json: { errors: ['Product item not found'] }, status: :not_found
+      render json: { errors: [] }, status: :ok
     end
   end
 
@@ -136,7 +136,7 @@ class Api::V1::LandingPageController < ApplicationController
         meta: pagination_meta(paginated_product_items)  
       }, status: :ok
     else
-      render json: { errors: ['No recently viewed product items found'] }, status: :not_found
+      render json: { errors: [] }, status: :ok
     end
   end  
   
@@ -278,7 +278,7 @@ class Api::V1::LandingPageController < ApplicationController
         meta: pagination_meta(@product_items)
       }, status: :ok
     else
-      render json: { errors: ['No product items found'] }, status: :not_found
+      render json: { errors: [] }, status: :ok
     end
   end
 

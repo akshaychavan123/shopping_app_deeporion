@@ -31,7 +31,7 @@ class Api::V2::ClientReviewCommentsController < ApplicationController
     @client_review = ClientReview.find_by(id: params[:client_review_id])
     
     if @client_review.nil?
-      render json: { error: 'Review not found' }, status: :not_found
+      render json: { error: 'Review not found' }, status: :ok
       return
     end
     
@@ -73,7 +73,7 @@ class Api::V2::ClientReviewCommentsController < ApplicationController
     @client_review = ClientReview.find_by(id: params[:id])
   
     if @client_review.nil?
-      render json: { error: 'Review not found' }, status: :not_found
+      render json: { error: 'Review not found' }, status: :ok
       return
     end
   
@@ -87,7 +87,7 @@ class Api::V2::ClientReviewCommentsController < ApplicationController
     @client_review_comment = ClientReviewComment.find_by(id: params[:id])
     
     if @client_review_comment.nil?
-      render json: { error: 'Comment not found' }, status: :not_found
+      render json: { error: 'Comment not found' }, status: :ok
     end
   end
 

@@ -30,7 +30,7 @@ class Api::V1::PasswordsController < ApplicationController
         render json: { error: @user.errors.full_messages }, status: :unprocessable_entity
       end
     else
-      render json: { error: 'Link not valid or expired. Try generating a new link.' }, status: :not_found
+      render json: { error: 'Link not valid or expired. Try generating a new link.' }, status: :ok
     end
   end
 
@@ -82,7 +82,7 @@ class Api::V1::PasswordsController < ApplicationController
     @user = User.find_by(email: email)
 
     unless @user
-      return render json: { error: 'Email address not found. Please check and try again.' }, status: :not_found
+      return render json: { error: 'Email address not found. Please check and try again.' }, status: :ok
     end
 
     if password_reset_recently_requested?(@user)

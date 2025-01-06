@@ -27,7 +27,7 @@ class Api::V1::ReturnsController < ApplicationController
       end
     end
   rescue ActiveRecord::RecordNotFound => e
-    render json: { message: 'Order or item not found', error: e.message }, status: :not_found
+    render json: { message: 'Order or item not found', error: e.message }, status: :ok
   rescue ActiveRecord::RecordInvalid => e
     render json: { errors: e.record.errors.full_messages }, status: :unprocessable_entity
   end

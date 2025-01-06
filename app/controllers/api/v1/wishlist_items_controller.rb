@@ -27,7 +27,7 @@ class Api::V1::WishlistItemsController < ApplicationController
     if @wishlist_item.destroy
       render json: { message: 'Removed Item form Wishlist' }, status: :ok
     else
-      render json: { message: 'Wishlist item not found' }, status: :not_found
+      render json: { message: 'Wishlist item not found' }, status: :ok
     end
   end
 
@@ -59,7 +59,7 @@ class Api::V1::WishlistItemsController < ApplicationController
         render json: cart_item.errors, status: :unprocessable_entity
       end
     else
-      render json: { error: 'Item not found in wishlist' }, status: :not_found
+      render json: { error: 'Item not found in wishlist' }, status: :ok
     end
   end
   

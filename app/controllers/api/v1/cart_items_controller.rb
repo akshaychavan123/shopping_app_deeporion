@@ -82,7 +82,7 @@ class Api::V1::CartItemsController < ApplicationController
         render json: { error: 'Invalid action type' }, status: :bad_request
       end
     else
-      render json: { error: 'Item not found in cart' }, status: :not_found
+      render json: { error: [] }, status: :ok
     end
   end  
 

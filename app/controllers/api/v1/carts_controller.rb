@@ -70,7 +70,7 @@ class Api::V1::CartsController < ApplicationController
         render json: { error: 'Coupon is invalid or expired' }, status: :unprocessable_entity
       end
     else
-      render json: { error: 'Coupon not found' }, status: :not_found
+      render json: { error: [] }, status: :ok
     end
   end
 

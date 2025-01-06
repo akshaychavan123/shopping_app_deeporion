@@ -67,7 +67,7 @@ class Api::V1::PlansController < ApplicationController
   def set_plan
     @plan = Plan.find(params[:id])
     rescue ActiveRecord::RecordNotFound
-    render json: { error: 'Plan not found' }, status: :not_found
+    render json: { error: 'Plan not found' }, status: :ok
   end
 
   def check_user

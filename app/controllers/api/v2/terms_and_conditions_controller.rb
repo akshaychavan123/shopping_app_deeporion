@@ -41,7 +41,7 @@ class Api::V2::TermsAndConditionsController < ApplicationController
   def set_terms_and_condition
     @terms_and_condition = TermsAndCondition.find(params[:id])
   rescue ActiveRecord::RecordNotFound
-    render json: { error: 'Terms and Condition not found' }, status: :not_found
+    render json: { error: 'Terms and Condition not found' }, status: :ok
   end
 
   def terms_and_condition_params

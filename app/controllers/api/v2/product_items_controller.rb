@@ -13,7 +13,7 @@ class Api::V2::ProductItemsController < ApplicationController
     if @product_items.present?
       render json: { data: ActiveModelSerializers::SerializableResource.new(@product_items, each_serializer: ProductItemSerializer)}
     else
-      render json: { data:[], message: 'Not found' }, status: :not_found
+      render json: { data:[], message: 'Not found' }, status: :ok
     end
   end
 

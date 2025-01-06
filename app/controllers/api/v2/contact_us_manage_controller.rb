@@ -25,7 +25,7 @@ class Api::V2::ContactUsManageController < ApplicationController
     contact_us_entry = ContactUs.find(params[:id])
     render json: { message: 'ContactUs entry details', data: contact_us_entry }, status: :ok
   rescue ActiveRecord::RecordNotFound
-    render json: { message: 'ContactUs entry not found' }, status: :not_found
+    render json: { message: [] }, status: :ok
   end
 
   def update
@@ -39,7 +39,7 @@ class Api::V2::ContactUsManageController < ApplicationController
       render json: { message: 'Failed to update ContactUs entry', errors: contact_us_entry.errors.full_messages }, status: :unprocessable_entity
     end
   rescue ActiveRecord::RecordNotFound
-    render json: { message: 'ContactUs entry not found' }, status: :not_found
+    render json: { message: 'ContactUs entry not found' }, status: :ok
   end
 
   def destroy
@@ -51,7 +51,7 @@ class Api::V2::ContactUsManageController < ApplicationController
       render json: { message: 'Failed to delete ContactUs entry', errors: contact_us_entry.errors.full_messages }, status: :unprocessable_entity
     end
   rescue ActiveRecord::RecordNotFound
-    render json: { message: 'ContactUs entry not found' }, status: :not_found
+    render json: { message: 'ContactUs entry not found' }, status: :ok
   end
 
   private

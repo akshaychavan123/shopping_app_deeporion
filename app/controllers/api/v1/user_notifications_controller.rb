@@ -24,6 +24,6 @@ class Api::V1::UserNotificationsController < ApplicationController
   def set_notification
     @notification = @current_user.user_notifications.find(params[:id])
   rescue ActiveRecord::RecordNotFound
-    render json: { error: 'Notification not found' }, status: :not_found
+    render json: { error: 'Notification not found' }, status: :ok
   end
 end

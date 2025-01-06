@@ -66,7 +66,7 @@ class Api::V1::OrderItemsController < ApplicationController
         total_orders: total_orders
       }, status: :ok
     else
-      render json: { order_details: [] }, status: :not_found
+      render json: { order_details: [] }, status: :ok
     end
   end  
 
@@ -89,7 +89,7 @@ class Api::V1::OrderItemsController < ApplicationController
     if data.present?
       render json: { data: data}, status: :ok 
     else
-      render json: { data: [] }, status: :not_found 
+      render json: { data: [] }, status: :ok 
     end    
   end
 

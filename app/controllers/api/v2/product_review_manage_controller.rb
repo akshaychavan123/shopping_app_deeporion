@@ -15,7 +15,7 @@ class Api::V2::ProductReviewManageController < ApplicationController
                 .distinct
                 .order(created_at: :desc)
       else
-        render json: { error: 'Category not found' }, status: :not_found and return
+        render json: { error: 'Category not found' }, status: :ok and return
       end
     else
       @product_items = ProductItem.joins(:reviews)
@@ -36,7 +36,7 @@ class Api::V2::ProductReviewManageController < ApplicationController
     @product_item = ProductItem.find_by(id: params[:id])
   
     if @product_item.nil?
-      render json: { error: 'ProductItem not found' }, status: :not_found and return
+      render json: { error: 'ProductItem not found' }, status: :ok and return
     end
   
     @reviews = @product_item.reviews.active.includes(:review_votes)
@@ -91,7 +91,7 @@ class Api::V2::ProductReviewManageController < ApplicationController
     @review = Review.find_by(id: params[:id])
 
     if @review.nil?
-      render json: { error: 'Review not found' }, status: :not_found
+      render json: { error: 'Review not found' }, status: :ok
     end
   end
 

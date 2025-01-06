@@ -39,7 +39,7 @@ class Api::V2::PrivacyPoliciesController < ApplicationController
   def set_privacy_policy
     @privacy_policy = PrivacyPolicy.find(params[:id])
   rescue ActiveRecord::RecordNotFound
-    render json: { error: 'PrivacyPolicy not found' }, status: :not_found
+    render json: { error: 'PrivacyPolicy not found' }, status: :ok
   end
 
   def privacy_policy_params
