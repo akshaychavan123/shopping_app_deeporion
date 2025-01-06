@@ -7,7 +7,7 @@ class Api::V1::NotificationController < ApplicationController
     if notification
       render json: { notification: notification }, status: :ok
     else
-      render json: { error: "Notification settings not found" }, status: :not_found
+      render json: { error: [] }, status: :ok
     end
   end
 

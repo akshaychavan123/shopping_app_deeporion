@@ -6,7 +6,7 @@ class Api::V2::PaymentsController < ApplicationController
     plan = Plan.find_by(id: plan_id)
   
     if plan.nil?
-      render json: { error: 'Plan not found' }, status: :not_found
+      render json: { error: 'Plan not found' }, status: :ok
       return
     end
   

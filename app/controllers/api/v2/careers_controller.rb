@@ -37,7 +37,7 @@ class Api::V2::CareersController < ApplicationController
       render json: { errors: @career.errors.full_messages }, status: :unprocessable_entity
     end
   rescue ActiveRecord::RecordNotFound
-    render json: { errors: ['Career not found'] }, status: :not_found
+    render json: { errors: ['Career not found'] }, status: :ok
   rescue StandardError => e
     render json: { errors: [e.message] }, status: :internal_server_error
   end

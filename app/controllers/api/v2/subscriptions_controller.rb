@@ -4,7 +4,7 @@ class Api::V2::SubscriptionsController < ApplicationController
 
   def create
     if @plan.nil?
-      render json: { error: 'Plan not found' }, status: :not_found
+      render json: { error: 'Plan not found' }, status: :ok
       return
     end
 

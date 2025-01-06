@@ -113,7 +113,7 @@ class Api::V1::ReviewsController < ApplicationController
     @review = Review.find_by(id: params[:id])
 
     unless @review
-      render json: { error: 'Review not found' }, status: :not_found
+      render json: { error: 'Review not found' }, status: :ok
     end
   end
 

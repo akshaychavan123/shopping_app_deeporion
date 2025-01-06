@@ -62,7 +62,7 @@ class Api::V1::OrdersController < ApplicationController
     @order_item = @order.order_items.find_by(id: params[:order_item_id])
   
     if @order_item.nil?
-      render json: { message: 'Order item not found' }, status: :not_found
+      render json: { message: [] }, status: :ok
       return
     end
   
@@ -96,13 +96,13 @@ class Api::V1::OrdersController < ApplicationController
   def exchange_order
     @order = @current_user.orders.find_by(id: params[:order_id])
     unless @order
-      render json: { message: 'Order not found' }, status: :not_found
+      render json: { message: [] }, status: :ok
       return
     end
   
     @order_item = @order.order_items.find_by(id: params[:order_item_id])
     unless @order_item
-      render json: { message: 'Order item not found' }, status: :not_found
+      render json: { message: [] }, status: :ok
       return
     end
   
@@ -123,7 +123,7 @@ class Api::V1::OrdersController < ApplicationController
   
     address = Address.find_by(id: @order.address_id)
     unless address
-      render json: { message: 'Address not found' }, status: :not_found
+      render json: { message: [] }, status: :ok
       return
     end
   
@@ -150,20 +150,20 @@ class Api::V1::OrdersController < ApplicationController
     if orders.present?
       render json: orders, status: :ok, each_serializer: OrderHistorySerializer
     else
-      render json: { message: 'No orders found' }, status: :not_found
+      render json: { message: [] }, status: :ok
     end
   end
 
   def order_item_details
     @order = @current_user.orders.find_by(id: params[:order_id])
     unless @order
-      render json: { message: 'Order not found' }, status: :not_found
+      render json: { message: [] }, status: :ok
       return
     end
   
     @order_item = @order.order_items.find_by(id: params[:order_item_id])
     unless @order_item
-      render json: { message: 'Order item not found' }, status: :not_found
+      render json: { message: [] }, status: :ok
       return
     end
   

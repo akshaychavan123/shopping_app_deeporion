@@ -49,7 +49,7 @@ class Api::V1::ClientReviewsController < ApplicationController
   def set_client_review
     @client_review = ClientReview.find(params[:id])
   rescue ActiveRecord::RecordNotFound
-    render json: { error: 'Review not found' }, status: :not_found
+    render json: { error: 'Review not found' }, status: :ok
   end
   
   def client_review_params

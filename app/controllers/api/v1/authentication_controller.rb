@@ -4,7 +4,7 @@ class Api::V1::AuthenticationController < ApplicationController
   def login
     @user = User.find_by(email: params[:email])
     if @user.nil?
-      render json: { error: "Account doesn't exist" }, status: :not_found
+      render json: { error: "Account doesn't exist" }, status: :ok
     elsif @user.authenticate(params[:password])
       token = JsonWebToken.encode(user_id: @user.id)
       register_device_token(@user, params[:device_token], params[:device_type])

@@ -37,7 +37,7 @@ class Api::V2::CareerRolesController < ApplicationController
         render json: { errors: @career_role.errors.full_messages }, status: :unprocessable_entity
       end
     rescue ActiveRecord::RecordNotFound
-      render json: { errors: ['career role not found'] }, status: :not_found
+      render json: { errors: ['career role not found'] }, status: :ok
     rescue StandardError => e
       render json: { errors: [e.message] }, status: :internal_server_error
     end
