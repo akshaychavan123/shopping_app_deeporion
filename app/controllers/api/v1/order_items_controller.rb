@@ -87,14 +87,32 @@ class Api::V1::OrderItemsController < ApplicationController
     end
   end
 
-  def revenue_graph   
-    data = Order.joins(:order_items).where("orders.created_at <= ?", 1.week.ago).group("DATE(orders.created_at)").select("DATE(orders.created_at) as order_date, COUNT(order_items.id) as item_count,SUM(
-      order_items.total_price) as total_price ,COUNT(orders.id) as order_count")
+  def revenue_graph
+    start_date = params[:start_date].present? ? params[:start_date].to_date : 1.week.ago.to_date
+    end_date = params[:end_date].present? ? params[:end_date].to_date : Date.today
+
+    data = Order
+             .joins(:order_items)
+             .where(created_at: start_date..end_date)
+             .group("DATE(orders.created_at)")
+             .select(
+               "DATE(orders.created_at) as order_date,
+                COUNT(order_items.id) as item_count,
+                SUM(order_items.total_price) as total_price,
+                COUNT(orders.id) as order_count"
+             )
     if data.present?
-      render json: { data: data}, status: :ok 
+             total_revenue = data.sum(&:total_price)
+             total_orders = data.sum(&:order_count)
+             response = {
+               data: data,
+               total_orders: total_orders,
+               total_revenue: total_revenue
+             }
+             render json: response, status: :ok
     else
-      render json: { data: [] }, status: :ok 
-    end    
+      render json: { data: [] }, status: :ok
+    end
   end
 
   private
