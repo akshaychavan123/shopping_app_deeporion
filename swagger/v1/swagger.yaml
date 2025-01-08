@@ -4343,6 +4343,21 @@ paths:
       - Order Items
       security:
       - bearerAuth2: []
+      parameters:
+      - name: start_date
+        in: query
+        format: date
+        required: false
+        description: 'Start date for filtering orders (format: YYYY-MM-DD)'
+        schema:
+          type: string
+      - name: end_date
+        in: query
+        format: date
+        required: false
+        description: 'End date for filtering orders (format: YYYY-MM-DD)'
+        schema:
+          type: string
       responses:
         '200':
           description: successful

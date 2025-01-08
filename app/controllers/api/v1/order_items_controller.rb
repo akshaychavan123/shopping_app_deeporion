@@ -34,11 +34,15 @@ class Api::V1::OrderItemsController < ApplicationController
     }        
   end
 
-  def order_count    
-    order_details=Order.new
+  def order_count
+    order_details = Order.new
     render json: {
-      orders: ActiveModelSerializers::SerializableResource.new(order_details,each_serializer: OrderCountSerializer)
-    }        
+      orders: ActiveModelSerializers::SerializableResource.new(
+        order_details,
+        each_serializer: OrderCountSerializer,
+        params: { start_date: params[:start_date], end_date: params[:end_date] }
+      )
+    }
   end
 
   def order_status_graph

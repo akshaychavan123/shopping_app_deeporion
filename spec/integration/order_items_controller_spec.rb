@@ -33,6 +33,10 @@ RSpec.describe 'Api::V1::OrderItemsController', type: :request do
       tags 'Order Items'
       produces 'application/json'
       security [ bearerAuth2: [] ]
+      parameter name: :start_date, in: :query, type: :string, format: :date, required: false,
+      description: 'Start date for filtering orders (format: YYYY-MM-DD)'
+      parameter name: :end_date, in: :query, type: :string, format: :date, required: false,
+      description: 'End date for filtering orders (format: YYYY-MM-DD)'
 
       response(200, 'successful') do
         run_test!
