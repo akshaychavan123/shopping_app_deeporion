@@ -165,6 +165,13 @@ Rails.application.routes.draw do
       post 'payments/verify_payment', to: 'payments#verify_payment'
       # post 'payments/webhook', to: 'payments#webhook'
       # get 'payments/checkout_iframe', to: 'payments#checkout_iframe'
+      resources :blogs do
+        collection do
+          get :show_blog
+          put :update_blog
+          delete :delete_blog
+        end
+      end
     end
   end
 end
