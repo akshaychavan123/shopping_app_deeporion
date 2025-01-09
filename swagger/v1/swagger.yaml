@@ -2054,6 +2054,165 @@ paths:
           description: banner destroyed successfully
         '404':
           description: not found
+  "/api/v2/blogs":
+    get:
+      summary: Retrieves all blogs
+      tags:
+      - Blogs
+      responses:
+        '200':
+          description: No blogs found
+    post:
+      summary: Creates a blog
+      tags:
+      - Blogs
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '201':
+          description: Blog created successfully
+        '422':
+          description: Invalid request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                category:
+                  type: string
+                card_home_url:
+                  type: string
+                  nullable: true
+                card_insights_url:
+                  type: string
+                  nullable: true
+                banner_url:
+                  type: string
+                  nullable: true
+                body:
+                  type: string
+                visibility:
+                  type: boolean
+                publish_date:
+                  type: string
+                  format: date
+                  nullable: true
+                publisher_id:
+                  type: integer
+                card_image:
+                  type: string
+                  format: binary
+                  nullable: true
+                banner_image:
+                  type: string
+                  format: binary
+                  nullable: true
+                card_home_image:
+                  type: string
+                  format: binary
+                  nullable: true
+                description:
+                  type: string
+                  nullable: true
+                path_name:
+                  type: string
+              required:
+              - title
+              - category
+              - body
+              - visibility
+              - publisher_id
+              - path_name
+  "/api/v2/blogs/{path_name}":
+    parameters:
+    - name: path_name
+      in: path
+      description: Path name of the blog
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Retrieves a specific blog
+      tags:
+      - Blogs
+      responses:
+        '200':
+          description: Blog details
+        '404':
+          description: Blog not found
+    patch:
+      summary: Updates a specific blog
+      tags:
+      - Blogs
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '200':
+          description: Blog updated successfully
+        '422':
+          description: Invalid request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                category:
+                  type: string
+                card_home_url:
+                  type: string
+                  nullable: true
+                card_insights_url:
+                  type: string
+                  nullable: true
+                banner_url:
+                  type: string
+                  nullable: true
+                body:
+                  type: string
+                visibility:
+                  type: boolean
+                publish_date:
+                  type: string
+                  format: date
+                  nullable: true
+                publisher_id:
+                  type: integer
+                card_image:
+                  type: string
+                  format: binary
+                  nullable: true
+                banner_image:
+                  type: string
+                  format: binary
+                  nullable: true
+                card_home_image:
+                  type: string
+                  format: binary
+                  nullable: true
+                description:
+                  type: string
+                  nullable: true
+                path_name:
+                  type: string
+    delete:
+      summary: Deletes a specific blog
+      tags:
+      - Blogs
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Blog deleted successfully
+        '404':
+          description: Blog not found
   "/api/v2/career_roles":
     get:
       summary: Retrieves all Career roles
