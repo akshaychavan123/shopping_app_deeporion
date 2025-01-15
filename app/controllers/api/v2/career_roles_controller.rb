@@ -1,11 +1,17 @@
 class Api::V2::CareerRolesController < ApplicationController
+    include Pagy::Backend
     before_action :authorize_request, except: [:index, :show]
     before_action :check_user, except: [:index, :show]
     before_action :set_career, only: [:show, :update, :destroy]
   
     def index
-      @career_roles = CareerRole.all
-      render json: @career_roles, each_serializer: CareerRoleSerializer
+      search = CareerRole.ransack(params[:q])
+      pagy, @career_roles = pagy(search.result(distinct: true), items: params[:items] || 10)
+
+      render json: {
+        career_roles: ActiveModelSerializers::SerializableResource.new(@career_roles, each_serializer: CareerRoleSerializer),
+        pagination: pagy_metadata(pagy)
+      }
     end
   
     def show
