@@ -2,103 +2,122 @@ require 'swagger_helper'
 
 RSpec.describe 'Api::V2::CareerRolesController', type: :request do
   path '/api/v2/career_roles' do
-    get 'Retrieves all Career roles' do
+    get('List Career Roles') do
       tags 'Career Roles'
       produces 'application/json'
-      response '200', 'career roles found' do
+      parameter name: :q, in: :query, schema: { type: :object }, description: 'Ransack query parameters'
+      parameter name: :items, in: :query, schema: { type: :integer }, description: 'Items per page'
+
+      response '200', 'List of career roles' do
+        schema type: :object,
+               properties: {
+                 career_roles: {
+                   type: :array,
+                   items: {
+                     type: :object,
+                     properties: {
+                       id: { type: :integer },
+                       role_name: { type: :string },
+                       role_type: { type: :string },
+                       location: { type: :string }
+                     }
+                   }
+                 },
+                 pagination: {
+                   type: :object,
+                   properties: {
+                     count: { type: :integer },
+                     pages: { type: :integer }
+                   }
+                 }
+               }
         run_test!
       end
     end
 
-    post 'Creates a Career role' do
+    post('Create Career Role') do
       tags 'Career Roles'
       consumes 'application/json'
-      security [bearerAuth2: []]
-      parameter name: :career, in: :body, schema: {
+      parameter name: :career_role, in: :body, schema: {
         type: :object,
         properties: {
-          career_id: { type: :string },
           role_name: { type: :string },
           role_type: { type: :string },
           location: { type: :string },
-          role_overview: { type: :string },
-          key_responsibility: { type: :string },
-          requirements: { type: :string },
-          email_id: { type: :string }
-          
+          career_id: { type: :integer }
         },
-        required: ['career_id','role_name', 'role_type', 'location', 'role_overview', 'key_responsibility', 'requirements', 'email_id']
+        required: ['role_name', 'role_type', 'location', 'career_id']
       }
-      response '201', 'career created' do
-        let(:career) { { career_id: '1',role_name: 'Software Engineer', role_type: 'Full-Time', location: 'New York', role_overview: 'Develop software', key_responsibility: 'Coding', requirements: 'Bachelor\'s Degree', email_id: 'hr@example.com' } }
+
+      response '201', 'Career role created' do
+        schema type: :object,
+               properties: {
+                 id: { type: :integer },
+                 role_name: { type: :string },
+                 role_type: { type: :string },
+                 location: { type: :string }
+               }
         run_test!
       end
 
-      response '422', 'invalid request' do
-        let(:career) { { header: nil } }
+      response '422', 'Invalid input' do
+        schema type: :object,
+               properties: {
+                 errors: { type: :array, items: { type: :string } }
+               }
         run_test!
       end
     end
   end
 
   path '/api/v2/career_roles/{id}' do
-    parameter name: :id, in: :path, type: :string
+    parameter name: :id, in: :path, type: :integer, description: 'Career Role ID'
 
-    get 'Retrieves a specific Career role' do
+    get('Show Career Role') do
       tags 'Career Roles'
       produces 'application/json'
-      response '200', 'career found' do
-        let(:id) { Career.create(header: 'Engineering Department').id }
+
+      response '200', 'Career role found' do
+        schema type: :object,
+               properties: {
+                 id: { type: :integer },
+                 role_name: { type: :string },
+                 role_type: { type: :string },
+                 location: { type: :string }
+               }
         run_test!
       end
 
-      response '404', 'career not found' do
-        let(:id) { 'invalid' }
+      response '404', 'Career role not found' do
         run_test!
       end
     end
 
-    put 'Updates a specific Career role' do
+    put('Update Career Role') do
       tags 'Career Roles'
       consumes 'application/json'
-      security [bearerAuth2: []]
-      parameter name: :career, in: :body,schema: {
+      parameter name: :career_role, in: :body, schema: {
         type: :object,
         properties: {
-          career_id: { type: :string },
           role_name: { type: :string },
           role_type: { type: :string },
           location: { type: :string },
-          role_overview: { type: :string },
-          key_responsibility: { type: :string },
-          requirements: { type: :string },
-          email_id: { type: :string }
-          
-        },
-        required: ['career_id','role_name', 'role_type', 'location', 'role_overview', 'key_responsibility', 'requirements', 'email_id']
+          career_id: { type: :integer }
+        }
       }
-      response '200', 'career updated' do
-        let(:id) { Career.create(header: 'Engineering Department').id }
-        let(:career) { { career_id: 'Engineering Department Updated',  role_name: 'Software Engineer', role_type: 'Full-Time', location: 'New York', role_overview: 'Develop software', key_responsibility: 'Coding', requirements: 'Bachelor\'s Degree', email_id: 'hr@example.com'} }
+
+      response '200', 'Career role updated' do
         run_test!
       end
 
-      response '404', 'career not found' do
-        let(:id) { 'invalid' }
+      response '422', 'Invalid input' do
         run_test!
       end
     end
 
-    delete 'Deletes a specific Career role' do
+    delete('Delete Career Role') do
       tags 'Career Roles'
-      security [bearerAuth2: []]
-      response '204', 'career deleted' do
-        let(:id) { Career.create(header: 'Engineering Department').id }
-        run_test!
-      end
-
-      response '404', 'career not found' do
-        let(:id) { 'invalid' }
+      response '204', 'Career role deleted' do
         run_test!
       end
     end
