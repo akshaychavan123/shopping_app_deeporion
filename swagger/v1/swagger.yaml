@@ -2080,50 +2080,50 @@ paths:
             schema:
               type: object
               properties:
-                title:
+                blog[title]:
                   type: string
-                category:
+                blog[category]:
                   type: string
-                card_home_url:
-                  type: string
-                  nullable: true
-                card_insights_url:
+                blog[card_home_url]:
                   type: string
                   nullable: true
-                banner_url:
+                blog[card_insights_url]:
                   type: string
                   nullable: true
-                body:
+                blog[banner_url]:
                   type: string
-                visibility:
+                  nullable: true
+                blog[body]:
+                  type: string
+                blog[visibility]:
                   type: boolean
-                publish_date:
+                blog[publish_date]:
                   type: string
                   format: date
                   nullable: true
-                publisher_id:
+                blog[publisher_id]:
                   type: integer
-                card_image:
+                blog[card_image]:
                   type: file
                   nullable: true
-                banner_image:
+                blog[banner_image]:
                   type: file
                   nullable: true
-                card_home_image:
+                blog[card_home_image]:
                   type: file
                   nullable: true
-                description:
+                blog[description]:
                   type: string
                   nullable: true
-                path_name:
+                blog[path_name]:
                   type: string
               required:
-              - title
-              - category
-              - body
-              - visibility
-              - publisher_id
-              - path_name
+              - blog[title]
+              - blog[category]
+              - blog[body]
+              - blog[visibility]
+              - blog[publisher_id]
+              - blog[path_name]
   "/api/v2/blogs/{path_name}":
     parameters:
     - name: path_name
@@ -2159,42 +2159,42 @@ paths:
             schema:
               type: object
               properties:
-                title:
+                blog[title]:
                   type: string
-                category:
+                blog[category]:
                   type: string
-                card_home_url:
-                  type: string
-                  nullable: true
-                card_insights_url:
+                blog[card_home_url]:
                   type: string
                   nullable: true
-                banner_url:
+                blog[card_insights_url]:
                   type: string
                   nullable: true
-                body:
+                blog[banner_url]:
                   type: string
-                visibility:
+                  nullable: true
+                blog[body]:
+                  type: string
+                blog[visibility]:
                   type: boolean
-                publish_date:
+                blog[publish_date]:
                   type: string
                   format: date
                   nullable: true
-                publisher_id:
+                blog[publisher_id]:
                   type: integer
-                card_image:
+                blog[card_image]:
                   type: file
                   nullable: true
-                banner_image:
+                blog[banner_image]:
                   type: file
                   nullable: true
-                card_home_image:
+                blog[card_home_image]:
                   type: file
                   nullable: true
-                description:
+                blog[description]:
                   type: string
                   nullable: true
-                path_name:
+                blog[path_name]:
                   type: string
     delete:
       summary: Deletes a specific blog
