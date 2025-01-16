@@ -52,7 +52,9 @@ class BlogSerializer < ActiveModel::Serializer
     return nil if attachment.nil?
   
     if Rails.env.production? || Rails.application.config.active_storage.service == :amazon
-      attachment.service_url
+      url_parts = attachment.url.split('?', 2)
+      base_url = url_parts.first
+      base_url
     else
       Rails.application.routes.url_helpers.rails_blob_url(attachment, host: "localhost:3000")
     end
