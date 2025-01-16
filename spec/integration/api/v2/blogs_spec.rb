@@ -21,22 +21,22 @@ RSpec.describe 'Api::V2::BlogsController', type: :request do
       parameter name: :blog, in: :formData, schema: {
         type: :object,
         properties: {
-          title: { type: :string },
-          category: { type: :string },
-          card_home_url: { type: :string, nullable: true },
-          card_insights_url: { type: :string, nullable: true },
-          banner_url: { type: :string, nullable: true },
-          body: { type: :string },
-          visibility: { type: :boolean },
-          publish_date: { type: :string, format: :date, nullable: true },
-          publisher_id: { type: :integer },
-          card_image: { type: :file, nullable: true },
-          banner_image: { type: :file, nullable: true },
-          card_home_image: { type: :file, nullable: true },
-          description: { type: :string, nullable: true },
-          path_name: { type: :string }
+          'blog[title]': { type: :string },
+          'blog[category]': { type: :string },
+          'blog[card_home_url]': { type: :string, nullable: true },
+          'blog[card_insights_url]': { type: :string, nullable: true },
+          'blog[banner_url]': { type: :string, nullable: true },
+          'blog[body]': { type: :string },
+          'blog[visibility]': { type: :boolean },
+          'blog[publish_date]': { type: :string, format: :date, nullable: true },
+          'blog[publisher_id]': { type: :integer },
+          'blog[card_image]': { type: :file, nullable: true },
+          'blog[banner_image]': { type: :file, nullable: true },
+          'blog[card_home_image]': { type: :file, nullable: true },
+          'blog[description]': { type: :string, nullable: true },
+          'blog[path_name]': { type: :string }
         },
-        required: ['title', 'category', 'body', 'visibility', 'publisher_id', 'path_name']
+        required: ['blog[title]', 'blog[category]', 'blog[body]', 'blog[visibility]', 'blog[publisher_id]', 'blog[path_name]']
       }
       response '201', 'Blog created successfully' do
         run_test!
@@ -72,20 +72,20 @@ RSpec.describe 'Api::V2::BlogsController', type: :request do
       parameter name: :blog, in: :formData, schema: {
         type: :object,
         properties: {
-          title: { type: :string },
-          category: { type: :string },
-          card_home_url: { type: :string, nullable: true },
-          card_insights_url: { type: :string, nullable: true },
-          banner_url: { type: :string, nullable: true },
-          body: { type: :string },
-          visibility: { type: :boolean },
-          publish_date: { type: :string, format: :date, nullable: true },
-          publisher_id: { type: :integer },
-          card_image: { type: :file, nullable: true },
-          banner_image: { type: :file, nullable: true },
-          card_home_image: { type: :file, nullable: true },
-          description: { type: :string, nullable: true },
-          path_name: { type: :string }
+          'blog[title]': { type: :string },
+          'blog[category]': { type: :string },
+          'blog[card_home_url]': { type: :string, nullable: true },
+          'blog[card_insights_url]': { type: :string, nullable: true },
+          'blog[banner_url]': { type: :string, nullable: true },
+          'blog[body]': { type: :string },
+          'blog[visibility]': { type: :boolean },
+          'blog[publish_date]': { type: :string, format: :date, nullable: true },
+          'blog[publisher_id]': { type: :integer },
+          'blog[card_image]': { type: :file, nullable: true },
+          'blog[banner_image]': { type: :file, nullable: true },
+          'blog[card_home_image]': { type: :file, nullable: true },
+          'blog[description]': { type: :string, nullable: true },
+          'blog[path_name]': { type: :string }
         }
       }
       response '200', 'Blog updated successfully' do
@@ -114,3 +114,4 @@ RSpec.describe 'Api::V2::BlogsController', type: :request do
     end
   end
 end
+
