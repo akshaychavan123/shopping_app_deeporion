@@ -30,9 +30,9 @@ RSpec.describe 'Api::V2::BlogsController', type: :request do
           'blog[visibility]': { type: :boolean },
           'blog[publish_date]': { type: :string, format: :date, nullable: true },
           'blog[publisher_id]': { type: :integer },
-          'blog[card_image]': { type: :file, nullable: true },
-          'blog[banner_image]': { type: :file, nullable: true },
-          'blog[card_home_image]': { type: :file, nullable: true },
+          'blog[card_home_url_alt]': { type: :string, nullable: true },
+          'blog[card_insights_url_alt]': { type: :string, nullable: true },
+          'blog[banner_url_alt]': { type: :string, nullable: true },
           'blog[description]': { type: :string, nullable: true },
           'blog[path_name]': { type: :string }
         },
@@ -81,9 +81,9 @@ RSpec.describe 'Api::V2::BlogsController', type: :request do
           'blog[visibility]': { type: :boolean },
           'blog[publish_date]': { type: :string, format: :date, nullable: true },
           'blog[publisher_id]': { type: :integer },
-          'blog[card_image]': { type: :file, nullable: true },
-          'blog[banner_image]': { type: :file, nullable: true },
-          'blog[card_home_image]': { type: :file, nullable: true },
+          'blog[card_home_url_alt]': { type: :string, nullable: true },
+          'blog[card_insights_url_alt]': { type: :string, nullable: true },
+          'blog[banner_url_alt]': { type: :string, nullable: true },
           'blog[description]': { type: :string, nullable: true },
           'blog[path_name]': { type: :string }
         }

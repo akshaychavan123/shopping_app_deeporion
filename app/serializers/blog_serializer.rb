@@ -6,8 +6,8 @@ class BlogSerializer < ActiveModel::Serializer
     if (user = User.find_by(id: object.publisher_id))
       {
         id: user.id,
-        name: user.first_name + " " + user.last_name,
-        profile_picture: user.profile_picture.attached? ? s3_url(user.profile_picture) : nil
+        name: user.name,
+        profile_picture: user.image.attached? ? s3_url(user.image) : nil
       }
     else
       nil

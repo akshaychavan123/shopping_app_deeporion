@@ -2103,14 +2103,14 @@ paths:
                   nullable: true
                 blog[publisher_id]:
                   type: integer
-                blog[card_image]:
-                  type: file
+                blog[card_home_url_alt]:
+                  type: string
                   nullable: true
-                blog[banner_image]:
-                  type: file
+                blog[card_insights_url_alt]:
+                  type: string
                   nullable: true
-                blog[card_home_image]:
-                  type: file
+                blog[banner_url_alt]:
+                  type: string
                   nullable: true
                 blog[description]:
                   type: string
@@ -2182,14 +2182,14 @@ paths:
                   nullable: true
                 blog[publisher_id]:
                   type: integer
-                blog[card_image]:
-                  type: file
+                blog[card_home_url_alt]:
+                  type: string
                   nullable: true
-                blog[banner_image]:
-                  type: file
+                blog[card_insights_url_alt]:
+                  type: string
                   nullable: true
-                blog[card_home_image]:
-                  type: file
+                blog[banner_url_alt]:
+                  type: string
                   nullable: true
                 blog[description]:
                   type: string
