@@ -54,7 +54,7 @@ class Api::V2::BlogsController < ApplicationController
 
   def blog_params
     params.require(:blog).permit(:title, :category, :card_home_url, :card_insights_url, :banner_url, :body, :visibility, :publish_date, :publisher_id,
-    :card_image, :banner_image, :card_home_image, :description, :path_name)
+    :card_home_url_alt, :card_insights_url_alt, :banner_url_alt, :description, :path_name)
   end
 
   def set_blog

@@ -1,30 +1,6 @@
 class BlogSerializer < ActiveModel::Serializer
   attributes :id, :title, :category, :description, :path_name, :card_home_url, :card_insights_url, :banner_url, :body,
-   :visibility, :publish_date, :card_image, :banner_image
-
-  def card_image
-    if object.card_image.present?
-      serialize_image(object.card_image)
-    else
-      nil
-    end
-  end
-
-  def banner_image
-    if object.banner_image.present?
-      serialize_image(object.banner_image)
-    else
-      nil
-    end
-  end
-
-  def card_home_image
-    if object.card_home_image.present?
-      serialize_image(object.card_home_image)
-    else
-      nil
-    end
-  end
+   :visibility, :publish_date, :card_home_url_alt, :card_insights_url_alt, :banner_url_alt
 
   attribute :publisher do
     if (user = User.find_by(id: object.publisher_id))
