@@ -3,6 +3,33 @@ require 'swagger_helper'
 RSpec.describe 'api/v1/users', type: :request do
 
   path '/api/v1/users' do
+
+    get 'List all users' do
+      tags 'Users'
+      security [bearerAuth: []]
+      produces 'application/json'
+      parameter name: :query, in: :query, type: :string, required: false, description: 'Search query for filtering users'
+
+      response '200', 'Users retrieved successfully' do
+        let(:Authorization) { "Bearer #{JsonWebToken.encode(user_id: User.first.id)}" }
+        let(:query) { 'Admin' }
+
+        run_test! do |response|
+          expect(response.status).to eq(200)
+          json = JSON.parse(response.body)
+          expect(json['users']).to be_an(Array)
+          expect(json['users']).to all(include('id', 'first_name', 'email', 'profile_picture'))
+        end
+      end
+
+      response '401', 'Unauthorized' do
+        let(:Authorization) { nil }
+        run_test! do |response|
+          expect(response.status).to eq(401)
+        end
+      end
+    end
+
     post 'Creates a user' do
       tags 'Users'
       consumes 'application/json'

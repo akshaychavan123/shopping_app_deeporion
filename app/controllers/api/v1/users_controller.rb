@@ -2,6 +2,20 @@ class Api::V1::UsersController < ApplicationController
   before_action :authorize_request, except: :create
   before_action :find_user, except: %i[create]
 
+  def index
+    query_param = params[:query]
+    @users = User.where(type: "Admin").ransack(search_params(query_param)).result(distinct: true)
+    users_data = @users.map do |user|
+      {
+        id: user.id,
+        first_name: user.name,
+        email: user.email,
+        profile_picture: user.image.attached? ? url_for(user.image) : nil
+      }
+    end
+    render json: { users: users_data }
+  end
+
   def create
     @user = User.new(user_params)
     if @user.save
@@ -111,5 +125,13 @@ class Api::V1::UsersController < ApplicationController
 
   def user_params
     params.permit(:name, :email, :password, :terms_and_condition)
+  end
+
+  def search_params(query_param)
+    fields_to_search = %w[ name email ]
+    search_conditions = fields_to_search.map do |field|
+      { "#{field}_cont" => query_param }
+    end
+    { 'combinator' => 'or', 'groupings' => search_conditions }
   end
 end

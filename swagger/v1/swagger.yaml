@@ -5070,6 +5070,24 @@ paths:
         '401':
           description: unauthorized
   "/api/v1/users":
+    get:
+      summary: List all users
+      tags:
+      - Users
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: query
+        in: query
+        required: false
+        description: Search query for filtering users
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Users retrieved successfully
+        '401':
+          description: Unauthorized
     post:
       summary: Creates a user
       tags:
