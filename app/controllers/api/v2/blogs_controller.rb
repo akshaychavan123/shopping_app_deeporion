@@ -1,7 +1,16 @@
 class Api::V2::BlogsController < ApplicationController
   before_action :set_blog, only: [:show_blog, :update_blog, :delete_blog]
   def index
-    @blogs = Blog.all
+    page = params[:page].to_i.positive? ? params[:page].to_i : 1
+    per_page = params[:per_page].to_i.positive? ? params[:per_page].to_i : 10
+    query_param = params[:query]
+    @blogs = Blog.ransack(search_params(query_param)).result(distinct: true)
+    begin
+      pagy, @blogs = pagy(@blogs, items: per_page, page: page)
+    rescue Pagy::OverflowError
+      last_page = (@blogs.count / per_page.to_f).ceil
+      pagy, @blogs = pagy(@blogs, items: per_page, page: last_page)
+    end
     if @blogs.present?
       render json: {
         meta: { message: "Blogs listing are as follows" },
@@ -61,5 +70,19 @@ class Api::V2::BlogsController < ApplicationController
     @blog = Blog.find_by!(path_name: params[:path_name])
   rescue ActiveRecord::RecordNotFound
     render json: { meta: { message: "Blog not found" } }, status: :not_found
+  end
+
+  def search_params(query_param)
+    fields_to_search = %w[ path_name ]
+    search_conditions = fields_to_search.map do |field|
+      { "#{field}_cont" => query_param }
+    end
+
+    if query_param.present?
+      publishers = User.where('name ILIKE ? OR email ILIKE ?', "%#{query_param}%", "%#{query_param}%").pluck(:id)
+      blogs = Blog.where(id: publishers).pluck(:path_name)
+      search_conditions << { 'path_name_in' => blogs }
+    end
+    { 'combinator' => 'or', 'groupings' => search_conditions }
   end
 end

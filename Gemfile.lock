@@ -159,18 +159,6 @@ GEM
     jsonapi-renderer (0.2.2)
     jwt (2.8.2)
       base64
-    kaminari (1.2.2)
-      activesupport (>= 4.1.0)
-      kaminari-actionview (= 1.2.2)
-      kaminari-activerecord (= 1.2.2)
-      kaminari-core (= 1.2.2)
-    kaminari-actionview (1.2.2)
-      actionview
-      kaminari-core (= 1.2.2)
-    kaminari-activerecord (1.2.2)
-      activerecord
-      kaminari-core (= 1.2.2)
-    kaminari-core (1.2.2)
     logger (1.6.0)
     loofah (2.22.0)
       crass (~> 1.0.2)
@@ -226,7 +214,7 @@ GEM
       actionpack (>= 4.2)
       omniauth (~> 2.0)
     os (1.1.4)
-    pagy (9.3.3)
+    pagy (7.0.10)
     pg (1.5.6)
     phonelib (0.5.6)
     public_suffix (6.0.0)
@@ -403,12 +391,11 @@ DEPENDENCIES
   importmap-rails
   jbuilder
   jwt
-  kaminari (~> 1.2.1)
   mini_magick
   omniauth
   omniauth-google-oauth2
   omniauth-rails_csrf_protection
-  pagy
+  pagy (= 7.0.10)
   pg (~> 1.1)
   phonelib (~> 0.5.4)
   puma (~> 5.0)

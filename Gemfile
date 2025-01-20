@@ -84,7 +84,6 @@ gem 'mini_magick'
 gem 'sass-rails', '>= 5'
 gem 'rack-cors'
 gem 'active_model_serializers', '~> 0.10.0'
-gem 'kaminari', '~> 1.2.1'
 gem 'httparty'
 gem 'razorpay'
 gem "aws-sdk-s3"
@@ -93,6 +92,6 @@ gem 'sidekiq'
 gem "sidekiq-scheduler"
 gem 'redis', '~> 4.2'
 gem 'faker'
-gem 'pagy'
+gem 'pagy', '7.0.10'
 gem 'ransack'
 
