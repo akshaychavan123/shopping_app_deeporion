@@ -9,6 +9,8 @@ RSpec.describe 'api/v1/users', type: :request do
       security [bearerAuth: []]
       produces 'application/json'
       parameter name: :query, in: :query, type: :string, required: false, description: 'Search query for filtering users'
+      parameter name: :page, in: :query, type: :integer, required: false, description: 'Page number for pagination'
+      parameter name: :per_page, in: :query, type: :integer, required: false, description: 'Number of blogs per page'
 
       response '200', 'Users retrieved successfully' do
         let(:Authorization) { "Bearer #{JsonWebToken.encode(user_id: User.first.id)}" }

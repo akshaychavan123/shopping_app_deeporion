@@ -3,8 +3,16 @@ class Api::V1::UsersController < ApplicationController
   before_action :find_user, except: %i[create]
 
   def index
+    page = params[:page].to_i.positive? ? params[:page].to_i : 1
+    per_page = params[:per_page].to_i.positive? ? params[:per_page].to_i : 10
     query_param = params[:query]
     @users = User.where(type: "Admin").ransack(search_params(query_param)).result(distinct: true)
+    begin
+      pagy, @users = pagy(@users, items: per_page, page: page)
+    rescue Pagy::OverflowError
+      last_page = (@users.count / per_page.to_f).ceil
+      pagy, @users = pagy(@users, items: per_page, page: last_page)
+    end
     users_data = @users.map do |user|
       {
         id: user.id,
@@ -13,7 +21,12 @@ class Api::V1::UsersController < ApplicationController
         profile_picture: user.image.attached? ? url_for(user.image) : nil
       }
     end
-    render json: { users: users_data }
+    render json: {
+      users: users_data,
+      total_count: pagy.count,
+      current_page: pagy.page,
+      per_page: per_page
+    }
   end
 
   def create

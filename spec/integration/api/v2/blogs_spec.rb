@@ -5,6 +5,11 @@ RSpec.describe 'Api::V2::BlogsController', type: :request do
     get 'Retrieves all blogs' do
       tags 'Blogs'
       produces 'application/json'
+      consumes 'application/json'
+      parameter name: :page, in: :query, type: :integer, required: false, description: 'Page number for pagination'
+      parameter name: :per_page, in: :query, type: :integer, required: false, description: 'Number of blogs per page'
+      parameter name: :query, in: :query, type: :string, required: false, description: 'Search query for blogs (path_name, publisher name, or email)'
+
       response '200', 'Blogs listing' do
         run_test!
       end
