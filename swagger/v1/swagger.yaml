@@ -2143,24 +2143,25 @@ paths:
               - blog[visibility]
               - blog[publisher_id]
               - blog[path_name]
-  "/api/v2/blogs/{path_name}":
-    parameters:
-    - name: path_name
-      in: path
-      description: Path name of the blog
-      required: true
-      schema:
-        type: string
+  "/api/v2/blogs/show_blog":
     get:
       summary: Retrieves a specific blog
       tags:
       - Blogs
+      parameters:
+      - name: path_name
+        in: query
+        description: Path name of the blog
+        required: true
+        schema:
+          type: string
       responses:
         '200':
           description: Blog details
         '404':
           description: Blog not found
-    patch:
+  "/api/v2/blogs/update_blog":
+    put:
       summary: Updates a specific blog
       tags:
       - Blogs
@@ -2215,12 +2216,27 @@ paths:
                   nullable: true
                 blog[path_name]:
                   type: string
+              required:
+              - blog[title]
+              - blog[category]
+              - blog[body]
+              - blog[visibility]
+              - blog[publisher_id]
+              - blog[path_name]
+  "/api/v2/blogs/delete_blog":
     delete:
       summary: Deletes a specific blog
       tags:
       - Blogs
       security:
       - bearerAuth: []
+      parameters:
+      - name: path_name
+        in: query
+        required: true
+        description: Path name of the blog
+        schema:
+          type: string
       responses:
         '200':
           description: Blog deleted successfully
