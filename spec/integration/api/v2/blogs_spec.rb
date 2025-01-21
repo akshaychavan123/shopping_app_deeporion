@@ -53,12 +53,12 @@ RSpec.describe 'Api::V2::BlogsController', type: :request do
     end
   end
 
-  path '/api/v2/blogs/{path_name}' do
-    parameter name: :path_name, in: :path, type: :string, description: 'Path name of the blog'
-
+  path '/api/v2/blogs/show_blog' do
     get 'Retrieves a specific blog' do
       tags 'Blogs'
       produces 'application/json'
+      parameter name: :path_name, in: :query, type: :string, description: 'Path name of the blog', required: true
+
       response '200', 'Blog details' do
         let(:path_name) { 'sample-blog' }
         run_test!
@@ -69,8 +69,10 @@ RSpec.describe 'Api::V2::BlogsController', type: :request do
         run_test!
       end
     end
+  end
 
-    patch 'Updates a specific blog' do
+  path '/api/v2/blogs/update_blog' do
+    put 'Updates a specific blog' do
       tags 'Blogs'
       consumes 'multipart/form-data'
       security [bearerAuth: []]
@@ -91,22 +93,25 @@ RSpec.describe 'Api::V2::BlogsController', type: :request do
           'blog[banner_url_alt]': { type: :string, nullable: true },
           'blog[description]': { type: :string, nullable: true },
           'blog[path_name]': { type: :string }
-        }
+        },
+        required: ['blog[title]', 'blog[category]', 'blog[body]', 'blog[visibility]', 'blog[publisher_id]', 'blog[path_name]']
       }
       response '200', 'Blog updated successfully' do
-        let(:path_name) { 'sample-blog' }
         run_test!
       end
 
       response '422', 'Invalid request' do
-        let(:path_name) { 'sample-blog' }
         run_test!
       end
     end
+  end
 
+  path '/api/v2/blogs/delete_blog' do
     delete 'Deletes a specific blog' do
       tags 'Blogs'
       security [bearerAuth: []]
+      parameter name: :path_name, in: :query, type: :string, required: true, description: 'Path name of the blog'
+
       response '200', 'Blog deleted successfully' do
         let(:path_name) { 'sample-blog' }
         run_test!
