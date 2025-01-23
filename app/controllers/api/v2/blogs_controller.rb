@@ -11,9 +11,15 @@ class Api::V2::BlogsController < ApplicationController
       last_page = (@blogs.count / per_page.to_f).ceil
       pagy, @blogs = pagy(@blogs, items: per_page, page: last_page)
     end
+    pagination = {
+      total_count: pagy.count,
+      total_pages: pagy.pages,
+      current_page: pagy.page,
+      per_page: pagy.items
+    }
     if @blogs.present?
       render json: {
-        meta: { message: "Blogs listing are as follows" },
+        meta: { message: "Blogs listing are as follows", pagination: pagination },
         blogs: ActiveModelSerializers::SerializableResource.new(@blogs, each_serializer: BlogSerializer)
       }, status: :ok
     else

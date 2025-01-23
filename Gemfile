@@ -94,4 +94,5 @@ gem 'redis', '~> 4.2'
 gem 'faker'
 gem 'pagy', '7.0.10'
 gem 'ransack'
+gem 'kaminari', '~> 1.2.1'
 
