@@ -2,6 +2,7 @@ class User < ApplicationRecord
   has_secure_password
   before_validation :downcase_email, unless: -> { phone_number.present? }
   validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP, message: "must be a valid email address" }, uniqueness: true, unless: -> { phone_number.present? }
+  before_validation :normalize_gender
 
   validates :password, format: { with: /\A(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}\z/,
   message: "must be at least 8 characters long, include at least one uppercase letter, one lowercase letter, and one number"}, if: :password_digest_changed?
@@ -9,6 +10,7 @@ class User < ApplicationRecord
   validates :email, format: { with: /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i }, unless: -> { phone_number.present? } 
   validates :uid, uniqueness: { scope: :provider }, if: -> { provider.present? }
   validates :terms_and_condition, acceptance: { accept: true }, unless: -> { phone_number.present? }
+  validates :gender, presence: true, inclusion: { in: %w[male female other], message: "%{value} is not a valid gender" }, on: :update
 
   has_one :wishlist, dependent: :destroy
   has_one :cart, dependent: :destroy
@@ -115,5 +117,9 @@ class User < ApplicationRecord
       sms: phone_number.present?,
       whatsapp: phone_number.present?  
     )
+  end
+
+  def normalize_gender
+    self.gender = gender.to_s.downcase.strip if gender.present?
   end
 end

@@ -5341,6 +5341,8 @@ paths:
                   type: string
                 email:
                   type: string
+                gender:
+                  type: string
                 phone_number:
                   type: string
               required:
