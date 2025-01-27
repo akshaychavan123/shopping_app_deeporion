@@ -278,6 +278,7 @@ RSpec.describe 'api/v1/users', type: :request do
         properties: {
           name: { type: :string },
           email: { type: :string },
+          gender: { type: :string },
           phone_number: { type: :string }
         },
         required: ['name', 'email', 'phone_number']

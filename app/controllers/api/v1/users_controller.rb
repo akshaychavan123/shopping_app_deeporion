@@ -125,7 +125,7 @@ class Api::V1::UsersController < ApplicationController
   private
 
   def personal_details_params
-    params.permit(:name, :email, :phone_number)
+    params.permit(:name, :email, :phone_number, :gender, :user_params)
   end
 
   def password_params
