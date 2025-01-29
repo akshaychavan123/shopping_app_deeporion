@@ -4,8 +4,8 @@ class Api::V2::CategoriesController < ApplicationController
   before_action :set_category, only: [:show, :update, :destroy]
 
   def index
-    @categories = Category.order(created_at: :asc)
-    render json: { data: ActiveModelSerializers::SerializableResource.new(@categories, each_serializer: CategorySerializer)}
+    @categories = Category.where(parent_id: nil).includes(:subcategories)
+    render json: { data: ActiveModelSerializers::SerializableResource.new(@categories, each_serializer: CategorySerializer) }
   end
 
   def show
@@ -13,7 +13,11 @@ class Api::V2::CategoriesController < ApplicationController
   end
 
   def create
+    parent_category = Category.find_by(id: params[:parent_id]) if params[:parent_id].present?
+
     @category = Category.new(category_params)
+    @category.parent = parent_category
+
     if @category.save
       render json: @category, status: :created
     else
@@ -41,7 +45,7 @@ class Api::V2::CategoriesController < ApplicationController
   end
 
   def category_params
-    params.require(:category).permit(:name)
+    params.require(:category).permit(:name, :parent_id)
   end
 
   def check_user

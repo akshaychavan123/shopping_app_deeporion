@@ -45,7 +45,7 @@ class Api::V2::ProductsController < ApplicationController
   end
 
   def product_params
-    params.permit(:name, :subcategory_id)
+    params.permit(:name, :category_id)
   end
 
   def check_user

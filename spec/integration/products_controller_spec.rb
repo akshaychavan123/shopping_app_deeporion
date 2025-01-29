@@ -24,17 +24,17 @@ RSpec.describe 'api/v2/products', type: :request do
           type: :object,
           properties: {
             name: { type: :string },
-            subcategory_id: { type: :integer },
+            category_id: { type: :integer },
             image: { type: :file }
           },
-          required: ['image','name', 'subcategory_id']  
+          required: ['image','name', 'category_id']
         }
     
         response(201, 'created') do
           let(:product) do
             {
               name: 'New Product',
-              subcategory_id: create(:subcategory).id,
+              category_id: create(:category).id,
               image: Rack::Test::UploadedFile.new(Rails.root.join('spec/fixtures/test_image.jpg'), 'image/jpeg')
             }
           end
@@ -42,13 +42,13 @@ RSpec.describe 'api/v2/products', type: :request do
         end
     
         response(422, 'unprocessable entity') do
-          let(:product) { { name: '', subcategory_id: create(:subcategory).id } }
+          let(:product) { { name: '', category_id: create(:category).id } }
           run_test!
         end
     
         response(401, 'unauthorized') do
           let(:Authorization) { 'Bearer invalid_token' }
-          let(:product) { { name: 'New Product', subcategory_id: create(:subcategory).id } }
+          let(:product) { { name: 'New Product', category_id: create(:category).id } }
           run_test!
         end
       end
@@ -91,7 +91,7 @@ RSpec.describe 'api/v2/products', type: :request do
           type: :object,
           properties: {
             name: { type: :string },
-            subcategory_id: { type: :integer },
+            category_id: { type: :integer },
             image: { type: :file },
           },
           required: ['name']

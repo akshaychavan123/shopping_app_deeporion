@@ -18,7 +18,7 @@ class OrderCountSerializer < ActiveModel::Serializer
   end
 
   def categories
-    Category.joins(subcategories: { products: { product_items: :order_items } })
+    Category.joins(products: { product_items: :order_items } )
             .where(order_items: { order_id: scope.select(:id) })
             .distinct.count
   end

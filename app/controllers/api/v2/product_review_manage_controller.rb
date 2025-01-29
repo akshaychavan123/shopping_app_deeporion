@@ -9,7 +9,7 @@ class Api::V2::ProductReviewManageController < ApplicationController
       category = Category.find_by(id: params[:category_id])
       if category
         @product_items = ProductItem.joins(:reviews)
-                .joins(product: { subcategory: :category })
+                .joins(product: :category)
                 .where(categories: { id: category.id })
                 .where(reviews: { deleted_at: nil }) 
                 .distinct
