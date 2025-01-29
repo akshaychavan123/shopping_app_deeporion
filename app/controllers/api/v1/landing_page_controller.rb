@@ -7,33 +7,19 @@ class Api::V1::LandingPageController < ApplicationController
   end
 
   def index_with_subcategories_and_products
-    @categories = Category.includes(subcategories: :products).all
+    @categories = Category.joins(:products).all
     render json: @categories, each_serializer: CategorySerializer
   end
   
   def product_items_by_category
     @category = Category.find(params[:id])    
     @product_items = ProductItem.joins(:product_item_variants)
-    .joins(product: { subcategory: :category })
+    .joins({product: :category })
     .where(categories: { id: @category.id })
     .distinct
     .page(params[:page])
     .per(params[:per_page])
 
-    render json: {
-      data: ActiveModelSerializers::SerializableResource.new(@product_items, each_serializer: ProductItem2Serializer, current_user: @current_user),
-      meta: pagination_meta(@product_items)
-    }
-  end
-
-  def product_items_by_sub_category
-    @subcategory = Subcategory.find(params[:id])
-    @product_items = ProductItem.joins(:product_item_variants)
-    .joins(:product)
-    .where(products: { subcategory_id: @subcategory.id })
-    .distinct
-    .page(params[:page])
-    .per(params[:per_page])
     render json: {
       data: ActiveModelSerializers::SerializableResource.new(@product_items, each_serializer: ProductItem2Serializer, current_user: @current_user),
       meta: pagination_meta(@product_items)
@@ -54,7 +40,7 @@ class Api::V1::LandingPageController < ApplicationController
   end
 
   def top_category
-    @top_category = Product.top_category.includes(:subcategory)
+    @top_category = Product.top_category
 
     if @top_category.any?
       render json: { data: ActiveModelSerializers::SerializableResource.new(@top_category, each_serializer: ProductSerializer)}
@@ -147,16 +133,11 @@ class Api::V1::LandingPageController < ApplicationController
     end
   
     @product_items = ProductItem.joins(:product_item_variants)
-    .joins(product: { subcategory: :category })
+    .joins(product: :category )
     .distinct
   
     if params[:category_id].present?
       @product_items = @product_items.where(categories: { id: params[:category_id] })
-    end
-
-    subcategory_ids = params[:subcategory_ids]&.split(',') || []
-    if subcategory_ids.any?
-      @product_items = @product_items.where(products: { subcategory_id: subcategory_ids })
     end
 
     if params[:product_ids].present?
@@ -287,15 +268,10 @@ class Api::V1::LandingPageController < ApplicationController
   
     if params[:category_id].present?
       category_id = params[:category_id]
-      subcategories = Subcategory.where(category_id: category_id)
+      subcategories = Category.where(parent_id: category_id).pluck(:id)
+      products = Product.where(category_id: subcategories) if subcategories.present?
     else
       subcategories = []
-    end
-  
-    products = []
-    if params[:subcategory_ids].present?
-      subcategory_ids = params[:subcategory_ids].split(',').map(&:to_i)
-      products = Product.where(subcategory_id: subcategory_ids)
     end
   
     variant_names = []
@@ -308,13 +284,8 @@ class Api::V1::LandingPageController < ApplicationController
       variant_names = product_items.joins(:product_item_variants).pluck('product_item_variants.size').uniq
       unique_colors = product_items.joins(:product_item_variants).pluck(:color).uniq
       unique_materials = product_items.pluck(:material).uniq
-    elsif params[:subcategory_ids].present?
-      product_items = ProductItem.where(product_id: products.select(:id))
-      variant_names = product_items.joins(:product_item_variants).pluck('product_item_variants.size').uniq
-      unique_colors = product_items.joins(:product_item_variants).pluck(:color).uniq
-      unique_materials = product_items.pluck(:material).uniq
     elsif params[:category_id].present?
-      products_in_category = Product.joins(:subcategory).where(subcategories: { category_id: category_id })
+      products_in_category = Product.joins(:category).where(id: category_id)
       product_items = ProductItem.where(product_id: products_in_category.select(:id))
       variant_names = product_items.joins(:product_item_variants).pluck('product_item_variants.size').uniq
       unique_colors = product_items.joins(:product_item_variants).pluck(:color).uniq
@@ -323,7 +294,6 @@ class Api::V1::LandingPageController < ApplicationController
   
     render json: {
       categories: categories,
-      subcategories: subcategories,
       products: products,
       unique_colors: unique_colors,
       variant_names: variant_names,

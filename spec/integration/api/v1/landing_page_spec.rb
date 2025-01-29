@@ -45,28 +45,6 @@ RSpec.describe 'Api::V1::LandingPage', type: :request do
     end
   end 
 
-  path '/api/v1/landing_page/product_items_by_sub_category/{id}' do
-    get('Get product items by subcategory') do
-      tags 'Landing Page'
-      description 'Fetches all product items associated with a specific subcategory.'
-      consumes 'application/json'
-      security [bearerAuth: []]
-      parameter name: :id, in: :path, type: :integer, description: 'ID of the subcategory to fetch product items for', required: true
-      parameter name: :page, in: :query, type: :integer, description: 'Page number for pagination'
-      parameter name: :per_page, in: :query, type: :integer, description: 'Number of items per page'
-  
-      response(200, 'successful') do
-        let(:id) { create(:subcategory).id }
-        run_test!
-      end
-  
-      response(404, 'subcategory not found') do
-        let(:id) { 'invalid' }
-        run_test!
-      end
-    end
-  end 
-
   path '/api/v1/landing_page/product_items_index' do
     get('list product items') do
       tags 'Landing Page'
@@ -173,7 +151,6 @@ RSpec.describe 'Api::V1::LandingPage', type: :request do
       security [bearerAuth: []]
   
       parameter name: :category_id, in: :query, type: :integer, description: 'ID of the Category', required: true
-      parameter name: :subcategory_ids, in: :query, type: :array, items: { type: :integer }, description: 'IDs of the subcategories'
       parameter name: :product_ids, in: :query, type: :array, items: { type: :integer }, description: 'IDs of the products'
       parameter name: :brands, in: :query, type: :array, items: { type: :string }, description: 'Brands of the product items'
       parameter name: :sizes, in: :query, type: :array, items: { type: :string }, description: 'Sizes of the product items'
@@ -207,7 +184,6 @@ RSpec.describe 'Api::V1::LandingPage', type: :request do
                required: ['data']
   
         let(:category_id) { 1 }
-        let(:subcategory_ids) { [1, 2] }
         let(:product_ids) { [1, 2, 3] }
         let(:brands) { ['Brand1', 'Brand2'] }
         let(:sizes) { ['M', 'L'] }
@@ -316,17 +292,9 @@ RSpec.describe 'Api::V1::LandingPage', type: :request do
                 properties: {
                   id: { type: :integer },
                   name: { type: :string },
-                  image: { type: :string, format: :uri },
-                  subcategory: {
-                    type: :object,
-                    properties: {
-                      id: { type: :integer },
-                      name: { type: :string }
-                    },
-                    required: ['id', 'name']
-                  }
+                  image: { type: :string, format: :uri }
                 },
-                required: ['id', 'name', 'image', 'subcategory']
+                required: ['id', 'name', 'image']
               }
             }
           },
@@ -410,7 +378,6 @@ RSpec.describe 'Api::V1::LandingPage', type: :request do
       security [bearerAuth: []]
   
       parameter name: :category_id, in: :query, type: :integer, description: 'ID of the Category'
-      parameter name: :subcategory_ids, in: :query, type: :string, description: 'Comma-separated list of Subcategory IDs'
       parameter name: :product_ids, in: :query, type: :string, description: 'Comma-separated list of Product IDs to fetch variant names and unique colors'
   
       response(200, 'successful') do
@@ -421,7 +388,7 @@ RSpec.describe 'Api::V1::LandingPage', type: :request do
                  unique_colors: { type: :array, items: { type: :string } },
                  variant_names: { type: :array, items: { type: :string } }
                },
-               required: %w[categories subcategories products unique_colors variant_names]
+               required: %w[categories products unique_colors variant_names]
         run_test!
       end
   

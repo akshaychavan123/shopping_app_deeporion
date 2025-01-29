@@ -9,7 +9,22 @@ RSpec.describe 'api/v2/categories', type: :request do
 
       response(200, 'successful') do
         let(:Authorization) { "Bearer #{token}" }
-        let(:token) { JsonWebToken.encode(user_id: create(:user).id) }
+        let(:token) { JsonWebToken.encode(user_id: create(:user, type: 'Admin').id) }
+
+        before do
+          parent_category = create(:category, name: 'Parent Category')
+          create(:category, name: 'Child Category', parent: parent_category)
+        end
+
+        run_test! do |response|
+          data = JSON.parse(response.body)['data']
+          expect(data).to be_an(Array)
+          expect(data.first['children']).to be_present
+        end
+      end
+
+      response(401, 'unauthorized') do
+        let(:Authorization) { 'Bearer invalid_token' }
         run_test!
       end
     end
@@ -21,28 +36,29 @@ RSpec.describe 'api/v2/categories', type: :request do
       parameter name: :category, in: :body, schema: {
         type: :object,
         properties: {
-          name: { type: :string }
+          name: { type: :string },
+          parent_id: { type: :integer, nullable: true }
         },
         required: ['name']
       }
 
       response(201, 'created') do
         let(:Authorization) { "Bearer #{token}" }
-        let(:token) { JsonWebToken.encode(user_id: create(:user).id) }
-        let(:category) { { name: 'New Category' } }
+        let(:token) { JsonWebToken.encode(user_id: create(:user, type: 'Admin').id) }
+        let(:category) { { name: 'New Category', parent_id: nil } }
         run_test!
       end
 
       response(422, 'unprocessable entity') do
         let(:Authorization) { "Bearer #{token}" }
-        let(:token) { JsonWebToken.encode(user_id: create(:user).id) }
-        let(:category) { { name: '' } }
+        let(:token) { JsonWebToken.encode(user_id: create(:user, type: 'Admin').id) }
+        let(:category) { { name: '', parent_id: nil } }
         run_test!
       end
 
       response(401, 'unauthorized') do
         let(:Authorization) { 'Bearer invalid_token' }
-        let(:category) { { name: 'New Category' } }
+        let(:category) { { name: 'New Category', parent_id: nil } }
         run_test!
       end
     end

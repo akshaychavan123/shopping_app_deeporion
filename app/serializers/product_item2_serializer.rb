@@ -1,20 +1,12 @@
 class ProductItem2Serializer < ActiveModel::Serializer
-    attributes :id, :category_id, :category_name, :subcategory_id, :subcategory_name, :product_id, :name, :brand, :color, :price_of_first_variant, :discounted_price_of_first_variant, :discount_percent_of_first_variant, :is_favorite, :image, :rating_and_review, :in_stock
+    attributes :id, :category_id, :category_name,  :product_id, :name, :brand, :color, :price_of_first_variant, :discounted_price_of_first_variant, :discount_percent_of_first_variant, :is_favorite, :image, :rating_and_review, :in_stock
 
     def category_id
-      object.product&.subcategory&.category_id
+      object.product&.category_id
     end
 
     def category_name
-      object.product&.subcategory&.category&.name
-    end    
-
-    def subcategory_id
-      object.product&.subcategory_id
-    end
-
-    def subcategory_name
-      object.product&.subcategory&.name
+      object.product&.category&.name
     end
 
     def image

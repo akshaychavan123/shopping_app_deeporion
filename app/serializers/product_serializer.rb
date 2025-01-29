@@ -1,16 +1,12 @@
 class ProductSerializer < ActiveModel::Serializer
-  attributes :id, :name, :subcategory_id, :subcategory_name, :category_id, :category_name, :image
-
-  def subcategory_name
-    object.subcategory&.name
-  end
+  attributes :id, :name, :category_id, :category_name, :image
 
   def category_id
-    object.subcategory.category_id if object.subcategory.present?
+    object.category_id if object.category.present?
   end
 
   def category_name
-    object.subcategory.category&.name if object.subcategory.present?
+    object&.category&.name if object.category.present?
   end
 
   def image

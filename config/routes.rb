@@ -67,7 +67,6 @@ Rails.application.routes.draw do
       get 'landing_page/gift_cards_category', to: 'landing_page#gift_cards_category'
       get 'landing_page/gift_cards_by_category/:id', to: 'landing_page#gift_cards_by_category'
       get '/landing_page/product_items_of_product/:id', to: 'landing_page#product_items_of_product'
-      get '/landing_page/product_items_by_sub_category/:id', to: 'landing_page#product_items_by_sub_category'
       get '/landing_page/product_items_show/:id', to: 'landing_page#product_items_show'
       get '/landing_page/product_items_filter', to: 'landing_page#product_items_filter'
       get '/landing_page/product_items_search', to: 'landing_page#product_items_search'      
@@ -135,9 +134,6 @@ Rails.application.routes.draw do
           delete :delete_review
           patch :hide_review
         end
-      end
-      resources :categories do
-        resources :subcategories, only: [:index, :show, :create, :update, :destroy]
       end
       resources :gift_card_categories, only: [:index, :show, :create, :update, :destroy]
       resources :gift_cards

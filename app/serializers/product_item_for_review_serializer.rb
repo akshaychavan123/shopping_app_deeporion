@@ -1,12 +1,8 @@
 class ProductItemForReviewSerializer < ActiveModel::Serializer
-    attributes :id, :category_id, :subcategory_id, :name, :image
+    attributes :id, :category_id, :name, :image
 
     def category_id
-      object.product&.subcategory&.category_id
-    end
-
-    def subcategory_id
-      object.product&.subcategory_id
+      object.product&.category_id
     end
 
     def image
